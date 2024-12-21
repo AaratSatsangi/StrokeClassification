@@ -61,6 +61,7 @@ if __name__ == "__main__":
     print(total_num)
     print(percent_num)
     print("\n" + "="*50)
+    exit()
     train_indices = {}
     test_indices = {}
     total_train = 0

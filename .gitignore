@@ -1,4 +1,5 @@
 Data/
 .ipynb_checkpoints/
+.vscode/
 Classifiers/Old/
 **/*.pt

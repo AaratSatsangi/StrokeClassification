@@ -4,7 +4,7 @@ import torchvision.transforms as transforms
 from torch.utils.data import DataLoader, random_split
 import json
 from sklearn.metrics import classification_report
-from Classifiers_CNN import CNN_Classifier
+from Classifiers import ConvNets, TransNets
 torch.manual_seed(26)
 
 TEST_MODEL_NAME = "CNN_4"
@@ -27,7 +27,7 @@ torch.manual_seed(26)
 
 CLASS_NAMES = None
 test_loader : DataLoader = None
-model: CNN_Classifier = None
+model = None
 
 def setup():
     global test_loader, model, CLASS_NAMES

@@ -30,7 +30,7 @@ class VIT_B16(nn.Module):
         return self.last_freezed_layer
     
 class SWIN_T(nn.Module):
-    def __init__(self, input_size=(1, 1, 224, 224), num_classes=3, freezeToLayer: str = "features.2"):
+    def __init__(self, input_size=(1, 1, 224, 224), num_classes=3, freezeToLayer: str = "features.3"):
         super(SWIN_T, self).__init__()
         
         # Load the Swin Transformer model
@@ -47,7 +47,7 @@ class SWIN_T(nn.Module):
 
         # Modify the input layer for single-channel images if needed
         self.swint.features[0][0] = nn.Conv2d(input_size[1], self.swint.features[0][0].out_channels, 
-                                              kernel_size=4, stride=4, padding=0, bias=False)
+                                              kernel_size=4, stride=4, padding=0)
 
         # Modify the final fully connected layer to match the number of output classes
         in_features = self.swint.head.in_features

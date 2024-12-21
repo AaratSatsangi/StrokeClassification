@@ -15,15 +15,16 @@ from sklearn.metrics import classification_report
 from sklearn.model_selection import KFold
 import json
 import matplotlib.pyplot as plt
-from preprocessor import CTPreprocessor
+from Preprocessor import CTPreprocessor
 from torchinfo import summary
+import sys
 
 # ========= HYPER-PARAMETERS ============
 K_FOLD = 5
 AUTO_BREAK = True # Auto Stop training if overfitting is detected
 BATCH_SIZE = 128
-BATCH_LOAD = 8
-LEARNING_RATE = 1e-3
+BATCH_LOAD = 32
+LEARNING_RATE = 5e-5
 PERSISTANCE = 10
 WORKERS = os.cpu_count()
 EPOCHS = 50
@@ -64,6 +65,8 @@ GENERATOR = torch.Generator().manual_seed(26)
 # ======= SOME CONSTANTS NEEDED =============
 MODEL_NAME: str = None
 PATH_MODEL_SAVE: str = None
+PATH_MODEL_LOG_FOLDER: str = None
+PATH_MODEL_LOG: str = None
 OPTIMIZER = None
 LR_SCHEDULER = None
 KF: KFold = None
@@ -71,8 +74,13 @@ SAMPLER: WeightedRandomSampler = None
 model: torch.nn.Module = None
 # ===========================================
 
+def log_print(string: str):
+    
+    
+    pass
 
 def setup(model:nn.Module, fine_tine = False, openTillLayer:str = None):
+    global PATH_MODEL_LOG
     torch.cuda.empty_cache()
     last_freezed_layer = ""
     if fine_tine:
@@ -90,21 +98,32 @@ def setup(model:nn.Module, fine_tine = False, openTillLayer:str = None):
     # Create the folder
     if not os.path.exists(PATH_MODEL_SAVE):
         os.makedirs(PATH_MODEL_SAVE)
+    if(not os.path.exists(PATH_MODEL_LOG)):
+        os.makedirs(PATH_MODEL_LOG)
     count = 0
     for file_name in os.listdir(PATH_MODEL_SAVE):
         if("architecture" in file_name): 
             count +=1
+    
+    # Writing Architecture
     with open(PATH_MODEL_SAVE + "architecture_"+ str(count) + ".txt", "w") as f:
         f.write("="*25 + "Layer Names" + "="*25 + "\n")
         for i, (name, param) in enumerate(model.named_parameters()):
-            if last_freezed_layer == name:
-                f.write(str(i) + ": " + name + "\t(freezed till here)\n")
+            if last_freezed_layer in name and last_freezed_layer != "":
+                f.write(str(i) + ": " + name + "\t\t(freezed till here)\n")
             else:
                 f.write(str(i) + ": " + name + "\n")
         f.write("="*61 + "\n")
         f.write("\n\n")
         f.write(str(summary(model, (1,) + IMG_SIZE , col_names=["input_size","output_size","num_params"], verbose=0)))
     
+    # Creating Log File for Architecture
+    PATH_MODEL_LOG = PATH_MODEL_LOG + "logs_architecture_" + str(count) + ".txt"
+    with open(PATH_MODEL_LOG, "w") as f:
+        f.write("="*90 + "\n")
+        f.write("\t\t\t\t" + MODEL_NAME + "\n")
+        f.write("="*90 + "\n")
+        
 def _isDecreasingOrder(lst: list):
     for i in range(len(lst) - 1):
         if lst[i] <= lst[i + 1]:
@@ -185,7 +204,7 @@ def train_KCV():
             for epoch in range(EPOCHS):
                 print("\t" + "-"*100)
                 print(("\t" + "FOLD: [%d/%d]") % (fold+1, K_FOLD))
-                print(("\t" + "EPOCH: [%d/%d]" + "\t"*8 + "PERSISTANCE: [%d/%d]") % (epoch+1, EPOCHS, p_counter-1, PERSISTANCE))
+                print(("\t" + "EPOCH: [%d/%d]" + "\t"*8 + "PERSISTANCE: [%d/%d]") % (epoch+1, EPOCHS, p_counter, PERSISTANCE))
                 print("\t" +"-"*100)
 
                 train_loss = 0.0
@@ -234,15 +253,6 @@ def train_KCV():
                 val_loss /= len(val_loader)
                 validation_losses.append(val_loss)
                 print("\t" +"\tValidation Loss: [%0.5f]" % (val_loss))
-                if(isinstance(LR_SCHEDULER, CosineAnnealingWarmRestarts)): LR_SCHEDULER.step()
-                elif(isinstance(LR_SCHEDULER, ReduceLROnPlateau)): 
-                    LR_SCHEDULER.step(val_loss)
-                    if(lr > LR_SCHEDULER.get_last_lr()[-1]):
-                        lr = LR_SCHEDULER.get_last_lr()[-1]
-                        print(f"\t\tLearning Rate Decreased: {lr}")
-                else: raise Exception("LR Schedular not recognized!\nType: " + type(LR_SCHEDULER))
-                
-                
 
                 # Save Best Model
                 p_counter += 1
@@ -250,7 +260,27 @@ def train_KCV():
                     min_val_loss = val_loss
                     torch.save(model, PATH_MODEL_SAVE + MODEL_NAME  + ".pt")
                     p_counter = 1
-                print("\t" +"\tMin Validation Loss: [%0.5f]" % (min_val_loss), end = "\n\n")
+                print("\t" +"\tMin Validation Loss: [%0.5f]" % (min_val_loss))
+
+                # Learning Rate Schedular Step
+                if(isinstance(LR_SCHEDULER, CosineAnnealingWarmRestarts)): 
+                    LR_SCHEDULER.step()
+                    if(lr > LR_SCHEDULER.get_last_lr()[-1]):
+                        print(f"\t\t(-) Learning Rate Decreased: [{lr: 0.2e}] --> [{LR_SCHEDULER.get_last_lr()[-1]: 0.2e}]")
+                        lr = LR_SCHEDULER.get_last_lr()[-1]
+                    elif(lr < LR_SCHEDULER.get_last_lr()[-1]):
+                        print(f"\t\t(+) Learning Rate Increased: [{lr: 0.2e}] --> [{LR_SCHEDULER.get_last_lr()[-1]: 0.2e}]")
+                        lr = LR_SCHEDULER.get_last_lr()[-1]
+                elif(isinstance(LR_SCHEDULER, ReduceLROnPlateau)): 
+                    LR_SCHEDULER.step(val_loss)
+                    if(lr > LR_SCHEDULER.get_last_lr()[-1]):
+                        print(f"\t\t(-) Learning Rate Decreased: [{lr: 0.2e}] --> [{LR_SCHEDULER.get_last_lr()[-1]: 0.2e}]")
+                        lr = LR_SCHEDULER.get_last_lr()[-1]
+                    elif(lr < LR_SCHEDULER.get_last_lr()[-1]):
+                        print(f"\t\t(+) Learning Rate Increased: [{lr: 0.2e}] --> [{LR_SCHEDULER.get_last_lr()[-1]: 0.2e}]")
+                        lr = LR_SCHEDULER.get_last_lr()[-1]
+                else: raise Exception("LR Schedular not recognized!\nType: " + type(LR_SCHEDULER))
+                
                 
                 # Early Stopping for Overfitting Stopping
                 if(p_counter-1 >= PERSISTANCE):
@@ -277,11 +307,13 @@ def train_KCV():
                             print("\t" + "Wrong Input!!\n")
                     if(flag == "n"):
                         break
+                print("") # Add New Line
 
     except KeyboardInterrupt:
         # Exit Loop code
         print("\t" + "Keyboard Interrupt: Exiting Loop...")
 
+    print("\n" + "#"*100 + "\n" + "#"*100 + "\n")
     if(len(training_losses) and len(validation_losses)):
         count = 0
         for file_name in os.listdir(PATH_MODEL_SAVE):
@@ -303,8 +335,8 @@ def _calcPerformMetrics(y_pred, y_true, class_names, path_saveDict):
         json.dump(report, f, indent=4)
         print("Results Written in:", path_saveDict)
 
-    print("\nResults:")
-    print(json.dumps(report, indent=4))
+    # print("\nResults:")
+    # print(json.dumps(report, indent=4))
     saveAsTable(path_saveDict)
     return
 
@@ -357,6 +389,7 @@ def testModel(t_model: nn.Module):
 
             y_pred =  t_model(x)
             error = LOSS(y_pred, y)
+            test_loss += error.item()
 
             y_true = torch.zeros(y.shape[0],3)
             for row in range(y.shape[0]):
@@ -365,13 +398,13 @@ def testModel(t_model: nn.Module):
             y_predTensor = torch.vstack([y_predTensor, torch.nn.functional.softmax(y_pred, dim=1).cpu()])
 
     test_loss /= len(test_loader)
-    print("\t" +"Test Loss:", round(test_loss,5))
     count = 0
     for file_name in os.listdir(PATH_MODEL_SAVE):
         if("performance" in file_name and ".json" in file_name): 
             count +=1
-    path_perfom_save = PATH_MODEL_SAVE + "performance" + str(count) + ".json"
+    path_perfom_save = PATH_MODEL_SAVE + "performance_" + str(count) + ".json"
     _calcPerformMetrics(y_pred=y_predTensor, y_true=y_trueTensor,class_names=CLASS_NAMES, path_saveDict=path_perfom_save)
+    print("Test Loss:", round(test_loss,5))
     return
 
 
@@ -381,10 +414,10 @@ if __name__ == "__main__":
     
     # ====================================================================
     # ==================== CHANGE HERE ===================================
-    FINE_TUNE = False                                                     #
-    MODEL_NAME = "ViT_B16"                                             #  
-    MODEL_TYPE = MODEL_TYPE_DICT["trans"]                                 #
-    OPEN_TILL_LAYER = ""                                         #
+    FINE_TUNE = True
+    MODEL_NAME = "SWIN_T"  
+    MODEL_TYPE = MODEL_TYPE_DICT["trans"]
+    OPEN_TILL_LAYER = "features.1.0"
     # ====================================================================
     # ====================================================================
     
@@ -405,12 +438,13 @@ if __name__ == "__main__":
         # =================================================================
         # ================= THE NEW MODEL TO TRAIN ========================
         # model = ConvNets.VGG19_BN(input_size=(BATCH_SIZE,) + IMG_SIZE)    #
-        model = TransNets.VIT_B16(input_size=(BATCH_SIZE,) + IMG_SIZE)
+        model = TransNets.SWIN_T(input_size=(BATCH_SIZE,) + IMG_SIZE)
         # =================================================================
         # =================================================================
+    PATH_MODEL_LOG = PATH_MODEL_SAVE + "Logs/" + MODEL_NAME + ".txt"
     model.to(DEVICE)
     OPTIMIZER = torch.optim.AdamW(params=model.parameters(), lr=LEARNING_RATE,  weight_decay=1e-4)
-    # LR_SCHEDULER = CosineAnnealingWarmRestarts(OPTIMIZER, T_0=10, T_mult=2, eta_min=1e-8)
+    # LR_SCHEDULER = CosineAnnealingWarmRestarts(OPTIMIZER, T_0=10, T_mult=2)
     LR_SCHEDULER = ReduceLROnPlateau(optimizer=OPTIMIZER, mode='min',  factor=0.1, patience=int(PERSISTANCE/2))
     
     setup(model, FINE_TUNE, OPEN_TILL_LAYER)
@@ -420,6 +454,3 @@ if __name__ == "__main__":
     test_loader = DataLoader(dataset = TEST_DATA, batch_size = BATCH_LOAD, num_workers=WORKERS)
     testModel(torch.load(PATH_MODEL_SAVE + MODEL_NAME + ".pt"))
     print("="*50 + " END " + "="*50 + "\n\n")
-
-
-    
