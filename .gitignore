@@ -4,3 +4,4 @@ Data/
 Classifiers/Old/
 **/*.pt
 Temp/
+__pycache__/

@@ -29,32 +29,37 @@ class VIT_B16(nn.Module):
     def get_last_freezed_layer(self):
         return self.last_freezed_layer
     
-class SWIN_T(nn.Module):
-    def __init__(self, input_size=(1, 1, 224, 224), num_classes=3, freezeToLayer: str = ""):
-        super(SWIN_T, self).__init__()
+class SWIN(nn.Module):
+    def __init__(self, input_size=(1, 1, 224, 224), num_classes=3, freezeToLayer: str = "features.5.0"):
+        super(SWIN, self).__init__()
         
         # Load the Swin Transformer model
-        self.swint = models.swin_s(weights=models.Swin_S_Weights.IMAGENET1K_V1)
+        self.swin = models.swin_s(weights=models.Swin_S_Weights.IMAGENET1K_V1)
         self.last_freezed_layer = ""
 
         # Optionally freeze layers up to a certain layer
         if freezeToLayer is not None:
-            for name, param in self.swint.named_parameters():
+            for name, param in self.swin.named_parameters():
                 if freezeToLayer in name:
                     self.last_freezed_layer = name
                     break
                 param.requires_grad = False
 
         # Modify the input layer for single-channel images if needed
-        self.swint.features[0][0] = nn.Conv2d(input_size[1], self.swint.features[0][0].out_channels, 
+        self.swin.features[0][0] = nn.Conv2d(input_size[1], self.swin.features[0][0].out_channels, 
                                               kernel_size=4, stride=4, padding=0)
 
         # Modify the final fully connected layer to match the number of output classes
-        in_features = self.swint.head.in_features
-        self.swint.head = nn.Linear(in_features, num_classes)
+        in_features = self.swin.head.in_features
+        self.swin.head = nn.Linear(in_features, num_classes)
 
     def forward(self, x):
-        return self.swint(x)
+        return self.swin(x)
     
     def get_last_freezed_layer(self):
         return self.last_freezed_layer
+    
+if __name__ == "__main__":
+    from torchinfo import summary
+    model = SWIN()
+    summary(model, input_size=(1, 1, 224, 224), depth=4, col_names=["input_size","output_size","num_params"])

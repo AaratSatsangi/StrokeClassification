@@ -81,7 +81,7 @@ model: torch.nn.Module = None
 # =========================================== 
 
 def setup(model:nn.Module, fine_tine = False, openTillLayer:str = None):
-    global PATH_MODEL_LOG
+    global PATH_MODEL_LOG, BATCH_LOAD, BATCH_SIZE
     if BATCH_LOAD > BATCH_SIZE: 
         print("Setting Batch Load = Batch Size")
         print(f"ERROR: Batch Load {BATCH_LOAD} is greater than {BATCH_SIZE}")
@@ -407,8 +407,8 @@ if __name__ == "__main__":
     
     # ====================================================================
     # ==================== CHANGE HERE ===================================
-    FINE_TUNE = True
-    MODEL_FOLDER_NAME = "SWIN_T"
+    FINE_TUNE = False
+    MODEL_FOLDER_NAME = "SWIN_S"
     MODEL_TYPE = MODEL_TYPE_DICT["trans"]
     OPEN_TILL_LAYER = ""
     # ====================================================================
@@ -442,7 +442,7 @@ if __name__ == "__main__":
         # =================================================================
         # ================= THE NEW MODEL TO TRAIN ========================
         # model = ConvNets.VGG19_BN(input_size=(BATCH_SIZE,) + IMG_SIZE)    #
-        model = TransNets.SWIN_T(input_size=(BATCH_SIZE,) + IMG_SIZE)
+        model = TransNets.SWIN(input_size=(BATCH_SIZE,) + IMG_SIZE)
         # =================================================================
         # =================================================================
     
@@ -453,6 +453,7 @@ if __name__ == "__main__":
     # LR_SCHEDULER = ReduceLROnPlateau(optimizer=OPTIMIZER, mode='min',  factor=0.1, patience=int(PERSISTANCE/2))
     
     setup(model, FINE_TUNE, OPEN_TILL_LAYER)
+    exit()
     train_KCV()
     
     LOGGER.log("Testing model: " + PATH_MODEL_SAVE + MODEL_NAME + ".pt")
