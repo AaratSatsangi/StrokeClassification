@@ -34,7 +34,7 @@ class SWIN(nn.Module):
         super(SWIN, self).__init__()
         
         # Load the Swin Transformer model
-        self.swin = models.swin_s(weights=models.Swin_S_Weights.IMAGENET1K_V1)
+        self.swin = models.swin_b(weights=models.Swin_B_Weights.IMAGENET1K_V1)
         self.last_freezed_layer = ""
 
         # Optionally freeze layers up to a certain layer
