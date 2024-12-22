@@ -7,7 +7,7 @@ from Log import Logger
 from torchvision import models
 from torchvision.datasets import ImageFolder
 import torchvision.transforms as transforms
-from torch.utils.data import DataLoader, random_split, Subset, WeightedRandomSampler
+from torch.utils.data import DataLoader, Subset, WeightedRandomSampler
 from tqdm import tqdm
 import numpy as np
 import os
@@ -24,8 +24,8 @@ import requests
 # ========= HYPER-PARAMETERS ============
 K_FOLD = 5
 AUTO_BREAK = True # Auto Stop training if overfitting is detected
-BATCH_SIZE = 512
-BATCH_LOAD = 256
+BATCH_SIZE = 256
+BATCH_LOAD = 256 # Batch load must be less than batch size
 LEARNING_RATE = 1e-3
 PERSISTANCE = 10
 WORKERS = os.cpu_count()
@@ -82,6 +82,11 @@ model: torch.nn.Module = None
 
 def setup(model:nn.Module, fine_tine = False, openTillLayer:str = None):
     global PATH_MODEL_LOG
+    if BATCH_LOAD > BATCH_SIZE: 
+        print("Setting Batch Load = Batch Size")
+        print(f"ERROR: Batch Load {BATCH_LOAD} is greater than {BATCH_SIZE}")
+        BATCH_LOAD = BATCH_SIZE
+        
     torch.cuda.empty_cache()
     last_freezed_layer = ""
     if fine_tine:
@@ -167,7 +172,7 @@ def train_KCV():
     global LEARNING_RATE
     lr = LEARNING_RATE
     LOGGER.log("\n" + "#"*115 + "\n")
-    LOGGER.log("\t\t\t\tTraining: " + MODEL_NAME)
+    LOGGER.log("\t\t\t\t\tTraining: " + MODEL_NAME)
     LOGGER.log("\n" + "#"*115)
 
     training_losses = []
@@ -284,7 +289,7 @@ def train_KCV():
                             p_counter = 1
                             break
                     else:
-                        LOGGER.log("\t" + f"\tTraining Loss Fluctuating -- {training_losses[-PERSISTANCE:]}")
+                        LOGGER.log("\t" + "\tTraining Loss Fluctuating")
                         # Unsure about Overfitting, ask the user to continue
                     while(True):
                         if(AUTO_BREAK):
@@ -444,8 +449,8 @@ if __name__ == "__main__":
     
     model.to(DEVICE)
     OPTIMIZER = torch.optim.AdamW(params=model.parameters(), lr=LEARNING_RATE,  weight_decay=1e-4)
-    # LR_SCHEDULER = CosineAnnealingWarmRestarts(OPTIMIZER, T_0=10, T_mult=2)
-    LR_SCHEDULER = ReduceLROnPlateau(optimizer=OPTIMIZER, mode='min',  factor=0.1, patience=int(PERSISTANCE/2))
+    LR_SCHEDULER = CosineAnnealingWarmRestarts(OPTIMIZER, T_0=10, T_mult=2)
+    # LR_SCHEDULER = ReduceLROnPlateau(optimizer=OPTIMIZER, mode='min',  factor=0.1, patience=int(PERSISTANCE/2))
     
     setup(model, FINE_TUNE, OPEN_TILL_LAYER)
     train_KCV()
