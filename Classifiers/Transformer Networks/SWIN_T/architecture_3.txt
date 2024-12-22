@@ -1,0 +1,207 @@
+=========================Layer Names=========================
+0: swint.features.0.0.weight
+1: swint.features.0.0.bias
+2: swint.features.0.2.weight
+3: swint.features.0.2.bias
+4: swint.features.1.0.norm1.weight
+5: swint.features.1.0.norm1.bias
+6: swint.features.1.0.attn.relative_position_bias_table
+7: swint.features.1.0.attn.qkv.weight
+8: swint.features.1.0.attn.qkv.bias
+9: swint.features.1.0.attn.proj.weight
+10: swint.features.1.0.attn.proj.bias
+11: swint.features.1.0.norm2.weight
+12: swint.features.1.0.norm2.bias
+13: swint.features.1.0.mlp.0.weight
+14: swint.features.1.0.mlp.0.bias
+15: swint.features.1.0.mlp.3.weight
+16: swint.features.1.0.mlp.3.bias
+17: swint.features.1.1.norm1.weight
+18: swint.features.1.1.norm1.bias
+19: swint.features.1.1.attn.relative_position_bias_table
+20: swint.features.1.1.attn.qkv.weight
+21: swint.features.1.1.attn.qkv.bias
+22: swint.features.1.1.attn.proj.weight
+23: swint.features.1.1.attn.proj.bias
+24: swint.features.1.1.norm2.weight
+25: swint.features.1.1.norm2.bias
+26: swint.features.1.1.mlp.0.weight
+27: swint.features.1.1.mlp.0.bias
+28: swint.features.1.1.mlp.3.weight
+29: swint.features.1.1.mlp.3.bias
+30: swint.features.2.reduction.weight
+31: swint.features.2.norm.weight
+32: swint.features.2.norm.bias
+33: swint.features.3.0.norm1.weight
+34: swint.features.3.0.norm1.bias
+35: swint.features.3.0.attn.relative_position_bias_table
+36: swint.features.3.0.attn.qkv.weight
+37: swint.features.3.0.attn.qkv.bias
+38: swint.features.3.0.attn.proj.weight
+39: swint.features.3.0.attn.proj.bias
+40: swint.features.3.0.norm2.weight
+41: swint.features.3.0.norm2.bias
+42: swint.features.3.0.mlp.0.weight
+43: swint.features.3.0.mlp.0.bias
+44: swint.features.3.0.mlp.3.weight
+45: swint.features.3.0.mlp.3.bias
+46: swint.features.3.1.norm1.weight
+47: swint.features.3.1.norm1.bias
+48: swint.features.3.1.attn.relative_position_bias_table
+49: swint.features.3.1.attn.qkv.weight
+50: swint.features.3.1.attn.qkv.bias
+51: swint.features.3.1.attn.proj.weight
+52: swint.features.3.1.attn.proj.bias
+53: swint.features.3.1.norm2.weight
+54: swint.features.3.1.norm2.bias
+55: swint.features.3.1.mlp.0.weight
+56: swint.features.3.1.mlp.0.bias
+57: swint.features.3.1.mlp.3.weight
+58: swint.features.3.1.mlp.3.bias
+59: swint.features.4.reduction.weight
+60: swint.features.4.norm.weight
+61: swint.features.4.norm.bias
+62: swint.features.5.0.norm1.weight
+63: swint.features.5.0.norm1.bias
+64: swint.features.5.0.attn.relative_position_bias_table
+65: swint.features.5.0.attn.qkv.weight
+66: swint.features.5.0.attn.qkv.bias
+67: swint.features.5.0.attn.proj.weight
+68: swint.features.5.0.attn.proj.bias
+69: swint.features.5.0.norm2.weight
+70: swint.features.5.0.norm2.bias
+71: swint.features.5.0.mlp.0.weight
+72: swint.features.5.0.mlp.0.bias
+73: swint.features.5.0.mlp.3.weight
+74: swint.features.5.0.mlp.3.bias
+75: swint.features.5.1.norm1.weight
+76: swint.features.5.1.norm1.bias
+77: swint.features.5.1.attn.relative_position_bias_table
+78: swint.features.5.1.attn.qkv.weight
+79: swint.features.5.1.attn.qkv.bias
+80: swint.features.5.1.attn.proj.weight
+81: swint.features.5.1.attn.proj.bias
+82: swint.features.5.1.norm2.weight
+83: swint.features.5.1.norm2.bias
+84: swint.features.5.1.mlp.0.weight
+85: swint.features.5.1.mlp.0.bias
+86: swint.features.5.1.mlp.3.weight
+87: swint.features.5.1.mlp.3.bias
+88: swint.features.5.2.norm1.weight
+89: swint.features.5.2.norm1.bias
+90: swint.features.5.2.attn.relative_position_bias_table
+91: swint.features.5.2.attn.qkv.weight
+92: swint.features.5.2.attn.qkv.bias
+93: swint.features.5.2.attn.proj.weight
+94: swint.features.5.2.attn.proj.bias
+95: swint.features.5.2.norm2.weight
+96: swint.features.5.2.norm2.bias
+97: swint.features.5.2.mlp.0.weight
+98: swint.features.5.2.mlp.0.bias
+99: swint.features.5.2.mlp.3.weight
+100: swint.features.5.2.mlp.3.bias
+101: swint.features.5.3.norm1.weight
+102: swint.features.5.3.norm1.bias
+103: swint.features.5.3.attn.relative_position_bias_table
+104: swint.features.5.3.attn.qkv.weight
+105: swint.features.5.3.attn.qkv.bias
+106: swint.features.5.3.attn.proj.weight
+107: swint.features.5.3.attn.proj.bias
+108: swint.features.5.3.norm2.weight
+109: swint.features.5.3.norm2.bias
+110: swint.features.5.3.mlp.0.weight
+111: swint.features.5.3.mlp.0.bias
+112: swint.features.5.3.mlp.3.weight
+113: swint.features.5.3.mlp.3.bias
+114: swint.features.5.4.norm1.weight
+115: swint.features.5.4.norm1.bias
+116: swint.features.5.4.attn.relative_position_bias_table
+117: swint.features.5.4.attn.qkv.weight
+118: swint.features.5.4.attn.qkv.bias
+119: swint.features.5.4.attn.proj.weight
+120: swint.features.5.4.attn.proj.bias
+121: swint.features.5.4.norm2.weight
+122: swint.features.5.4.norm2.bias
+123: swint.features.5.4.mlp.0.weight
+124: swint.features.5.4.mlp.0.bias
+125: swint.features.5.4.mlp.3.weight
+126: swint.features.5.4.mlp.3.bias
+127: swint.features.5.5.norm1.weight
+128: swint.features.5.5.norm1.bias
+129: swint.features.5.5.attn.relative_position_bias_table
+130: swint.features.5.5.attn.qkv.weight
+131: swint.features.5.5.attn.qkv.bias
+132: swint.features.5.5.attn.proj.weight
+133: swint.features.5.5.attn.proj.bias
+134: swint.features.5.5.norm2.weight
+135: swint.features.5.5.norm2.bias
+136: swint.features.5.5.mlp.0.weight
+137: swint.features.5.5.mlp.0.bias
+138: swint.features.5.5.mlp.3.weight
+139: swint.features.5.5.mlp.3.bias
+140: swint.features.6.reduction.weight
+141: swint.features.6.norm.weight
+142: swint.features.6.norm.bias
+143: swint.features.7.0.norm1.weight
+144: swint.features.7.0.norm1.bias
+145: swint.features.7.0.attn.relative_position_bias_table
+146: swint.features.7.0.attn.qkv.weight
+147: swint.features.7.0.attn.qkv.bias
+148: swint.features.7.0.attn.proj.weight
+149: swint.features.7.0.attn.proj.bias
+150: swint.features.7.0.norm2.weight
+151: swint.features.7.0.norm2.bias
+152: swint.features.7.0.mlp.0.weight
+153: swint.features.7.0.mlp.0.bias
+154: swint.features.7.0.mlp.3.weight
+155: swint.features.7.0.mlp.3.bias
+156: swint.features.7.1.norm1.weight
+157: swint.features.7.1.norm1.bias
+158: swint.features.7.1.attn.relative_position_bias_table
+159: swint.features.7.1.attn.qkv.weight
+160: swint.features.7.1.attn.qkv.bias
+161: swint.features.7.1.attn.proj.weight
+162: swint.features.7.1.attn.proj.bias
+163: swint.features.7.1.norm2.weight
+164: swint.features.7.1.norm2.bias
+165: swint.features.7.1.mlp.0.weight
+166: swint.features.7.1.mlp.0.bias
+167: swint.features.7.1.mlp.3.weight
+168: swint.features.7.1.mlp.3.bias
+169: swint.norm.weight
+170: swint.norm.bias
+171: swint.head.weight
+172: swint.head.bias
+=============================================================
+
+
+==================================================================================================================================
+Layer (type:depth-idx)                                  Input Shape               Output Shape              Param #
+==================================================================================================================================
+SWIN_T                                                  [1, 1, 224, 224]          [1, 3]                    --
+├─SwinTransformer: 1-1                                  [1, 1, 224, 224]          [1, 3]                    --
+│    └─Sequential: 2-1                                  [1, 1, 224, 224]          [1, 7, 7, 768]            --
+│    │    └─Sequential: 3-1                             [1, 1, 224, 224]          [1, 56, 56, 96]           1,824
+│    │    └─Sequential: 3-2                             [1, 56, 56, 96]           [1, 56, 56, 96]           224,694
+│    │    └─PatchMerging: 3-3                           [1, 56, 56, 96]           [1, 28, 28, 192]          74,496
+│    │    └─Sequential: 3-4                             [1, 28, 28, 192]          [1, 28, 28, 192]          891,756
+│    │    └─PatchMerging: 3-5                           [1, 28, 28, 192]          [1, 14, 14, 384]          296,448
+│    │    └─Sequential: 3-6                             [1, 14, 14, 384]          [1, 14, 14, 384]          10,658,952
+│    │    └─PatchMerging: 3-7                           [1, 14, 14, 384]          [1, 7, 7, 768]            1,182,720
+│    │    └─Sequential: 3-8                             [1, 7, 7, 768]            [1, 7, 7, 768]            14,183,856
+│    └─LayerNorm: 2-2                                   [1, 7, 7, 768]            [1, 7, 7, 768]            1,536
+│    └─Permute: 2-3                                     [1, 7, 7, 768]            [1, 768, 7, 7]            --
+│    └─AdaptiveAvgPool2d: 2-4                           [1, 768, 7, 7]            [1, 768, 1, 1]            --
+│    └─Flatten: 2-5                                     [1, 768, 1, 1]            [1, 768]                  --
+│    └─Linear: 2-6                                      [1, 768]                  [1, 3]                    2,307
+==================================================================================================================================
+Total params: 27,518,589
+Trainable params: 27,518,589
+Non-trainable params: 0
+Total mult-adds (M): 23.97
+==================================================================================================================================
+Input size (MB): 0.20
+Forward/backward pass size (MB): 91.52
+Params size (MB): 75.41
+Estimated Total Size (MB): 167.13
+==================================================================================================================================

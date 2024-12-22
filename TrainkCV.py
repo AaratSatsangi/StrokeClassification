@@ -24,18 +24,18 @@ import requests
 # ========= HYPER-PARAMETERS ============
 K_FOLD = 5
 AUTO_BREAK = True # Auto Stop training if overfitting is detected
-BATCH_SIZE = 128
-BATCH_LOAD = 32
+BATCH_SIZE = 512
+BATCH_LOAD = 256
 LEARNING_RATE = 1e-3
 PERSISTANCE = 10
 WORKERS = os.cpu_count()
-EPOCHS = 50
+EPOCHS = 100
 IMG_SIZE = (1, 224, 224)
 # =======================================
 
 # ======== DO NOT TOUCH PARAMETERS ==========
 SERVER_USERNAME = "AaratSatsangi"
-SERVER_FOLDER = "StrokeClassification_TEST"
+SERVER_FOLDER = "StrokeClassification"
 SERVER_URL = "https://www.aaratsatsangi.in/logger.php"
 PATH_DATASET_TRAIN = "Data/Compiled/Split/Train"
 PATH_DATASET_TEST = "Data/Compiled/Split/Test"
@@ -153,7 +153,7 @@ def plot_losses(training_losses, validation_losses):
     plt.savefig(PATH_MODEL_SAVE + "Plots/loss_plot_" + str(count) + ".png", bbox_inches='tight', dpi=300)
     plt.close()  # Close the figure to free memory
 
-    LOGGER.log(f"Plot saved as {PATH_MODEL_SAVE + "Plots/loss_plot.png"}")
+    LOGGER.log(f"Plot saved as {PATH_MODEL_SAVE + 'Plots/loss_plot.png'}")
 
 def get_sample_weights(dataset, indices, name):
     targets = torch.tensor([dataset.targets[i] for i in indices])
@@ -278,13 +278,13 @@ def train_KCV():
                 if(p_counter-1 >= PERSISTANCE):
                     LOGGER.log("\t" + "\tValidation Loss Constant for %d Epochs at EPOCH %d" % (PERSISTANCE, epoch+1))
                     if(_isDecreasingOrder(training_losses[-PERSISTANCE:])):
-                        LOGGER.log("\t" + "\tStopping Training: Overfitting Detected at EPOCH", epoch+1)
+                        LOGGER.log("\t" + f"\tStopping Training: Overfitting Detected at EPOCH {epoch+1}")
                         # Break out of Training Loop
                         if(AUTO_BREAK): 
                             p_counter = 1
                             break
                     else:
-                        LOGGER.log("\t" + "\tTraining Loss Fluctuating -- " , training_losses[-PERSISTANCE:])
+                        LOGGER.log("\t" + f"\tTraining Loss Fluctuating -- {training_losses[-PERSISTANCE:]}")
                         # Unsure about Overfitting, ask the user to continue
                     while(True):
                         if(AUTO_BREAK):
@@ -337,7 +337,7 @@ def saveAsTable(json_file_path: str):
     # Convert JSON data into a DataFrame
     df: pd.DataFrame
     df = pd.DataFrame(data).T  # Transpose to get categories as rows
-    df = df.map(lambda x: round(x, 3) if isinstance(x, float) else x)
+    df = df.applymap(lambda x: round(x, 3) if isinstance(x, float) else x)
     df = df.iloc[:3,:3]
 
     # Set up a Matplotlib figure
@@ -402,7 +402,7 @@ if __name__ == "__main__":
     
     # ====================================================================
     # ==================== CHANGE HERE ===================================
-    FINE_TUNE = False
+    FINE_TUNE = True
     MODEL_FOLDER_NAME = "SWIN_T"
     MODEL_TYPE = MODEL_TYPE_DICT["trans"]
     OPEN_TILL_LAYER = ""
@@ -444,8 +444,8 @@ if __name__ == "__main__":
     
     model.to(DEVICE)
     OPTIMIZER = torch.optim.AdamW(params=model.parameters(), lr=LEARNING_RATE,  weight_decay=1e-4)
-    LR_SCHEDULER = CosineAnnealingWarmRestarts(OPTIMIZER, T_0=10, T_mult=2)
-    # LR_SCHEDULER = ReduceLROnPlateau(optimizer=OPTIMIZER, mode='min',  factor=0.1, patience=int(PERSISTANCE/2))
+    # LR_SCHEDULER = CosineAnnealingWarmRestarts(OPTIMIZER, T_0=10, T_mult=2)
+    LR_SCHEDULER = ReduceLROnPlateau(optimizer=OPTIMIZER, mode='min',  factor=0.1, patience=int(PERSISTANCE/2))
     
     setup(model, FINE_TUNE, OPEN_TILL_LAYER)
     train_KCV()

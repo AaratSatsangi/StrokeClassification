@@ -10,7 +10,7 @@ class CTPreprocessor:
     
     def __init__(
             self,
-            img_size:tuple[int, int] = None,
+            img_size:tuple = None,
             transformations: list = [],
             test_time = False
     ) -> None:
@@ -87,7 +87,7 @@ class CTtestPreprocessor:
     
     def __init__(
             self,
-            img_size:tuple[int, int] = None,
+            img_size:tuple = None,
             transformations: list = [
                 transforms.Grayscale(),
                 transforms.ToTensor(),
