@@ -60,7 +60,7 @@ def _calcPerformMetrics(y_pred, y_true, class_names, path_saveDict):
     return
 
 
-def testModel(t_model: CNN_Classifier):
+def testModel(t_model):
     y_trueTensor = torch.empty(0,3)
     y_predTensor = torch.empty(0,3)
     with torch.no_grad():

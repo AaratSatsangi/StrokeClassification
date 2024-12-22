@@ -3,6 +3,7 @@ from torch import nn
 from torch.optim.lr_scheduler import CosineAnnealingWarmRestarts, ReduceLROnPlateau
 import pandas as pd
 from Classifiers import ConvNets, TransNets
+from Log import Logger
 from torchvision import models
 from torchvision.datasets import ImageFolder
 import torchvision.transforms as transforms
@@ -18,13 +19,14 @@ import matplotlib.pyplot as plt
 from Preprocessor import CTPreprocessor
 from torchinfo import summary
 import sys
+import requests
 
 # ========= HYPER-PARAMETERS ============
 K_FOLD = 5
 AUTO_BREAK = True # Auto Stop training if overfitting is detected
 BATCH_SIZE = 128
 BATCH_LOAD = 32
-LEARNING_RATE = 5e-5
+LEARNING_RATE = 1e-3
 PERSISTANCE = 10
 WORKERS = os.cpu_count()
 EPOCHS = 50
@@ -32,6 +34,9 @@ IMG_SIZE = (1, 224, 224)
 # =======================================
 
 # ======== DO NOT TOUCH PARAMETERS ==========
+SERVER_USERNAME = "AaratSatsangi"
+SERVER_FOLDER = "StrokeClassification_TEST"
+SERVER_URL = "https://www.aaratsatsangi.in/logger.php"
 PATH_DATASET_TRAIN = "Data/Compiled/Split/Train"
 PATH_DATASET_TEST = "Data/Compiled/Split/Test"
 MODEL_TYPE_DICT: dict = {"conv": "Convolutional Networks", "trans" : "Transformer Networks"}
@@ -71,13 +76,9 @@ OPTIMIZER = None
 LR_SCHEDULER = None
 KF: KFold = None
 SAMPLER: WeightedRandomSampler = None
+LOGGER: Logger = None
 model: torch.nn.Module = None
-# ===========================================
-
-def log_print(string: str):
-    
-    
-    pass
+# =========================================== 
 
 def setup(model:nn.Module, fine_tine = False, openTillLayer:str = None):
     global PATH_MODEL_LOG
@@ -98,8 +99,6 @@ def setup(model:nn.Module, fine_tine = False, openTillLayer:str = None):
     # Create the folder
     if not os.path.exists(PATH_MODEL_SAVE):
         os.makedirs(PATH_MODEL_SAVE)
-    if(not os.path.exists(PATH_MODEL_LOG)):
-        os.makedirs(PATH_MODEL_LOG)
     count = 0
     for file_name in os.listdir(PATH_MODEL_SAVE):
         if("architecture" in file_name): 
@@ -116,13 +115,6 @@ def setup(model:nn.Module, fine_tine = False, openTillLayer:str = None):
         f.write("="*61 + "\n")
         f.write("\n\n")
         f.write(str(summary(model, (1,) + IMG_SIZE , col_names=["input_size","output_size","num_params"], verbose=0)))
-    
-    # Creating Log File for Architecture
-    PATH_MODEL_LOG = PATH_MODEL_LOG + "logs_architecture_" + str(count) + ".txt"
-    with open(PATH_MODEL_LOG, "w") as f:
-        f.write("="*90 + "\n")
-        f.write("\t\t\t\t" + MODEL_NAME + "\n")
-        f.write("="*90 + "\n")
         
 def _isDecreasingOrder(lst: list):
     for i in range(len(lst) - 1):
@@ -161,12 +153,12 @@ def plot_losses(training_losses, validation_losses):
     plt.savefig(PATH_MODEL_SAVE + "Plots/loss_plot_" + str(count) + ".png", bbox_inches='tight', dpi=300)
     plt.close()  # Close the figure to free memory
 
-    print(f"Plot saved as {PATH_MODEL_SAVE + "Plots/loss_plot.png"}")
+    LOGGER.log(f"Plot saved as {PATH_MODEL_SAVE + "Plots/loss_plot.png"}")
 
 def get_sample_weights(dataset, indices, name):
     targets = torch.tensor([dataset.targets[i] for i in indices])
     class_counts = torch.bincount(targets)
-    print("\t" + name + f" Class Counts: {class_counts}")
+    LOGGER.log("\t" + name + f" Class Counts: {class_counts}")
     class_weights = 1.0 / class_counts.float()
     sample_weights = class_weights[targets]
     return sample_weights
@@ -174,9 +166,9 @@ def get_sample_weights(dataset, indices, name):
 def train_KCV():
     global LEARNING_RATE
     lr = LEARNING_RATE
-    print("\n" + "#"*100 + "\n")
-    print("\t\t\t\tTraining: " + MODEL_NAME)
-    print("\n" + "#"*100)
+    LOGGER.log("\n" + "#"*115 + "\n")
+    LOGGER.log("\t\t\t\tTraining: " + MODEL_NAME)
+    LOGGER.log("\n" + "#"*115)
 
     training_losses = []
     validation_losses = []
@@ -186,9 +178,9 @@ def train_KCV():
     try: 
         # Loop Here
         for fold, (train_idx, val_idx) in enumerate(KF.split(TRAIN_DATA)):
-            print("\t" + "="*100)
-            print(f"\tFold {fold+1}/{K_FOLD}")
-            print("\t" + "="*100)
+            LOGGER.log("\t" + "="*100)
+            LOGGER.log(f"\tFold {fold+1}/{K_FOLD}")
+            LOGGER.log("\t" + "="*100)
 
             _train = Subset(TRAIN_DATA, train_idx)
             _val = Subset(TRAIN_DATA, val_idx)
@@ -202,10 +194,10 @@ def train_KCV():
             train_loader = DataLoader(dataset = _train, batch_size = BATCH_LOAD, num_workers=WORKERS-1, pin_memory=True, sampler=SAMPLER_TRAIN, generator=GENERATOR)
             val_loader = DataLoader(dataset = _val, batch_size = BATCH_LOAD, num_workers=WORKERS-1, pin_memory=True, sampler=SAMPLER_VAL, generator=GENERATOR)
             for epoch in range(EPOCHS):
-                print("\t" + "-"*100)
-                print(("\t" + "FOLD: [%d/%d]") % (fold+1, K_FOLD))
-                print(("\t" + "EPOCH: [%d/%d]" + "\t"*8 + "PERSISTANCE: [%d/%d]") % (epoch+1, EPOCHS, p_counter, PERSISTANCE))
-                print("\t" +"-"*100)
+                LOGGER.log("\t" + "-"*100)
+                LOGGER.log(("\t" + "FOLD: [%d/%d]") % (fold+1, K_FOLD))
+                LOGGER.log(("\t" + "EPOCH: [%d/%d]" + "\t"*8 + "PERSISTANCE: [%d/%d]") % (epoch+1, EPOCHS, p_counter, PERSISTANCE))
+                LOGGER.log("\t" +"-"*100)
 
                 train_loss = 0.0
                 accum_loss = 0.0
@@ -238,7 +230,7 @@ def train_KCV():
                 # avg epoch loss
                 train_loss /= len(train_loader)
                 training_losses.append(train_loss)
-                print("\n\n\t" +"\tTraining Loss: [%0.5f]" % (training_losses[-1]))
+                LOGGER.log("\n\n\t" +"\tTraining Loss: [%0.5f]" % (training_losses[-1]))
 
                 # Validation
                 model.eval()
@@ -252,7 +244,7 @@ def train_KCV():
                         val_loss += LOSS(y_pred, labels).item()
                 val_loss /= len(val_loader)
                 validation_losses.append(val_loss)
-                print("\t" +"\tValidation Loss: [%0.5f]" % (val_loss))
+                LOGGER.log("\t" +"\tValidation Loss: [%0.5f]" % (val_loss))
 
                 # Save Best Model
                 p_counter += 1
@@ -260,39 +252,39 @@ def train_KCV():
                     min_val_loss = val_loss
                     torch.save(model, PATH_MODEL_SAVE + MODEL_NAME  + ".pt")
                     p_counter = 1
-                print("\t" +"\tMin Validation Loss: [%0.5f]" % (min_val_loss))
+                LOGGER.log("\t" +"\tMin Validation Loss: [%0.5f]" % (min_val_loss))
 
                 # Learning Rate Schedular Step
                 if(isinstance(LR_SCHEDULER, CosineAnnealingWarmRestarts)): 
                     LR_SCHEDULER.step()
                     if(lr > LR_SCHEDULER.get_last_lr()[-1]):
-                        print(f"\t\t(-) Learning Rate Decreased: [{lr: 0.2e}] --> [{LR_SCHEDULER.get_last_lr()[-1]: 0.2e}]")
+                        LOGGER.log(f"\t\t(-) Learning Rate Decreased: [{lr: 0.2e}] --> [{LR_SCHEDULER.get_last_lr()[-1]: 0.2e}]")
                         lr = LR_SCHEDULER.get_last_lr()[-1]
                     elif(lr < LR_SCHEDULER.get_last_lr()[-1]):
-                        print(f"\t\t(+) Learning Rate Increased: [{lr: 0.2e}] --> [{LR_SCHEDULER.get_last_lr()[-1]: 0.2e}]")
+                        LOGGER.log(f"\t\t(+) Learning Rate Increased: [{lr: 0.2e}] --> [{LR_SCHEDULER.get_last_lr()[-1]: 0.2e}]")
                         lr = LR_SCHEDULER.get_last_lr()[-1]
                 elif(isinstance(LR_SCHEDULER, ReduceLROnPlateau)): 
                     LR_SCHEDULER.step(val_loss)
                     if(lr > LR_SCHEDULER.get_last_lr()[-1]):
-                        print(f"\t\t(-) Learning Rate Decreased: [{lr: 0.2e}] --> [{LR_SCHEDULER.get_last_lr()[-1]: 0.2e}]")
+                        LOGGER.log(f"\t\t(-) Learning Rate Decreased: [{lr: 0.2e}] --> [{LR_SCHEDULER.get_last_lr()[-1]: 0.2e}]")
                         lr = LR_SCHEDULER.get_last_lr()[-1]
                     elif(lr < LR_SCHEDULER.get_last_lr()[-1]):
-                        print(f"\t\t(+) Learning Rate Increased: [{lr: 0.2e}] --> [{LR_SCHEDULER.get_last_lr()[-1]: 0.2e}]")
+                        LOGGER.log(f"\t\t(+) Learning Rate Increased: [{lr: 0.2e}] --> [{LR_SCHEDULER.get_last_lr()[-1]: 0.2e}]")
                         lr = LR_SCHEDULER.get_last_lr()[-1]
                 else: raise Exception("LR Schedular not recognized!\nType: " + type(LR_SCHEDULER))
                 
                 
                 # Early Stopping for Overfitting Stopping
                 if(p_counter-1 >= PERSISTANCE):
-                    print("\t" + "\tValidation Loss Constant for %d Epochs at EPOCH %d" % (PERSISTANCE, epoch+1))
+                    LOGGER.log("\t" + "\tValidation Loss Constant for %d Epochs at EPOCH %d" % (PERSISTANCE, epoch+1))
                     if(_isDecreasingOrder(training_losses[-PERSISTANCE:])):
-                        print("\t" + "\tStopping Training: Overfitting Detected at EPOCH", epoch+1)
+                        LOGGER.log("\t" + "\tStopping Training: Overfitting Detected at EPOCH", epoch+1)
                         # Break out of Training Loop
                         if(AUTO_BREAK): 
                             p_counter = 1
                             break
                     else:
-                        print("\t" + "\tTraining Loss Fluctuating -- " , training_losses[-PERSISTANCE:])
+                        LOGGER.log("\t" + "\tTraining Loss Fluctuating -- " , training_losses[-PERSISTANCE:])
                         # Unsure about Overfitting, ask the user to continue
                     while(True):
                         if(AUTO_BREAK):
@@ -304,16 +296,16 @@ def train_KCV():
                             p_counter = 1
                             break
                         else:
-                            print("\t" + "Wrong Input!!\n")
+                            LOGGER.log("\t" + "Wrong Input!!\n")
                     if(flag == "n"):
                         break
-                print("") # Add New Line
+                LOGGER.log("") # Add New Line
 
     except KeyboardInterrupt:
         # Exit Loop code
-        print("\t" + "Keyboard Interrupt: Exiting Loop...")
+        LOGGER.log("\t" + "Keyboard Interrupt: Exiting Loop...")
 
-    print("\n" + "#"*100 + "\n" + "#"*100 + "\n")
+    LOGGER.log("\n" + "#"*100 + "\n" + "#"*100 + "\n")
     if(len(training_losses) and len(validation_losses)):
         count = 0
         for file_name in os.listdir(PATH_MODEL_SAVE):
@@ -333,10 +325,8 @@ def _calcPerformMetrics(y_pred, y_true, class_names, path_saveDict):
     report = classification_report(y_true=y_true, y_pred=y_pred, target_names=class_names, output_dict=True, zero_division=0)
     with open(path_saveDict, 'w') as f:
         json.dump(report, f, indent=4)
-        print("Results Written in:", path_saveDict)
+        LOGGER.log("Results Written in: " + str(path_saveDict))
 
-    # print("\nResults:")
-    # print(json.dumps(report, indent=4))
     saveAsTable(path_saveDict)
     return
 
@@ -376,7 +366,7 @@ def saveAsTable(json_file_path: str):
             count +=1
     output_path = PATH_MODEL_SAVE + "performance_" + str(count) + ".png"
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
-    print(f"Table image saved to {output_path}")
+    LOGGER.log(f"Table image saved to {output_path}")
 
 def testModel(t_model: nn.Module):
     y_trueTensor = torch.empty(0,3)
@@ -404,36 +394,45 @@ def testModel(t_model: nn.Module):
             count +=1
     path_perfom_save = PATH_MODEL_SAVE + "performance_" + str(count) + ".json"
     _calcPerformMetrics(y_pred=y_predTensor, y_true=y_trueTensor,class_names=CLASS_NAMES, path_saveDict=path_perfom_save)
-    print("Test Loss:", round(test_loss,5))
+    LOGGER.log(f"Test Loss:{round(test_loss,5)}")
     return
 
 
 if __name__ == "__main__":
-
-    print("\n\n" + "="*50 + " START " + "="*50)
     
     # ====================================================================
     # ==================== CHANGE HERE ===================================
-    FINE_TUNE = True
-    MODEL_NAME = "SWIN_T"  
+    FINE_TUNE = False
+    MODEL_FOLDER_NAME = "SWIN_T"
     MODEL_TYPE = MODEL_TYPE_DICT["trans"]
-    OPEN_TILL_LAYER = "features.1.0"
+    OPEN_TILL_LAYER = ""
     # ====================================================================
+    MODEL_NAME = MODEL_FOLDER_NAME if(not FINE_TUNE) else MODEL_FOLDER_NAME + "_FT"
+    PATH_MODEL_SAVE = "./Classifiers/" + MODEL_TYPE + "/" + MODEL_FOLDER_NAME + "/"
+    PATH_MODEL_LOG = PATH_MODEL_SAVE + "Logs/" 
+    if(not os.path.exists(PATH_MODEL_LOG)): os.makedirs(PATH_MODEL_LOG)
+    PATH_MODEL_LOG += MODEL_NAME + "_architecture_" + str(sum(1 for file_name in os.listdir(PATH_MODEL_SAVE) if "architecture" in file_name)) + ".txt"
+    LOGGER = Logger(
+        server_url = SERVER_URL,
+        server_username= SERVER_USERNAME,
+        server_folder = SERVER_FOLDER,
+        model_name = MODEL_NAME,
+        path_localFile = PATH_MODEL_LOG
+    )
     # ====================================================================
     
-    PATH_MODEL_SAVE = "./Classifiers/" + MODEL_TYPE + "/" + MODEL_NAME + "/"
+    LOGGER.log("\n\n" + "="*50 + " START " + "="*50)
     KF = KFold(n_splits=K_FOLD, shuffle=True, random_state=26)
     if(FINE_TUNE):
-        if(not os.path.exists(PATH_MODEL_SAVE + MODEL_NAME + "_FT.pt")):
-            print("Loading Model: " + MODEL_NAME + ".pt")
-            model = torch.load(PATH_MODEL_SAVE + MODEL_NAME + ".pt")
+        if(not os.path.exists(PATH_MODEL_SAVE + MODEL_NAME)):
+            LOGGER.log("Loading Model: " + MODEL_NAME[:-3] + ".pt")
+            model = torch.load(PATH_MODEL_SAVE + MODEL_NAME[:-3] + ".pt")
         else:
-            src = PATH_MODEL_SAVE + MODEL_NAME + "_FT.pt"
-            dst = PATH_MODEL_SAVE + MODEL_NAME + "_FT_previous.pt"
-            print("Loading Model: " + MODEL_NAME + "_FT.pt")
+            src = PATH_MODEL_SAVE + MODEL_NAME
+            dst = PATH_MODEL_SAVE + MODEL_NAME + "_previous.pt"
+            LOGGER.log("Loading Model: " + MODEL_NAME)
             model = torch.load(src)
             shutil.copy(src, dst)
-        MODEL_NAME += "_FT"
     else:
         # =================================================================
         # ================= THE NEW MODEL TO TRAIN ========================
@@ -441,16 +440,17 @@ if __name__ == "__main__":
         model = TransNets.SWIN_T(input_size=(BATCH_SIZE,) + IMG_SIZE)
         # =================================================================
         # =================================================================
-    PATH_MODEL_LOG = PATH_MODEL_SAVE + "Logs/" + MODEL_NAME + ".txt"
+    
+    
     model.to(DEVICE)
     OPTIMIZER = torch.optim.AdamW(params=model.parameters(), lr=LEARNING_RATE,  weight_decay=1e-4)
-    # LR_SCHEDULER = CosineAnnealingWarmRestarts(OPTIMIZER, T_0=10, T_mult=2)
-    LR_SCHEDULER = ReduceLROnPlateau(optimizer=OPTIMIZER, mode='min',  factor=0.1, patience=int(PERSISTANCE/2))
+    LR_SCHEDULER = CosineAnnealingWarmRestarts(OPTIMIZER, T_0=10, T_mult=2)
+    # LR_SCHEDULER = ReduceLROnPlateau(optimizer=OPTIMIZER, mode='min',  factor=0.1, patience=int(PERSISTANCE/2))
     
     setup(model, FINE_TUNE, OPEN_TILL_LAYER)
     train_KCV()
     
-    print("Testing model: " + PATH_MODEL_SAVE + MODEL_NAME + ".pt")
+    LOGGER.log("Testing model: " + PATH_MODEL_SAVE + MODEL_NAME + ".pt")
     test_loader = DataLoader(dataset = TEST_DATA, batch_size = BATCH_LOAD, num_workers=WORKERS)
     testModel(torch.load(PATH_MODEL_SAVE + MODEL_NAME + ".pt"))
-    print("="*50 + " END " + "="*50 + "\n\n")
+    LOGGER.log("="*50 + " END " + "="*50 + "\n\n")
