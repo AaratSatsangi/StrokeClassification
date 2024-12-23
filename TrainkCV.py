@@ -25,8 +25,8 @@ import requests
 K_FOLD = 5
 AUTO_BREAK = True # Auto Stop training if overfitting is detected
 BATCH_SIZE = 256
-BATCH_LOAD = 256 # Batch load must be less than batch size
-LEARNING_RATE = 1e-3
+BATCH_LOAD = 128 # Batch load must be less than batch size
+LEARNING_RATE = 1e-4
 PERSISTANCE = 10
 WORKERS = os.cpu_count()
 EPOCHS = 100
@@ -407,7 +407,7 @@ if __name__ == "__main__":
     
     # ====================================================================
     # ==================== CHANGE HERE ===================================
-    FINE_TUNE = False
+    FINE_TUNE = True
     MODEL_FOLDER_NAME = "SWIN_B"
     MODEL_TYPE = MODEL_TYPE_DICT["trans"]
     OPEN_TILL_LAYER = ""
@@ -450,8 +450,8 @@ if __name__ == "__main__":
     model.to(DEVICE)
     # OPTIMIZER = torch.optim.AdamW(params=model.parameters(), lr=LEARNING_RATE,  weight_decay=1e-4)
     OPTIMIZER = torch.optim.SGD(params=model.parameters(), lr=LEARNING_RATE, weight_decay=0.0005, dampening=0, momentum=0.9, nesterov=True)
-    LR_SCHEDULER = CosineAnnealingWarmRestarts(OPTIMIZER, T_0=10, T_mult=2)
-    # LR_SCHEDULER = ReduceLROnPlateau(optimizer=OPTIMIZER, mode='min',  factor=0.1, patience=int(PERSISTANCE/2))
+    # LR_SCHEDULER = CosineAnnealingWarmRestarts(OPTIMIZER, T_0=10, T_mult=2)
+    LR_SCHEDULER = ReduceLROnPlateau(optimizer=OPTIMIZER, mode='min',  factor=0.1, patience=int(PERSISTANCE/2))
     
     setup(model, FINE_TUNE, OPEN_TILL_LAYER)
     # exit()
