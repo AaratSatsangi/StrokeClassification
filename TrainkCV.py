@@ -26,7 +26,7 @@ K_FOLD = 5
 AUTO_BREAK = True # Auto Stop training if overfitting is detected
 BATCH_SIZE = 256
 BATCH_LOAD = 128 # Batch load must be less than batch size
-LEARNING_RATE = 1e-4
+LEARNING_RATE = 1e-1
 PERSISTANCE = 10
 WORKERS = os.cpu_count()
 EPOCHS = 100
@@ -168,6 +168,23 @@ def get_sample_weights(dataset, indices, name):
     sample_weights = class_weights[targets]
     return sample_weights
 
+def _get_min_val_loss():
+    loss_files = []
+    for file_name in os.listdir(PATH_MODEL_SAVE):
+        if "LOSSES" in file_name:
+            loss_files.append(file_name)
+
+    min_val_loss = float('inf')
+    for loss_file in loss_files:
+        try:
+            val_losses = np.loadtxt(PATH_MODEL_SAVE + loss_file, delimiter=",")[1]
+            min_val_loss = min(min_val_loss, np.min(val_losses))
+        except Exception as e:
+            print(f"Unable to process file: {loss_file}")
+            print(f"Error: {e}")
+    
+    return min_val_loss
+
 def train_KCV():
     global LEARNING_RATE
     lr = LEARNING_RATE
@@ -178,7 +195,7 @@ def train_KCV():
     training_losses = []
     validation_losses = []
     p_counter = 1
-    min_val_loss = 1000
+    min_val_loss = float('inf') if not FINE_TUNE else _get_min_val_loss() 
 
     try: 
         # Loop Here
@@ -407,8 +424,8 @@ if __name__ == "__main__":
     
     # ====================================================================
     # ==================== CHANGE HERE ===================================
-    FINE_TUNE = True
-    MODEL_FOLDER_NAME = "SWIN_B"
+    FINE_TUNE = False
+    MODEL_FOLDER_NAME = "VIT_L32"
     MODEL_TYPE = MODEL_TYPE_DICT["trans"]
     OPEN_TILL_LAYER = ""
     # ====================================================================
@@ -441,18 +458,23 @@ if __name__ == "__main__":
     else:
         # =================================================================
         # ================= THE NEW MODEL TO TRAIN ========================
-        # model = ConvNets.VGG19_BN(input_size=(BATCH_SIZE,) + IMG_SIZE)    #
-        model = TransNets.SWIN(input_size=(BATCH_SIZE,) + IMG_SIZE)
+        
+        model = TransNets.VIT_L32(input_size=(BATCH_SIZE,) + IMG_SIZE)
+        
         # =================================================================
         # =================================================================
-    
+
     
     model.to(DEVICE)
     # OPTIMIZER = torch.optim.AdamW(params=model.parameters(), lr=LEARNING_RATE,  weight_decay=1e-4)
     OPTIMIZER = torch.optim.SGD(params=model.parameters(), lr=LEARNING_RATE, weight_decay=0.0005, dampening=0, momentum=0.9, nesterov=True)
-    # LR_SCHEDULER = CosineAnnealingWarmRestarts(OPTIMIZER, T_0=10, T_mult=2)
-    LR_SCHEDULER = ReduceLROnPlateau(optimizer=OPTIMIZER, mode='min',  factor=0.1, patience=int(PERSISTANCE/2))
+    LR_SCHEDULER = CosineAnnealingWarmRestarts(OPTIMIZER, T_0=10, T_mult=2)
+    # LR_SCHEDULER = ReduceLROnPlateau(optimizer=OPTIMIZER, mode='min',  factor=0.1, patience=int(PERSISTANCE/2))
     
+    LOGGER.log(f"Batch Size: {BATCH_SIZE}")
+    LOGGER.log(f"Learning Rate: {LEARNING_RATE}")
+    LOGGER.log(f"LR Schedular: {type(LR_SCHEDULER).__name__}")
+
     setup(model, FINE_TUNE, OPEN_TILL_LAYER)
     # exit()
     train_KCV()
