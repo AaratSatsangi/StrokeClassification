@@ -32,7 +32,7 @@ WORKERS = os.cpu_count()
 EPOCHS = 200 
 IMG_SIZE = (1, 224, 224)
 LRS_PATIENCE = 5 # If LR Schedular requires patience parameter {ReduceLRonPlataue}
-LRS_FACTOR = 0.1 # IF LR Schedular required Decrease by Factor {ReduceLRonPlataue}
+LRS_FACTOR = 0.5 # IF LR Schedular required Decrease by Factor {ReduceLRonPlataue}
 # =======================================
 
 # ======== DO NOT TOUCH PARAMETERS ==========
@@ -477,15 +477,16 @@ if __name__ == "__main__":
     # OPTIMIZER = torch.optim.AdamW(params=model.parameters(), lr=LEARNING_RATE,  weight_decay=1e-4)
     OPTIMIZER = torch.optim.SGD(params=model.parameters(), lr=LEARNING_RATE, weight_decay=0.0005, dampening=0, momentum=0.9, nesterov=True)
     # LR_SCHEDULER = CosineAnnealingWarmRestarts(OPTIMIZER, T_0=10, T_mult=2)
-    LR_SCHEDULER = ReduceLROnPlateau(optimizer=OPTIMIZER, mode='min',  factor=0.5, patience=LR_PATIENCE)
+    LR_SCHEDULER = ReduceLROnPlateau(optimizer=OPTIMIZER, mode='min',  factor=LRS_FACTOR, patience=LRS_PATIENCE)
     
     LOGGER.log(f"Batch Size: {BATCH_SIZE}")
     LOGGER.log(f"Learning Rate: {LEARNING_RATE}")
-    LOGGER.log(f"LR Schedular: {type(LR_SCHEDULER).__name__}")
     LOGGER.log(f"Early Stopping with Persistence: {PERSISTANCE}")
+    LOGGER.log(f"LR Schedular: {type(LR_SCHEDULER).__name__}")
     # Add if statement
-    LOGGER.log(f"Patience: {LR_Patience}")
-    LOGGER.log(f"Factor: {LR_FACTOR}")
+    if isinstance(LR_SCHEDULER, ReduceLROnPlateau):
+        LOGGER.log(f"Patience: {LRS_PATIENCE}")
+        LOGGER.log(f"Factor: {LRS_FACTOR}")
 
     setup(model, FINE_TUNE, OPEN_TILL_LAYER)
     # exit()

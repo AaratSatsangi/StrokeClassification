@@ -1,6 +1,8 @@
 from torch import nn
 from torchinfo import summary
 from torchvision import models
+import timm
+import sys
 
 class VIT_B16(nn.Module):
     def __init__(self, input_size = (1, 1, 224, 224), num_classes = 3, freezeToLayer:str = "encoder_layer_7.ln_1"):
@@ -92,7 +94,77 @@ class SWIN(nn.Module):
     def get_last_freezed_layer(self):
         return self.last_freezed_layer
     
+class MaxViT(nn.Module):
+    def __init__(self, model_size:str = "b", input_size=(1, 1, 224, 224), num_classes=3, freezeToLayer: str = "stages.2"): # size should be [s, b, l] small base large
+        super(MaxViT, self).__init__()
+        try:
+            if model_size == "s":
+                self.model = timm.create_model(model_name="maxvit_small_tf_224.in1k", pretrained=True, in_chans=input_size[1], num_classes = num_classes)
+            elif model_size == "b":
+                self.model = timm.create_model(model_name="maxvit_base_tf_224.in21k", pretrained=True, in_chans=input_size[1], num_classes = num_classes)
+            elif model_size == "l":
+                self.model = timm.create_model(model_name="maxvit_large_tf_224.in21k", pretrained=True, in_chans=input_size[1], num_classes = num_classes)
+            else:
+                raise ValueError(f"Model Size should be from [s, b, l] i.e. small, base, large, but {model_size} was passed")
+        except ValueError as e:
+            print(f"Error: {e}")
+            sys.exit(1)
+        
+        # Optionally freeze layers up to a certain layer
+        if freezeToLayer is not None and freezeToLayer != "":
+            for name, param in self.model.named_parameters():
+                if freezeToLayer in name:
+                    self.last_freezed_layer = name
+                    break
+                elif "stem.conv1" in name:
+                    continue
+                param.requires_grad = False
+
+    def forward(self, x):
+        return self.model(x)
+    
+    def get_last_freezed_layer(self):
+        return self.last_freezed_layer
+    
+class CvT(nn.Module):
+    def __init__(self, model_size:str = "b", input_size=(1, 1, 224, 224), num_classes=3, freezeToLayer: str = "blocks.5"): # size should be [s, b, l] small base large
+        super(CvT, self).__init__()
+        try:
+            if model_size == "t":
+                self.model = timm.create_model(model_name="convit_tiny.fb_in1k", pretrained=True, in_chans=input_size[1], num_classes = num_classes)
+            elif model_size == "s":
+                self.model = timm.create_model(model_name="convit_small.fb_in1k", pretrained=True, in_chans=input_size[1], num_classes = num_classes)
+            elif model_size == "b":
+                self.model = timm.create_model(model_name="convit_base.fb_in1k", pretrained=True, in_chans=input_size[1], num_classes = num_classes)
+            else:
+                raise ValueError(f"Model Size should be from [t, s, b] i.e. tiny, small, base, but {model_size} was passed")
+        except ValueError as e:
+            print(f"Error: {e}")
+            sys.exit(1)
+        
+        # Optionally freeze layers up to a certain layer
+        if freezeToLayer is not None and freezeToLayer != "":
+            for name, param in self.model.named_parameters():
+                if freezeToLayer in name:
+                    self.last_freezed_layer = name
+                    break
+                elif "patch_embed" in name:
+                    continue
+                param.requires_grad = False
+
+    def forward(self, x):
+        return self.model(x)
+    
+    def get_last_freezed_layer(self):
+        return self.last_freezed_layer
+
+
+        # Load the Convolutional Transformer
+
+    
 if __name__ == "__main__":
     from torchinfo import summary
-    model = VIT_L32()
-    summary(model, input_size=(1, 1, 224, 224), depth=8, col_names=["input_size","output_size","num_params"])
+    model = CvT(model_size="b")
+    summary(model, input_size=(1, 1, 224, 224), depth=3, col_names=["input_size","output_size","num_params"])
+    # for name, param in model.model.named_parameters():
+    #     print(f"NAME: {name}")
