@@ -24,12 +24,12 @@ import requests
 # ========= HYPER-PARAMETERS ============
 K_FOLD = 5
 AUTO_BREAK = True # Auto Stop training if overfitting is detected
-BATCH_SIZE = 256
+BATCH_SIZE = 128
 BATCH_LOAD = 128 # Batch load must be less than batch size
-LEARNING_RATE = 1e-3
+LEARNING_RATE = 1e-2
 PERSISTANCE = 10
 WORKERS = os.cpu_count()
-EPOCHS = 100
+EPOCHS = 200 
 IMG_SIZE = (1, 224, 224)
 # =======================================
 
@@ -195,7 +195,13 @@ def train_KCV():
     training_losses = []
     validation_losses = []
     p_counter = 1
-    min_val_loss = float('inf') if not FINE_TUNE else _get_min_val_loss() 
+    
+    if FINE_TUNE:
+        min_val_loss = _get_min_val_loss()
+        if isinstance(LR_SCHEDULER, ReduceLROnPlateau): LR_SCHEDULER.step(min_val_loss)
+        LOGGER.log(f"\tLoaded Last Min Val Loss: {min_val_loss}")
+    else:
+        min_val_loss = float('inf')
 
     try: 
         # Loop Here
@@ -424,8 +430,8 @@ if __name__ == "__main__":
     
     # ====================================================================
     # ==================== CHANGE HERE ===================================
-    FINE_TUNE = True
-    MODEL_FOLDER_NAME = "VIT_L32"
+    FINE_TUNE = False
+    MODEL_FOLDER_NAME = "SWIN_B"
     MODEL_TYPE = MODEL_TYPE_DICT["trans"]
     OPEN_TILL_LAYER = ""
     # ====================================================================
@@ -443,7 +449,7 @@ if __name__ == "__main__":
     )
     # ====================================================================
     
-    LOGGER.log("\n\n" + "="*50 + " START " + "="*50)
+    LOGGER.log("\n\n" + "="*54 + " START " + "="*54)
     KF = KFold(n_splits=K_FOLD, shuffle=True, random_state=26)
     if(FINE_TUNE):
         if(not os.path.exists(PATH_MODEL_SAVE + MODEL_NAME)):
@@ -459,7 +465,7 @@ if __name__ == "__main__":
         # =================================================================
         # ================= THE NEW MODEL TO TRAIN ========================
         
-        model = TransNets.VIT_L32(input_size=(BATCH_SIZE,) + IMG_SIZE)
+        model = TransNets.SWIN(swin="s", input_size=(BATCH_SIZE,) + IMG_SIZE)
         
         # =================================================================
         # =================================================================
@@ -468,8 +474,8 @@ if __name__ == "__main__":
     model.to(DEVICE)
     # OPTIMIZER = torch.optim.AdamW(params=model.parameters(), lr=LEARNING_RATE,  weight_decay=1e-4)
     OPTIMIZER = torch.optim.SGD(params=model.parameters(), lr=LEARNING_RATE, weight_decay=0.0005, dampening=0, momentum=0.9, nesterov=True)
-    # LR_SCHEDULER = CosineAnnealingWarmRestarts(OPTIMIZER, T_0=10, T_mult=2)
-    LR_SCHEDULER = ReduceLROnPlateau(optimizer=OPTIMIZER, mode='min',  factor=0.1, patience=int(PERSISTANCE/2))
+    LR_SCHEDULER = CosineAnnealingWarmRestarts(OPTIMIZER, T_0=10, T_mult=2)
+    # LR_SCHEDULER = ReduceLROnPlateau(optimizer=OPTIMIZER, mode='min',  factor=0.1, patience=int(PERSISTANCE/2))
     
     LOGGER.log(f"Batch Size: {BATCH_SIZE}")
     LOGGER.log(f"Learning Rate: {LEARNING_RATE}")
@@ -482,4 +488,4 @@ if __name__ == "__main__":
     LOGGER.log("Testing model: " + PATH_MODEL_SAVE + MODEL_NAME + ".pt")
     test_loader = DataLoader(dataset = TEST_DATA, batch_size = BATCH_LOAD, num_workers=WORKERS)
     testModel(torch.load(PATH_MODEL_SAVE + MODEL_NAME + ".pt"))
-    LOGGER.log("="*50 + " END " + "="*50 + "\n\n")
+    LOGGER.log("="*54 + " END " + "="*54 + "\n\n")
