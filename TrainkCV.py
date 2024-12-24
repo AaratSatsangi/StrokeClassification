@@ -485,8 +485,8 @@ if __name__ == "__main__":
     LOGGER.log(f"LR Schedular: {type(LR_SCHEDULER).__name__}")
     # Add if statement
     if isinstance(LR_SCHEDULER, ReduceLROnPlateau):
-        LOGGER.log(f"Patience: {LRS_PATIENCE}")
-        LOGGER.log(f"Factor: {LRS_FACTOR}")
+        LOGGER.log(f"|--Patience: {LRS_PATIENCE}")
+        LOGGER.log(f"|--Factor: {LRS_FACTOR}")
 
     setup(model, FINE_TUNE, OPEN_TILL_LAYER)
     # exit()
