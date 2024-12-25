@@ -26,8 +26,8 @@ K_FOLD = 5
 AUTO_BREAK = True # Auto Stop training if overfitting is detected
 BATCH_SIZE = 128
 BATCH_LOAD = 128 # Batch load must be less than batch size
-LEARNING_RATE = 1e-2
-PERSISTANCE = 15
+LEARNING_RATE = 1e-3
+PERSISTANCE = 10
 WORKERS = os.cpu_count()
 EPOCHS = 200 
 IMG_SIZE = (1, 224, 224)
@@ -63,7 +63,7 @@ IMG_TRANSFORMS_TEST = CTPreprocessor(
     test_time=True
 )
 LOSS = torch.nn.CrossEntropyLoss()
-DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+DEVICE = "cuda:1" if torch.cuda.is_available() else "cpu"
 TRAIN_DATA = ImageFolder(PATH_DATASET_TRAIN, IMG_TRANSFORMS_TRAIN)
 TEST_DATA = ImageFolder(PATH_DATASET_TEST, IMG_TRANSFORMS_TEST)
 CLASS_NAMES = TRAIN_DATA.classes
@@ -433,8 +433,8 @@ if __name__ == "__main__":
     
     # ====================================================================
     # ==================== CHANGE HERE ===================================
-    FINE_TUNE = False
-    MODEL_FOLDER_NAME = "SWIN_B"
+    FINE_TUNE = True
+    MODEL_FOLDER_NAME = "CvT"
     MODEL_TYPE = MODEL_TYPE_DICT["trans"]
     OPEN_TILL_LAYER = ""
     # ====================================================================
@@ -468,8 +468,9 @@ if __name__ == "__main__":
         # =================================================================
         # ================= THE NEW MODEL TO TRAIN ========================
         
-        model = TransNets.SWIN(swin="b", input_size=(BATCH_SIZE,) + IMG_SIZE)
-        
+        # model = TransNets.SWIN(swin="b", input_size=(BATCH_SIZE,) + IMG_SIZE, freezeToLayer="features.5.9")
+        model = TransNets.CvT(model_size="b", input_size=(BATCH_SIZE,) + IMG_SIZE)
+
         # =================================================================
         # =================================================================
 
@@ -477,9 +478,9 @@ if __name__ == "__main__":
     model.to(DEVICE)
     # OPTIMIZER = torch.optim.AdamW(params=model.parameters(), lr=LEARNING_RATE,  weight_decay=1e-4)
     OPTIMIZER = torch.optim.SGD(params=model.parameters(), lr=LEARNING_RATE, weight_decay=0.0005, dampening=0, momentum=0.9, nesterov=True)
-    LR_SCHEDULER = CosineAnnealingWarmRestarts(OPTIMIZER, T_0=10, T_mult=2)
-    # LR_SCHEDULER = ReduceLROnPlateau(optimizer=OPTIMIZER, mode='min',  factor=LRS_FACTOR, patience=LRS_PATIENCE)
-    
+    # LR_SCHEDULER = CosineAnnealingWarmRestarts(OPTIMIZER, T_0=10, T_mult=2)
+    LR_SCHEDULER = ReduceLROnPlateau(optimizer=OPTIMIZER, mode='min',  factor=LRS_FACTOR, patience=LRS_PATIENCE)
+    LOGGER.log(f"Using GPU: {DEVICE}")
     LOGGER.log(f"Batch Size: {BATCH_SIZE}")
     LOGGER.log(f"Learning Rate: {LEARNING_RATE}")
     LOGGER.log(f"Early Stopping with Persistence: {PERSISTANCE}")
