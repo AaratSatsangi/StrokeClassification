@@ -164,7 +164,10 @@ def plot_losses(training_losses, validation_losses):
     LOGGER.log(f"Plot saved as {PATH_MODEL_SAVE + 'Plots/loss_plot.png'}")
 
 def get_sample_weights(dataset, indices, name):
-    targets = torch.tensor([dataset.targets[i] for i in indices])
+    if indices:
+        targets = torch.tensor([dataset.targets[i] for i in indices])
+    else:
+        targets = dataset.targets
     class_counts = torch.bincount(targets)
     LOGGER.log("\t" + name + f" Class Counts: {class_counts}")
     class_weights = 1.0 / class_counts.float()
@@ -220,10 +223,10 @@ def train_KCV():
             sample_weights_val = get_sample_weights(TRAIN_DATA, val_idx, "Val")
 
             SAMPLER_TRAIN = WeightedRandomSampler(weights=sample_weights_train , num_samples=len(sample_weights_train), replacement=True, generator=GENERATOR)
-            SAMPLER_VAL = WeightedRandomSampler(weights=sample_weights_val , num_samples=len(sample_weights_val), replacement=True, generator=GENERATOR)
+            # SAMPLER_VAL = WeightedRandomSampler(weights=sample_weights_val , num_samples=len(sample_weights_val), replacement=True, generator=GENERATOR)
 
             train_loader = DataLoader(dataset = _train, batch_size = BATCH_LOAD, num_workers=WORKERS-1, pin_memory=True, sampler=SAMPLER_TRAIN, generator=GENERATOR)
-            val_loader = DataLoader(dataset = _val, batch_size = BATCH_LOAD, num_workers=WORKERS-1, pin_memory=True, sampler=SAMPLER_VAL, generator=GENERATOR)
+            val_loader = DataLoader(dataset = _val, batch_size = BATCH_LOAD, num_workers=WORKERS-1, pin_memory=True, generator=GENERATOR)
             for epoch in range(EPOCHS):
                 LOGGER.log("\t" + "-"*100)
                 LOGGER.log(("\t" + "FOLD: [%d/%d]") % (fold+1, K_FOLD))
@@ -272,10 +275,11 @@ def train_KCV():
                         labels = val_XY[1].to(DEVICE)
 
                         y_pred = model(imgs)
-                        val_loss += LOSS(y_pred, labels).item()
+                        weighted_loss = (LOSS(y_pred, labels) * sample_weights_val[labels]).mean()
+                        val_loss += weighted_loss.item()
                 val_loss /= len(val_loader)
                 validation_losses.append(val_loss)
-                LOGGER.log("\t" +"\tValidation Loss: [%0.5f]" % (val_loss))
+                LOGGER.log("\t" +"\tWeighted Validation Loss: [%0.5f]" % (val_loss))
 
                 # Save Best Model
                 p_counter += 1
@@ -402,6 +406,7 @@ def saveAsTable(json_file_path: str):
 def testModel(t_model: nn.Module):
     y_trueTensor = torch.empty(0,3)
     y_predTensor = torch.empty(0,3)
+    sample_weights_test = get_sample_weights(TEST_DATA, None, "Test")
     with torch.no_grad():
         test_loss = 0.0
         for test_XY in test_loader:
@@ -409,8 +414,8 @@ def testModel(t_model: nn.Module):
             y = test_XY[1].to(DEVICE)
 
             y_pred =  t_model(x)
-            error = LOSS(y_pred, y)
-            test_loss += error.item()
+            weighted_loss = (LOSS(y_pred, y) * sample_weights_test[y]).mean()
+            test_loss += weighted_loss.item()
 
             y_true = torch.zeros(y.shape[0],3)
             for row in range(y.shape[0]):
