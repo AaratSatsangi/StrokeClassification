@@ -18,18 +18,17 @@ import json
 import matplotlib.pyplot as plt
 from Preprocessor import CTPreprocessor
 from torchinfo import summary
-import sys
-import requests
+import time
 
 # ========= HYPER-PARAMETERS ============
 K_FOLD = 5
 AUTO_BREAK = True # Auto Stop training if overfitting is detected
 BATCH_SIZE = 128
-BATCH_LOAD = 128 # Batch load must be less than batch size
+BATCH_LOAD = 16 # Batch load must be less than batch size
 LEARNING_RATE = 1e-3
 PERSISTANCE = 15 
 WORKERS = os.cpu_count()
-EPOCHS = 200 
+EPOCHS = 1 
 IMG_SIZE = (1, 224, 224)
 LRS_PATIENCE = 5 # If LR Schedular requires patience parameter {ReduceLRonPlataue}
 LRS_FACTOR = 0.5 # IF LR Schedular required Decrease by Factor {ReduceLRonPlataue}
@@ -51,7 +50,8 @@ IMG_TRANSFORMS_TRAIN = CTPreprocessor(
         transforms.RandomRotation(90),
         transforms.RandomVerticalFlip(),
         transforms.RandomHorizontalFlip()
-    ]
+    ],
+    use_mask=False
 )
 IMG_TRANSFORMS_TEST = CTPreprocessor(
     img_size=IMG_SIZE[1:],
@@ -60,9 +60,11 @@ IMG_TRANSFORMS_TEST = CTPreprocessor(
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.485],std=[0.229],inplace=True),
     ],
-    test_time=True
+    use_mask=False
 )
-LOSS = torch.nn.CrossEntropyLoss()
+CRITERION_TRAIN = torch.nn.CrossEntropyLoss()
+CRITERION_VAL: torch.nn.CrossEntropyLoss = None
+CRITERION_TEST: torch.nn.CrossEntropyLoss = None
 DEVICE = "cuda:0" if torch.cuda.is_available() else "cpu"
 TRAIN_DATA = ImageFolder(PATH_DATASET_TRAIN, IMG_TRANSFORMS_TRAIN)
 TEST_DATA = ImageFolder(PATH_DATASET_TEST, IMG_TRANSFORMS_TEST)
@@ -164,15 +166,17 @@ def plot_losses(training_losses, validation_losses):
     LOGGER.log(f"Plot saved as {PATH_MODEL_SAVE + 'Plots/loss_plot.png'}")
 
 def get_sample_weights(dataset, indices, name):
-    if indices:
+    if indices is not None:
         targets = torch.tensor([dataset.targets[i] for i in indices])
+        log_string = "\t" + name 
     else:
-        targets = dataset.targets
+        targets = torch.tensor(dataset.targets)
+        log_string = name
     class_counts = torch.bincount(targets)
-    LOGGER.log("\t" + name + f" Class Counts: {class_counts}")
     class_weights = 1.0 / class_counts.float()
     sample_weights = class_weights[targets]
-    return sample_weights
+    LOGGER.log(log_string + f" Class Counts: {class_counts}, weights: {class_weights}")
+    return class_weights, sample_weights
 
 def _get_min_val_loss():
     loss_files = []
@@ -203,7 +207,7 @@ def train_KCV():
     p_counter = 1
     
     if FINE_TUNE:
-        min_val_loss = float("inf") # _get_min_val_loss()
+        min_val_loss = _get_min_val_loss()
         if isinstance(LR_SCHEDULER, ReduceLROnPlateau): LR_SCHEDULER.step(min_val_loss)
         LOGGER.log(f"\tLoaded Last Min Val Loss: {min_val_loss}")
     else:
@@ -219,18 +223,23 @@ def train_KCV():
             _train = Subset(TRAIN_DATA, train_idx)
             _val = Subset(TRAIN_DATA, val_idx)
 
-            sample_weights_train = get_sample_weights(TRAIN_DATA, train_idx, "Train")
-            sample_weights_val = get_sample_weights(TRAIN_DATA, val_idx, "Val")
+            _, sample_weights_train = get_sample_weights(TRAIN_DATA, train_idx, "Train")
+            val_class_weights, sample_weights_val = get_sample_weights(TRAIN_DATA, val_idx, "Val")
 
+            
+            CRITERION_VAL = nn.CrossEntropyLoss(weight=val_class_weights.to(DEVICE))
             SAMPLER_TRAIN = WeightedRandomSampler(weights=sample_weights_train , num_samples=len(sample_weights_train), replacement=True, generator=GENERATOR)
             # SAMPLER_VAL = WeightedRandomSampler(weights=sample_weights_val , num_samples=len(sample_weights_val), replacement=True, generator=GENERATOR)
 
             train_loader = DataLoader(dataset = _train, batch_size = BATCH_LOAD, num_workers=WORKERS-1, pin_memory=True, sampler=SAMPLER_TRAIN, generator=GENERATOR)
             val_loader = DataLoader(dataset = _val, batch_size = BATCH_LOAD, num_workers=WORKERS-1, pin_memory=True, generator=GENERATOR)
+
+
             for epoch in range(EPOCHS):
+                start_time = time.time()
                 LOGGER.log("\t" + "-"*100)
-                LOGGER.log(("\t" + "FOLD: [%d/%d]") % (fold+1, K_FOLD))
-                LOGGER.log(("\t" + "EPOCH: [%d/%d]" + "\t"*8 + "PERSISTANCE: [%d/%d]") % (epoch+1, EPOCHS, p_counter, PERSISTANCE))
+                LOGGER.log("\t" + f"FOLD: [{fold+1}/{K_FOLD}]")
+                LOGGER.log("\t" + f"EPOCH: [{epoch+1}/{EPOCHS}]" + "\t"*8 + f"PERSISTANCE: [{p_counter}/{PERSISTANCE}]")
                 LOGGER.log("\t" +"-"*100)
 
                 train_loss = 0.0
@@ -248,7 +257,7 @@ def train_KCV():
                     y_pred = model(imgs)
 
                     # Calculate Error
-                    error = LOSS(y_pred, labels)
+                    error = CRITERION_TRAIN(y_pred, labels)
                     error.backward()
                     accum_loss += error.item()
                     
@@ -275,11 +284,10 @@ def train_KCV():
                         labels = val_XY[1].to(DEVICE)
 
                         y_pred = model(imgs)
-                        weighted_loss = (LOSS(y_pred, labels) * sample_weights_val[labels]).mean()
-                        val_loss += weighted_loss.item()
+                        val_loss += CRITERION_VAL(y_pred, labels).item()
                 val_loss /= len(val_loader)
                 validation_losses.append(val_loss)
-                LOGGER.log("\t" +"\tWeighted Validation Loss: [%0.5f]" % (val_loss))
+                LOGGER.log("\t" +"\tWeighted Val Loss: [%0.5f]" % (val_loss))
 
                 # Save Best Model
                 p_counter += 1
@@ -287,7 +295,7 @@ def train_KCV():
                     min_val_loss = val_loss
                     torch.save(model, PATH_MODEL_SAVE + MODEL_NAME  + ".pt")
                     p_counter = 1
-                LOGGER.log("\t" +"\tMin Validation Loss: [%0.5f]" % (min_val_loss))
+                LOGGER.log("\t" +"\tMinimum Val Loss: [%0.5f]" % (min_val_loss))
 
                 # Learning Rate Schedular Step
                 if(isinstance(LR_SCHEDULER, CosineAnnealingWarmRestarts)): 
@@ -335,7 +343,9 @@ def train_KCV():
                     if(flag == "n"):
                         break
                 LOGGER.log("") # Add New Line
-
+                end_time = time.time()
+                _logTime(start_time, end_time)
+                
     except KeyboardInterrupt:
         # Exit Loop code
         LOGGER.log("\t" + "Keyboard Interrupt: Exiting Loop...")
@@ -349,6 +359,15 @@ def train_KCV():
         path_loss_save = PATH_MODEL_SAVE + "LOSSES_" + str(count) + ".txt"
         np.savetxt(path_loss_save, (training_losses, validation_losses), fmt="%0.5f" , delimiter=",")
         plot_losses(training_losses, validation_losses)
+
+def _logTime(start_time, end_time):
+    
+    elapsed_time = end_time - start_time
+    # Convert to HH:MM:SS format
+    hours, rem = divmod(elapsed_time, 3600)
+    minutes, seconds = divmod(rem, 60)
+    time_formatted = f"{int(hours):02}:{int(minutes):02}:{int(seconds):02}"
+    LOGGER.log("\t"*9 + f"EPOCH TIME: [{time_formatted}]")
 
 def _binarizeUsingMax(t:torch.tensor):
         max_values, _ = t.max(dim=1, keepdim=True)
@@ -406,7 +425,8 @@ def saveAsTable(json_file_path: str):
 def testModel(t_model: nn.Module):
     y_trueTensor = torch.empty(0,3)
     y_predTensor = torch.empty(0,3)
-    sample_weights_test = get_sample_weights(TEST_DATA, None, "Test")
+    test_class_weights, _ = get_sample_weights(TEST_DATA, None, "Test")
+    CRITERION_TEST = nn.CrossEntropyLoss(weight=test_class_weights.to(DEVICE))
     with torch.no_grad():
         test_loss = 0.0
         for test_XY in test_loader:
@@ -414,8 +434,7 @@ def testModel(t_model: nn.Module):
             y = test_XY[1].to(DEVICE)
 
             y_pred =  t_model(x)
-            weighted_loss = (LOSS(y_pred, y) * sample_weights_test[y]).mean()
-            test_loss += weighted_loss.item()
+            test_loss += CRITERION_TEST(y_pred, y).item()
 
             y_true = torch.zeros(y.shape[0],3)
             for row in range(y.shape[0]):
@@ -438,8 +457,8 @@ if __name__ == "__main__":
     
     # ====================================================================
     # ==================== CHANGE HERE ===================================
-    FINE_TUNE = True
-    MODEL_FOLDER_NAME = "CvT_S"
+    FINE_TUNE = False
+    MODEL_FOLDER_NAME = "SWIN_S_trial"
     MODEL_TYPE = MODEL_TYPE_DICT["trans"]
     OPEN_TILL_LAYER = ""
     # ====================================================================
@@ -449,11 +468,11 @@ if __name__ == "__main__":
     if(not os.path.exists(PATH_MODEL_LOG)): os.makedirs(PATH_MODEL_LOG)
     PATH_MODEL_LOG += MODEL_NAME + "_architecture_" + str(sum(1 for file_name in os.listdir(PATH_MODEL_SAVE) if "architecture" in file_name)) + ".txt"
     LOGGER = Logger(
-        server_url = SERVER_URL,
+        server_url = "" , #SERVER_URL,
         server_username= SERVER_USERNAME,
         server_folder = SERVER_FOLDER,
         model_name = MODEL_NAME,
-        path_localFile = PATH_MODEL_LOG
+        path_localFile = "" #PATH_MODEL_LOG
     )
     # ====================================================================
     
@@ -473,8 +492,8 @@ if __name__ == "__main__":
         # =================================================================
         # ================= THE NEW MODEL TO TRAIN ========================
         
-        # model = TransNets.SWIN(swin="b", input_size=(BATCH_SIZE,) + IMG_SIZE, freezeToLayer="features.5.17.mlp.3.bias")
-        model = TransNets.CvT(model_size="s", input_size=(BATCH_SIZE,) + IMG_SIZE, freezeToLayer="blocks.9.mlp.fc2.bias")
+        model = TransNets.SWIN(model_size="s")
+        # model = TransNets.CvT(model_size="s", freezeToLayer="blocks.9.mlp.fc2.bias")
         # model = TransNets.MaxViT()
 
         # =================================================================

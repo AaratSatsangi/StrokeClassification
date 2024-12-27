@@ -60,15 +60,15 @@ class VIT_L32(nn.Module):
         return self.last_freezed_layer
     
 class SWIN(nn.Module):
-    def __init__(self, swin:str, input_size=(1, 1, 224, 224), num_classes=3, freezeToLayer: str = "features.5.0"): # swin should be [b,s,t]
+    def __init__(self, model_size:str, input_size=(1, 1, 224, 224), num_classes=3, freezeToLayer: str = "features.5.0"): # swin should be [b,s,t]
         super(SWIN, self).__init__()
         
         # Load the Swin Transformer model
-        if swin == 'b':
+        if model_size == 'b':
             self.swin = models.swin_b(weights=models.Swin_B_Weights.IMAGENET1K_V1)
-        elif swin == 's':
+        elif model_size == 's':
             self.swin = models.swin_s(weights=models.Swin_S_Weights.IMAGENET1K_V1)
-        elif swin == 't':
+        elif model_size == 't':
             self.swin = models.swin_t(weights=models.Swin_T_Weights.IMAGENET1K_V1)
         self.last_freezed_layer = ""
 

@@ -12,14 +12,14 @@ class CTPreprocessor:
             self,
             img_size:tuple = None,
             transformations: list = [],
-            test_time = False
+            use_mask = False
     ) -> None:
         
         transform_list = [transforms.Resize([224, 224] if img_size is None else img_size)]
         for trans in transformations:
             transform_list.append(trans)
         self.transform = transforms.Compose(transform_list)
-        self.test_time = test_time
+        self.use_mask = use_mask
 
     def _imshow(self, img, title = "temp_img"):
         if isinstance(img, torch.Tensor):  # Check if `img` is a PyTorch tensor
@@ -75,49 +75,29 @@ class CTPreprocessor:
         return mask_tensor / 255.0
 
     def __call__(self, img):
-        if(not self.test_time):
+        if(self.use_mask):
             trans_img = self.transform(img)
             mask = self._getmask(trans_img)
             return trans_img * mask # Elementwise multiplication
         else:
             return self.transform(img)
 
-class CTtestPreprocessor:
-    transform: transforms.Compose
-    
-    def __init__(
-            self,
-            img_size:tuple = None,
-            transformations: list = [
-                transforms.Grayscale(),
-                transforms.ToTensor(),
-                transforms.Normalize(mean=[0],std=[1],inplace=True)
-            ]
-    ) -> None:
         
-        transform_list = [transforms.Resize([224, 224] if img_size is None else img_size)]
-        for trans in transformations:
-            transform_list.append(trans)
-        self.transform = transforms.Compose(transform_list)
-
-    def __call__(self, img):
-        return self.transform(img)
-
-        
-from torchvision.datasets import ImageFolder
-from torch.utils.data import DataLoader
-from torchvision.utils import make_grid
-
-def imshow(img, title):
-        # img = img / 2 + 0.5  # Unnormalize
-        # axes, fig = plt.figure(num = (1,4), figsize=(5,12)) 
-        npimg = img.numpy()
-        # plt.title()
-        plt.imshow(np.transpose(npimg, (1, 2, 0)))
-        plt.title(title)
-        plt.show()
-
 if __name__ == "__main__":
+    from torchvision.datasets import ImageFolder
+    from torch.utils.data import DataLoader
+    from torchvision.utils import make_grid
+
+    def imshow(img, title):
+            # img = img / 2 + 0.5  # Unnormalize
+            # axes, fig = plt.figure(num = (1,4), figsize=(5,12)) 
+            npimg = img.numpy()
+            # plt.title()
+            plt.imshow(np.transpose(npimg, (1, 2, 0)))
+            plt.title(title)
+            plt.show()
+
+
     transform = CTPreprocessor((256,256))
     dataset = ImageFolder(root="./Data/Compiled/PNG/", transform=transform)
     data_loader = DataLoader(dataset, batch_size=32, shuffle=True)

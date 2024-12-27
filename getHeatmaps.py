@@ -7,7 +7,7 @@ import random
 from PIL import Image
 from Preprocessor import CTPreprocessor
 from torchvision import transforms
-from pytorch_grad_cam import GradCAMPlusPlus
+from pytorch_grad_cam import GradCAMPlusPlus, GuidedBackpropReLUModel
 from pytorch_grad_cam.utils.model_targets import ClassifierOutputSoftmaxTarget
 from pytorch_grad_cam.utils.image import show_cam_on_image
 
@@ -33,6 +33,10 @@ IMG_TRANSFORMS_TEST = CTPreprocessor(
         transforms.Normalize(mean=[0.485],std=[0.229],inplace=True),
     ]
 )
+UN_NORMALIZE = transforms.Compose([
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[-0.485/0.229], std=[1/0.229], inplace=True)
+])
 TARGET_MAP = {
     "Hemorrhagic": 0,
     "Ischemic": 1,
@@ -85,7 +89,7 @@ def setup(model_name, model_type, fine_tuned:bool):
         for i in range(len(img_paths[0])): 
             img_path = img_paths[0][i]
             img = Image.open(img_path).convert("RGB")
-            TEST_IMGS[class_name].append((IMG_TRANSFORMS_TEST(img), np.float32(resize(img))/255))
+            TEST_IMGS[class_name].append((IMG_TRANSFORMS_TEST(img), np.float32(resize(img))/255, np.array(resize(img))))
             
             if class_name != "Normal":
                 overlay_path = img_paths[1][i]
@@ -193,7 +197,7 @@ def reshape_transform(tensor):
 #             cv2.imwrite(PATH_SAVE_IMG + class_name[0] + "_cam_" + str(i) + f"_P[{output_prob: 0.4f}]" + ".jpg", final_img)
 #     exit()
 
-MODEL_NAME = "SWIN_B"
+MODEL_NAME = "SWIN_S"
 MODEL_TYPE = "trans"
     
 from torchinfo import summary    
@@ -211,9 +215,11 @@ if __name__ == "__main__":
         overlay_imgs = OVERLAY_IMGS[class_name]
         i = 0
         for img in imgs:
+            input_tensor = img[0].unsqueeze(0)
+
             with GradCAMPlusPlus(model=model, target_layers=target_layer, reshape_transform=reshape_transform) as cam:
                 # You can also pass aug_smooth=True and eigen_smooth=True, to apply smoothing.
-                grayscale_cam = cam(input_tensor=img[0].unsqueeze(0), targets=targets)
+                grayscale_cam = cam(input_tensor=input_tensor, targets=targets)
                 # In this example grayscale_cam has only one image in the batch:
                 grayscale_cam = grayscale_cam[0, :]
                 # print(grayscale_cam.shape)
@@ -221,15 +227,24 @@ if __name__ == "__main__":
                 # You can also get the model outputs without having to redo inference
                 model_outputs = cam.outputs
                 output_prob = torch.nn.functional.softmax(model_outputs, dim=1)[0][TARGET_MAP[class_name]]
-                final_img = cv2.hconcat([overlay_imgs[i], cam_image]) if class_name != "Normal" else cam_image
                 # Save grayscale cam
                 # 
                 #
-                save_dir = PATH_SAVE_IMG + class_name + "/"
-                if not os.path.exists(save_dir):
-                    os.mkdir(save_dir)
-                cv2.imwrite(save_dir + "cam" + str(i) + f"_P[{output_prob: 0.4f}]" + ".jpg", final_img)
-                i+=1
+            gb_model = GuidedBackpropReLUModel(model=model,device=DEVICE)
+            gb = gb_model(input_tensor, target_category=None)
+            gb = cv2.merge([gb, gb, gb])
+            print(f"GB SHAPE: {gb.shape}")
+
+            cam_mask = cv2.merge([grayscale_cam, grayscale_cam, grayscale_cam])
+            cam_gb = UN_NORMALIZE(cam_mask * gb)
+            gb = UN_NORMALIZE(gb)
+            
+            final_img = cv2.hconcat([img[2], overlay_imgs[i], cam_image, np.array(gb), np.array(cam_gb)]) if class_name != "Normal" else cam_image
+            save_dir = PATH_SAVE_IMG + class_name + "/"
+            if not os.path.exists(save_dir):
+                os.mkdir(save_dir)
+            cv2.imwrite(save_dir + "cam" + str(i) + f"_P[{output_prob: 0.4f}]" + ".jpg", final_img)
+            i+=1
 
     
     

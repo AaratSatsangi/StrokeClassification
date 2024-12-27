@@ -38,7 +38,7 @@ class Logger:
         print(string)
         
         # write to local file
-        if(self.PATH_LOCAL_LOG_FILE is not None):
+        if(self.PATH_LOCAL_LOG_FILE is not None and self.PATH_LOCAL_LOG_FILE != ""):
             local_write_thread = threading.Thread(target = self._local_write, args=(string, ))
             local_write_thread.start()
         
@@ -49,7 +49,7 @@ class Logger:
             "model_name": self.MODEL_NAME,
             "user_name": self.SERVER_USERNAME
         }
-        if self.SERVER_URL is not None:
+        if self.SERVER_URL is not None and self.SERVER_URL != "":
             server_write_thread = threading.Thread(target = self._server_write, args=(data, ))
             server_write_thread.start()
 
