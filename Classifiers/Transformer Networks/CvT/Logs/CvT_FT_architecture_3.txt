@@ -1,0 +1,11 @@
+
+
+====================================================== START ======================================================
+Loading Model: CvT.pt
+Using GPU: cuda:0
+Batch Size: 256
+Learning Rate: 1e-05
+Early Stopping with Persistence: 15
+LR Schedular: ReduceLROnPlateau
+|---Patience: 5
+|---Factor: 0.5

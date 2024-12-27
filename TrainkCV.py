@@ -27,7 +27,7 @@ AUTO_BREAK = True # Auto Stop training if overfitting is detected
 BATCH_SIZE = 128
 BATCH_LOAD = 128 # Batch load must be less than batch size
 LEARNING_RATE = 1e-3
-PERSISTANCE = 10
+PERSISTANCE = 15 
 WORKERS = os.cpu_count()
 EPOCHS = 200 
 IMG_SIZE = (1, 224, 224)
@@ -63,7 +63,7 @@ IMG_TRANSFORMS_TEST = CTPreprocessor(
     test_time=True
 )
 LOSS = torch.nn.CrossEntropyLoss()
-DEVICE = "cuda:1" if torch.cuda.is_available() else "cpu"
+DEVICE = "cuda:0" if torch.cuda.is_available() else "cpu"
 TRAIN_DATA = ImageFolder(PATH_DATASET_TRAIN, IMG_TRANSFORMS_TRAIN)
 TEST_DATA = ImageFolder(PATH_DATASET_TEST, IMG_TRANSFORMS_TEST)
 CLASS_NAMES = TRAIN_DATA.classes
@@ -200,7 +200,7 @@ def train_KCV():
     p_counter = 1
     
     if FINE_TUNE:
-        min_val_loss = _get_min_val_loss()
+        min_val_loss = float("inf") # _get_min_val_loss()
         if isinstance(LR_SCHEDULER, ReduceLROnPlateau): LR_SCHEDULER.step(min_val_loss)
         LOGGER.log(f"\tLoaded Last Min Val Loss: {min_val_loss}")
     else:
@@ -434,7 +434,7 @@ if __name__ == "__main__":
     # ====================================================================
     # ==================== CHANGE HERE ===================================
     FINE_TUNE = True
-    MODEL_FOLDER_NAME = "CvT"
+    MODEL_FOLDER_NAME = "CvT_S"
     MODEL_TYPE = MODEL_TYPE_DICT["trans"]
     OPEN_TILL_LAYER = ""
     # ====================================================================
@@ -455,21 +455,22 @@ if __name__ == "__main__":
     LOGGER.log("\n\n" + "="*54 + " START " + "="*54)
     KF = KFold(n_splits=K_FOLD, shuffle=True, random_state=26)
     if(FINE_TUNE):
-        if(not os.path.exists(PATH_MODEL_SAVE + MODEL_NAME)):
+        if(not os.path.exists(PATH_MODEL_SAVE + MODEL_NAME + ".pt")):
             LOGGER.log("Loading Model: " + MODEL_NAME[:-3] + ".pt")
             model = torch.load(PATH_MODEL_SAVE + MODEL_NAME[:-3] + ".pt")
         else:
-            src = PATH_MODEL_SAVE + MODEL_NAME
+            src = PATH_MODEL_SAVE + MODEL_NAME + ".pt"
             dst = PATH_MODEL_SAVE + MODEL_NAME + "_previous.pt"
-            LOGGER.log("Loading Model: " + MODEL_NAME)
+            LOGGER.log("Loading Model: " + MODEL_NAME + ".pt")
             model = torch.load(src)
             shutil.copy(src, dst)
     else:
         # =================================================================
         # ================= THE NEW MODEL TO TRAIN ========================
         
-        # model = TransNets.SWIN(swin="b", input_size=(BATCH_SIZE,) + IMG_SIZE, freezeToLayer="features.5.9")
-        model = TransNets.CvT(model_size="b", input_size=(BATCH_SIZE,) + IMG_SIZE)
+        # model = TransNets.SWIN(swin="b", input_size=(BATCH_SIZE,) + IMG_SIZE, freezeToLayer="features.5.17.mlp.3.bias")
+        model = TransNets.CvT(model_size="s", input_size=(BATCH_SIZE,) + IMG_SIZE, freezeToLayer="blocks.9.mlp.fc2.bias")
+        # model = TransNets.MaxViT()
 
         # =================================================================
         # =================================================================
@@ -478,8 +479,8 @@ if __name__ == "__main__":
     model.to(DEVICE)
     # OPTIMIZER = torch.optim.AdamW(params=model.parameters(), lr=LEARNING_RATE,  weight_decay=1e-4)
     OPTIMIZER = torch.optim.SGD(params=model.parameters(), lr=LEARNING_RATE, weight_decay=0.0005, dampening=0, momentum=0.9, nesterov=True)
-    # LR_SCHEDULER = CosineAnnealingWarmRestarts(OPTIMIZER, T_0=10, T_mult=2)
-    LR_SCHEDULER = ReduceLROnPlateau(optimizer=OPTIMIZER, mode='min',  factor=LRS_FACTOR, patience=LRS_PATIENCE)
+    LR_SCHEDULER = CosineAnnealingWarmRestarts(OPTIMIZER, T_0=10, T_mult=2)
+    # LR_SCHEDULER = ReduceLROnPlateau(optimizer=OPTIMIZER, mode='min',  factor=LRS_FACTOR, patience=LRS_PATIENCE)
     LOGGER.log(f"Using GPU: {DEVICE}")
     LOGGER.log(f"Batch Size: {BATCH_SIZE}")
     LOGGER.log(f"Learning Rate: {LEARNING_RATE}")
@@ -487,8 +488,8 @@ if __name__ == "__main__":
     LOGGER.log(f"LR Schedular: {type(LR_SCHEDULER).__name__}")
     # Add if statement
     if isinstance(LR_SCHEDULER, ReduceLROnPlateau):
-        LOGGER.log(f"|--Patience: {LRS_PATIENCE}")
-        LOGGER.log(f"|--Factor: {LRS_FACTOR}")
+        LOGGER.log(f"|---Patience: {LRS_PATIENCE}")
+        LOGGER.log(f"|---Factor: {LRS_FACTOR}")
 
     setup(model, FINE_TUNE, OPEN_TILL_LAYER)
     # exit()
