@@ -11,7 +11,7 @@ from sklearn.model_selection import KFold
 from torchinfo import summary
 import time
 
-def load_model(fold:int=0, fineTune = False):
+def load_model(fold:int=0, load_best=False, fineTune = False):
     torch.cuda.empty_cache()
     CONFIG.updateFold(fold)
     
@@ -28,21 +28,22 @@ def load_model(fold:int=0, fineTune = False):
     model.to(CONFIG.DEVICE)
     optim = torch.optim.SGD(params=model.parameters(), lr=CONFIG.LEARNING_RATE, weight_decay=0.0005, dampening=0, momentum=0.9, nesterov=True)      
     lr_schedular = CosineAnnealingWarmRestarts(optim, T_0=10, T_mult=2)
-    if fineTune:
+    if load_best:
         # Load the best model
         checkpoint = torch.load(CONFIG.PATH_MODEL_SAVE)
         model.load_state_dict(checkpoint["model_state_dict"])
-        optim.load_state_dict(checkpoint["optimizer_state_dict"])
-        lr_schedular.load_state_dict(checkpoint["lr_schedular_state_dict"])
-        LOGGER.log("\t" + "+"*100)
-        LOGGER.log("\t"*6 + "STARTING FINE TUNING")
-        LOGGER.log("\t" + "+"*100)
-        LOGGER.log(f"\tMin Val Loss: [{checkpoint['val_loss']: 0.5f}] at Epoch {checkpoint['epoch']}")
-        LOGGER.log(f"\tLoading Best {CONFIG.MODEL_NAME} Model for Fold: [{fold+1}/{CONFIG.K_FOLD}]")
+        if fineTune:
+            optim.load_state_dict(checkpoint["optimizer_state_dict"])
+            lr_schedular.load_state_dict(checkpoint["lr_schedular_state_dict"])
+            LOGGER.log("\t" + "+"*100)
+            LOGGER.log("\t"*6 + "STARTING FINE TUNING")
+            LOGGER.log("\t" + "+"*100)
+            LOGGER.log(f"\tMin Val Loss: [{checkpoint['val_loss']: 0.5f}] at Epoch {checkpoint['epoch']}")
+            LOGGER.log(f"\tLoading Best {CONFIG.MODEL_NAME} Model for Fold: [{fold+1}/{CONFIG.K_FOLD}]")
         
-        # Open all Layers
-        for _, param in model.named_parameters():
-            param.requires_grad = True
+            # Open all Layers
+            for _, param in model.named_parameters():
+                param.requires_grad = True
         
     else:
         LOGGER.log(f"\n\tNew {CONFIG.MODEL_NAME} loaded successfully")
@@ -157,7 +158,7 @@ def train_KCV():
             val_loader = DataLoader(dataset = _val, batch_size = CONFIG.BATCH_LOAD, num_workers=CONFIG.WORKERS-2, pin_memory=True, generator=CONFIG.GENERATOR, persistent_workers=True)
             
             #Initialize New Model for current fold 
-            MODEL, OPTIMIZER, LR_SCHEDULER = load_model(fold=fold, fineTune=False)
+            MODEL, OPTIMIZER, LR_SCHEDULER = load_model(fold=fold)
             training_losses = []
             ft_training_losses = []
             validation_losses = []
@@ -246,17 +247,17 @@ def train_KCV():
                         # Start Fine Tuning
                         del MODEL
                         LOGGER.log("\t" + "-"*100)
-                        MODEL, OPTIMIZER, LR_SCHEDULER = load_model(fold=fold, fineTune=True)
+                        MODEL, OPTIMIZER, LR_SCHEDULER = load_model(fold=fold, load_best=True, fineTune=True)
                         lr = LR_SCHEDULER.get_last_lr()[-1]
                         fine_tuning = True
                         p_counter = 1
                         
                         min_val_at_epoch = np.argmin(validation_losses)
-                        ft_training_losses.append([-1]*(min_val_at_epoch))
-                        ft_validation_losses.append([-1]*(min_val_at_epoch))
+                        ft_training_losses.extend([-1]*(min_val_at_epoch))
+                        ft_validation_losses.extend([-1]*(min_val_at_epoch))
                         
-                        ft_training_losses.append(training_losses[min_val_at_epoch])
-                        ft_validation_losses.append(validation_losses[min_val_at_epoch])
+                        ft_training_losses.extend(training_losses[min_val_at_epoch])
+                        ft_validation_losses.extend(validation_losses[min_val_at_epoch])
                         
                         epoch = 0
                         total_epochs = CONFIG.FINE_TUNE_EPOCHS
@@ -267,7 +268,7 @@ def train_KCV():
                         LOGGER.log("\t" + "-"*100)
                         LOGGER.log("\t" + f"Testing Model: {CONFIG.PATH_MODEL_SAVE}")
                         # Calculate Performance Metrics
-                        MODEL, OPTIMIZER, LR_SCHEDULER = load_model(fold=fold, fineTune=True)
+                        MODEL, OPTIMIZER, LR_SCHEDULER = load_model(fold=fold, load_best=True, fineTune=False)
                         test_model(
                             t_model=MODEL,
                             test_loader = val_loader,
