@@ -4,9 +4,9 @@
     "DEVICE": "cuda:1",
     
     "K_FOLD": 10,
-    "TRAIN_EPOCHS": 200,
+    "TRAIN_EPOCHS": 100,
     "FINE_TUNE_EPOCHS": 100,
-    "PERSISTENCE": 16,
+    "PERSISTENCE": 100,
     "IMG_SIZE": [1, 224, 224],
     "AUTO_BREAK": true,
     "LRS_PATIENCE": 5,

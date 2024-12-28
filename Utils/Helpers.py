@@ -15,12 +15,18 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from Logger import MyLogger
 from Preprocessor import CTPreprocessor
 
-def plot_losses(fold, training_losses, validation_losses, save_path: str, logger:MyLogger):
+def plot_losses(fold, training_losses, validation_losses, ft_training_losses, ft_validation_losses, save_path: str, logger:MyLogger):
 
     epochs = range(1, len(training_losses) + 1)
     plt.figure(figsize=(10, 6))
-    plt.plot(epochs, training_losses, label='Training Loss', marker='o', linestyle='-', color='blue')
-    plt.plot(epochs, validation_losses, label='Validation Loss', marker='x', linestyle='--', color='orange')
+    plt.plot(epochs, training_losses, label='Train Loss', marker='o', linestyle='-', color='blue')
+    plt.plot(epochs, validation_losses, label='Val Loss', marker='x', linestyle='--', color='orange')
+
+    start = len(ft_training_losses) - 1 - ft_training_losses[::-1].index(-1)
+    epochs = range(start, len(ft_training_losses) + 1)
+    plt.plot(epochs, ft_training_losses, label='FT Train Loss', marker='o', linestyle='-', color='green')
+    plt.plot(epochs, ft_validation_losses, label='FT Val Loss', marker='x', linestyle='--', color='red')
+
 
     # Add titles and labels
     plt.title(f'Fold: {fold+1}\nTraining and Validation Losses Over Epochs', fontsize=16)
@@ -29,7 +35,7 @@ def plot_losses(fold, training_losses, validation_losses, save_path: str, logger
     plt.yscale('log')
     
     # Set y-axis limits
-    plt.ylim(0, max(max(training_losses), max(validation_losses)) * 1.1)  # Slightly higher than max loss
+    plt.ylim(0.0001, max(max(training_losses), max(validation_losses)) * 1.1)  # Slightly higher than max loss
 
     # Adding a grid
     plt.grid(True, linestyle='--', alpha=0.7)

@@ -11,7 +11,7 @@ from sklearn.model_selection import KFold
 from torchinfo import summary
 import time
 
-def load_model_and_optim(fold:int=0, fineTune = False):
+def load_model(fold:int=0, fineTune = False):
     torch.cuda.empty_cache()
     CONFIG.updateFold(fold)
     
@@ -27,12 +27,13 @@ def load_model_and_optim(fold:int=0, fineTune = False):
     
     model.to(CONFIG.DEVICE)
     optim = torch.optim.SGD(params=model.parameters(), lr=CONFIG.LEARNING_RATE, weight_decay=0.0005, dampening=0, momentum=0.9, nesterov=True)      
-    
+    lr_schedular = CosineAnnealingWarmRestarts(optim, T_0=10, T_mult=2)
     if fineTune:
         # Load the best model
         checkpoint = torch.load(CONFIG.PATH_MODEL_SAVE)
         model.load_state_dict(checkpoint["model_state_dict"])
         optim.load_state_dict(checkpoint["optimizer_state_dict"])
+        lr_schedular.load_state_dict(checkpoint["lr_schedular_state_dict"])
         LOGGER.log("\t" + "+"*100)
         LOGGER.log("\t"*6 + "STARTING FINE TUNING")
         LOGGER.log("\t" + "+"*100)
@@ -47,12 +48,13 @@ def load_model_and_optim(fold:int=0, fineTune = False):
         LOGGER.log(f"\n\tNew {CONFIG.MODEL_NAME} loaded successfully")
 
     save_arch(model=model, fineTune=fineTune)  
-    return model, optim
+    return model, optim, lr_schedular
 
-def save_model(model:nn.Module, optim:torch.optim.SGD, epoch, val_loss):
+def save_model(model:nn.Module, optim:torch.optim.SGD, lr_schedular:CosineAnnealingWarmRestarts, epoch, val_loss):
     torch.save({
         "model_state_dict": model.state_dict(),
         "optimizer_state_dict": optim.state_dict(),
+        "lr_schedular_state_dict": lr_schedular.state_dict(),
         "val_loss": val_loss,
         "epoch": epoch
     }, CONFIG.PATH_MODEL_SAVE)
@@ -151,14 +153,15 @@ def train_KCV():
             CONFIG.CRITERION_VAL = nn.CrossEntropyLoss(weight=val_class_weights.to(CONFIG.DEVICE))
             SAMPLER_TRAIN = WeightedRandomSampler(weights=sample_weights_train , num_samples=len(sample_weights_train), replacement=True, generator=CONFIG.GENERATOR)
             
-            train_loader = DataLoader(dataset = _train, batch_size = CONFIG.BATCH_LOAD, num_workers=CONFIG.WORKERS-1, pin_memory=True, sampler=SAMPLER_TRAIN, generator=CONFIG.GENERATOR)
-            val_loader = DataLoader(dataset = _val, batch_size = CONFIG.BATCH_LOAD, num_workers=CONFIG.WORKERS-1, pin_memory=True, generator=CONFIG.GENERATOR)
+            train_loader = DataLoader(dataset = _train, batch_size = CONFIG.BATCH_LOAD, num_workers=CONFIG.WORKERS-2, pin_memory=True, sampler=SAMPLER_TRAIN, generator=CONFIG.GENERATOR, persistent_workers=True)
+            val_loader = DataLoader(dataset = _val, batch_size = CONFIG.BATCH_LOAD, num_workers=CONFIG.WORKERS-2, pin_memory=True, generator=CONFIG.GENERATOR, persistent_workers=True)
             
             #Initialize New Model for current fold 
-            MODEL, OPTIMIZER = load_model_and_optim(fold=fold, fineTune=False)
-            LR_SCHEDULER = CosineAnnealingWarmRestarts(OPTIMIZER, T_0=10, T_mult=2)
+            MODEL, OPTIMIZER, LR_SCHEDULER = load_model(fold=fold, fineTune=False)
             training_losses = []
+            ft_training_losses = []
             validation_losses = []
+            ft_validation_losses = []
             p_counter = 1
             min_val_loss = float('inf')
             lr = CONFIG.LEARNING_RATE
@@ -203,7 +206,7 @@ def train_KCV():
                     count += 1
                 # avg epoch loss
                 train_loss /= len(train_loader)
-                training_losses.append(train_loss)
+                training_losses.append(train_loss) if not fine_tuning else ft_training_losses.append(train_loss)
                 LOGGER.log("\n\n\t" +"\tTraining Loss: [%0.5f]" % (training_losses[-1]))
 
                 # Validation
@@ -217,7 +220,7 @@ def train_KCV():
                         y_pred = MODEL(imgs)
                         val_loss += CONFIG.CRITERION_VAL(y_pred, labels).item()
                 val_loss /= len(val_loader)
-                validation_losses.append(val_loss)
+                validation_losses.append(val_loss) if not fine_tuning else ft_validation_losses.append(val_loss)
                 LOGGER.log("\t" +"\tWeighted Val Loss: [%0.5f]" % (val_loss))
 
                 # Save Best Model
@@ -243,9 +246,18 @@ def train_KCV():
                         # Start Fine Tuning
                         del MODEL
                         LOGGER.log("\t" + "-"*100)
-                        MODEL, OPTIMIZER = load_model_and_optim(fold=fold, fineTune=True)
-                        LR_SCHEDULER.optimizer = OPTIMIZER
+                        MODEL, OPTIMIZER, LR_SCHEDULER = load_model(fold=fold, fineTune=True)
+                        lr = LR_SCHEDULER.get_last_lr()
                         fine_tuning = True
+                        p_counter = 1
+                        
+                        min_val_at_epoch = np.argmin(validation_losses)
+                        ft_training_losses.append([-1]*(min_val_at_epoch))
+                        ft_validation_losses.append([-1]*(min_val_at_epoch))
+                        
+                        ft_training_losses.append(training_losses[min_val_at_epoch])
+                        ft_validation_losses.append(validation_losses[min_val_at_epoch])
+                        
                         epoch = 0
                         total_epochs = CONFIG.FINE_TUNE_EPOCHS
                                 
@@ -255,7 +267,7 @@ def train_KCV():
                         LOGGER.log("\t" + "-"*100)
                         LOGGER.log("\t" + f"Testing Model: {CONFIG.PATH_MODEL_SAVE}")
                         # Calculate Performance Metrics
-                        MODEL, OPTIMIZER = load_model_and_optim(fold=fold, fineTune=True)
+                        MODEL, OPTIMIZER, LR_SCHEDULER = load_model(fold=fold, fineTune=True)
                         test_model(
                             t_model=MODEL,
                             test_loader = val_loader,
@@ -268,7 +280,17 @@ def train_KCV():
                         break
                         
             np.savetxt(CONFIG.PATH_LOSSES_SAVE, verify_lengths(training_losses, validation_losses), fmt="%0.5f", delimiter=",")
-            plot_losses(fold=fold, training_losses=training_losses, validation_losses=validation_losses, save_path=CONFIG.PATH_LOSSPLOT_SAVE, logger=LOGGER)
+            np.savetxt(CONFIG.PATH_LOSSES_SAVE[:-4]+"_FT.txt", verify_lengths(ft_training_losses, ft_validation_losses), fmt="%0.5f", delimiter=",")
+            
+            plot_losses(
+                fold=fold,
+                training_losses=training_losses, 
+                validation_losses=validation_losses,
+                ft_training_losses=ft_training_losses,
+                ft_validation_losses=ft_validation_losses,
+                save_path=CONFIG.PATH_LOSSPLOT_SAVE, 
+                logger=LOGGER
+            )
             fold_min_val_loss.append(min_val_loss)
 
     except KeyboardInterrupt:
