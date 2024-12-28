@@ -227,7 +227,7 @@ def train_KCV():
                 p_counter += 1
                 if(val_loss < min_val_loss):
                     min_val_loss = val_loss
-                    save_model(model=MODEL, optim=OPTIMIZER, epoch=epoch, val_loss=val_loss)
+                    save_model(model=MODEL, optim=OPTIMIZER, lr_schedular=LR_SCHEDULER, epoch=epoch, val_loss=val_loss)
                     p_counter = 1
                 LOGGER.log("\t" +"\tMinimum Val Loss: [%0.5f]" % (min_val_loss))
 
@@ -247,7 +247,7 @@ def train_KCV():
                         del MODEL
                         LOGGER.log("\t" + "-"*100)
                         MODEL, OPTIMIZER, LR_SCHEDULER = load_model(fold=fold, fineTune=True)
-                        lr = LR_SCHEDULER.get_last_lr()
+                        lr = LR_SCHEDULER.get_last_lr()[-1]
                         fine_tuning = True
                         p_counter = 1
                         
