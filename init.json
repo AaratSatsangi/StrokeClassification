@@ -1,6 +1,8 @@
 {
     "MODEL_NAME": "CvT_S",
     "MODEL_TYPE": "trans",
+    "DEVICE": "cuda:0",
+    
     "K_FOLD": 10,
     "TRAIN_EPOCHS": 200,
     "FINE_TUNE_EPOCHS": 100,
