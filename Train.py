@@ -36,7 +36,7 @@ def load_model_and_optim(fold:int=0, fineTune = False):
         LOGGER.log("\t" + "+"*100)
         LOGGER.log("\t"*6 + "STARTING FINE TUNING")
         LOGGER.log("\t" + "+"*100)
-        LOGGER.log(f"\tMin Val Loss: [{checkpoint["val_loss"]: 0.5f}] at Epoch {checkpoint["epoch"]}")
+        LOGGER.log(f"\tMin Val Loss: [{checkpoint['val_loss']: 0.5f}] at Epoch {checkpoint['epoch']}")
         LOGGER.log(f"\tLoading Best {CONFIG.MODEL_NAME} Model for Fold: [{fold+1}/{CONFIG.K_FOLD}]")
         
         # Open all Layers
@@ -64,7 +64,7 @@ def save_arch(model:nn.Module, fineTune=False):
         os.mkdir(path)
     
     # Write Architecture
-    path += f"arch{"_FT" if fineTune else ""}_{CONFIG.EXPERIMENT_NUMBER}.txt" 
+    path += f"arch{'_FT' if fineTune else ''}_{CONFIG.EXPERIMENT_NUMBER}.txt" 
     last_freezed_layer = CONFIG.FREEZE_TO_LAYER if not fineTune else ""
     with open(path, "w") as f:
         f.write("="*25 + "Layer Names" + "="*25 + "\n")
@@ -96,6 +96,7 @@ def scheduler_step(schedular, lr, **kwargs):
             LOGGER.log(f"\t\t(+) Learning Rate Increased: [{lr: 0.2e}] --> [{schedular.get_last_lr()[-1]: 0.2e}]")
             lr = schedular.get_last_lr()[-1]
     else: raise Exception("LR Schedular not recognized!\nType: " + type(schedular))
+    return lr
 
 def early_stop(p_counter, training_losses):
     if(p_counter-1 >= CONFIG.PERSIST):
@@ -167,10 +168,10 @@ def train_KCV():
             total_epochs = CONFIG.TRAIN_EPOCHS
             while (epoch < total_epochs):
                 start_time = time.time()
-                LOGGER.log("\t" + f"{("--" if not fine_tuning else "++")}" + "-"*98)
+                LOGGER.log("\t" + f"{('--' if not fine_tuning else '++')}" + "-"*98)
                 LOGGER.log("\t" + f"FOLD: [{fold+1}/{CONFIG.K_FOLD}]")
                 LOGGER.log("\t" + f"EPOCH: [{epoch+1}/{total_epochs}]" + "\t"*8 + f"PERSISTENCE: [{p_counter}/{CONFIG.PERSIST}]")
-                LOGGER.log("\t" + f"{("--" if not fine_tuning else "++")}" + "-"*98)
+                LOGGER.log("\t" + f"{('--' if not fine_tuning else '++')}" + "-"*98)
 
                 train_loss = 0.0
                 accum_loss = 0.0
@@ -228,7 +229,7 @@ def train_KCV():
                 LOGGER.log("\t" +"\tMinimum Val Loss: [%0.5f]" % (min_val_loss))
 
                 # Learning Rate Schedular Step
-                scheduler_step(LR_SCHEDULER, lr, val_loss = val_loss)
+                lr = scheduler_step(LR_SCHEDULER, lr, val_loss = val_loss)
 
                 # Early Stopping for Overfitting Stopping
                 stop, p_counter = early_stop(p_counter=p_counter, training_losses=training_losses)
@@ -255,11 +256,10 @@ def train_KCV():
                         LOGGER.log("\t" + f"Testing Model: {CONFIG.PATH_MODEL_SAVE}")
                         # Calculate Performance Metrics
                         MODEL, OPTIMIZER = load_model_and_optim(fold=fold, fineTune=True)
-                        test_class_weights, _ = get_sample_weights(CONFIG.TEST_DATA, None, "Test", LOGGER)
                         test_model(
                             t_model=MODEL,
-                            test_loader = DataLoader(dataset = CONFIG.TEST_DATA, batch_size = CONFIG.BATCH_LOAD, num_workers=CONFIG.WORKERS-1),
-                            test_class_weights = test_class_weights,
+                            test_loader = val_loader,
+                            test_class_weights = val_class_weights,
                             device = CONFIG.DEVICE,
                             path_save=CONFIG.PATH_PERFORMANCE_SAVE,
                             class_names=CONFIG.CLASS_NAMES,

@@ -3,6 +3,7 @@ Data/
 .vscode/
 Classifiers/Old/
 **/*.pt
+**/*.pth
 Temp/
 **/*__pycache__/
 **/*Heatmaps/

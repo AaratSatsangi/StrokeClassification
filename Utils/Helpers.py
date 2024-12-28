@@ -240,7 +240,7 @@ class Config:
         self.CRITERION_TRAIN = torch.nn.CrossEntropyLoss()
         self.CRITERION_VAL:torch.nn.CrossEntropyLoss = None
         self.TRAIN_DATA = ImageFolder(self.PATH_DATASET_TRAIN, self.TRANSFORMS_TRAIN)
-        self.TEST_DATA = ImageFolder(self.PATH_DATASET_TEST, self.TRANSFORMS_TEST)
+        self.TEST_DATA = None
         self.CLASS_NAMES = self.TRAIN_DATA.classes
 
         self.PATH_MODEL_FOLDER = f"Classifiers/{model_type_dict[self.MODEL_TYPE]}/{self.MODEL_NAME}/"
@@ -248,13 +248,14 @@ class Config:
         self.EXPERIMENT_NUMBER = str(sum(1 for file_name in os.listdir(self.PATH_MODEL_FOLDER) if "architecture" in file_name))
         self.PATH_MODEL_LOG_FILE = f"{self.PATH_MODEL_LOG_FOLDER}/architecture_{self.EXPERIMENT_NUMBER}.txt"
         self.PATH_LOSSPLOT_FOLDER = f"{self.PATH_MODEL_FOLDER}Plots/"
-        self.PATH_PERFORMANCE_FOLDER = f"{self.PATH_MODEL_FOLDER}Performace/"
+        self.PATH_PERFORMANCE_FOLDER = f"{self.PATH_MODEL_FOLDER}Performance/"
         self.PATH_MODEL_SAVE = None 
         self.PATH_LOSSES_SAVE = None
         self.PATH_LOSSPLOT_SAVE = None
         self.PATH_PERFORMANCE_SAVE = None
         if(not os.path.exists(self.PATH_MODEL_LOG_FOLDER)): os.makedirs(self.PATH_MODEL_LOG_FOLDER)
         if(not os.path.exists(self.PATH_LOSSPLOT_FOLDER)): os.makedirs(self.PATH_LOSSPLOT_FOLDER)
+        if(not os.path.exists(self.PATH_PERFORMANCE_FOLDER)): os.makedirs(self.PATH_PERFORMANCE_FOLDER)
         
         # Model Specific Variables
         print("Initializing Model Specific Variables...")    
@@ -262,11 +263,11 @@ class Config:
             with open(self.PATH_MODEL_FOLDER + "init.json", "r") as file:
                 model_vars:dict = json.load(file)
         except Exception as e:
-            print(f"Error decoding JSON from the file: {self.PATH_MODEL_FOLDER + "init.json"} ==> {e}")
+            print(f"Error decoding JSON from the file: {self.PATH_MODEL_FOLDER + 'init.json'} ==> {e}")
             exit(1)
 
         # =========== MODEL SPECIFIC VARIABLES =================
-        self.DEVICE = model_vars["DEVICE"]
+        self.DEVICE = train_vars["DEVICE"]
         self.BATCH_SIZE = model_vars["BATCH_SIZE"]
         self.BATCH_LOAD = model_vars["BATCH_LOAD"]
         self.LEARNING_RATE = model_vars["LEARNING_RATE"]
