@@ -1,7 +1,7 @@
 import threading
 import requests
 
-class Logger:
+class MyLogger:
     def __init__(self, server_url:str = None, server_username:str = None, server_folder:str = None, model_name:str = None, path_localFile:str = None):
         self.SERVER_URL = server_url
         self.SERVER_USERNAME = server_username
@@ -9,16 +9,16 @@ class Logger:
         self.MODEL_NAME = model_name
         self.PATH_LOCAL_LOG_FILE = path_localFile
         self.IS_SERVER_WORKING = True
-        self.lock1 = threading.Lock()
-        self.lock2 = threading.Lock()
+        self._lock1 = threading.Lock()
+        self._lock2 = threading.Lock()
 
     def _local_write(self, string):
-        with self.lock2:
+        with self._lock2:
             with open(self.PATH_LOCAL_LOG_FILE, "a") as log_file:
                 log_file.write(string + "\n")
     
     def _server_write(self, data):
-        with self.lock1:
+        with self._lock1:
             if(self.IS_SERVER_WORKING):
                 try:
                     response = requests.post(url=self.SERVER_URL, data=data)
@@ -61,7 +61,7 @@ if __name__ == "__main__":
     SERVER_URL = "https://www.aaratsatsangi.in/logger.php"
     MODEL_NAME = "TestModel"
     
-    logger = Logger(
+    logger = MyLogger(
         server_url = SERVER_URL,
         server_username= SERVER_USERNAME,
         server_folder = SERVER_FOLDER,

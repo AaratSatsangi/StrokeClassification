@@ -60,16 +60,16 @@ class VIT_L32(nn.Module):
         return self.last_freezed_layer
     
 class SWIN(nn.Module):
-    def __init__(self, model_size:str, input_size=(1, 1, 224, 224), num_classes=3, freezeToLayer: str = "features.5.0"): # swin should be [b,s,t]
+    def __init__(self, model_size:str, input_size=(1, 1, 224, 224), num_classes=3, freezeToLayer: str = "features.5.0", pretrained=True): # swin should be [b,s,t]
         super(SWIN, self).__init__()
         
         # Load the Swin Transformer model
         if model_size == 'b':
-            self.swin = models.swin_b(weights=models.Swin_B_Weights.IMAGENET1K_V1)
+            self.swin = models.swin_b(weights=models.Swin_B_Weights.IMAGENET1K_V1 if pretrained else None)
         elif model_size == 's':
-            self.swin = models.swin_s(weights=models.Swin_S_Weights.IMAGENET1K_V1)
+            self.swin = models.swin_s(weights=models.Swin_S_Weights.IMAGENET1K_V1 if pretrained else None)
         elif model_size == 't':
-            self.swin = models.swin_t(weights=models.Swin_T_Weights.IMAGENET1K_V1)
+            self.swin = models.swin_t(weights=models.Swin_T_Weights.IMAGENET1K_V1 if pretrained else None)
         self.last_freezed_layer = ""
 
         # Optionally freeze layers up to a certain layer
@@ -95,15 +95,15 @@ class SWIN(nn.Module):
         return self.last_freezed_layer
     
 class MaxViT(nn.Module):
-    def __init__(self, model_size:str = "b", input_size=(1, 1, 224, 224), num_classes=3, freezeToLayer: str = "stages.2"): # size should be [s, b, l] small base large
+    def __init__(self, model_size:str = "b", input_size=(1, 1, 224, 224), num_classes=3, freezeToLayer: str = "stages.2", pretrained = True): # size should be [s, b, l] small base large
         super(MaxViT, self).__init__()
         try:
             if model_size == "s":
-                self.model = timm.create_model(model_name="maxvit_small_tf_224.in1k", pretrained=True, in_chans=input_size[1], num_classes = num_classes)
+                self.model = timm.create_model(model_name="maxvit_small_tf_224.in1k", pretrained=pretrained, in_chans=input_size[1], num_classes = num_classes)
             elif model_size == "b":
-                self.model = timm.create_model(model_name="maxvit_base_tf_224.in21k", pretrained=True, in_chans=input_size[1], num_classes = num_classes)
+                self.model = timm.create_model(model_name="maxvit_base_tf_224.in21k", pretrained=pretrained, in_chans=input_size[1], num_classes = num_classes)
             elif model_size == "l":
-                self.model = timm.create_model(model_name="maxvit_large_tf_224.in21k", pretrained=True, in_chans=input_size[1], num_classes = num_classes)
+                self.model = timm.create_model(model_name="maxvit_large_tf_224.in21k", pretrained=pretrained, in_chans=input_size[1], num_classes = num_classes)
             else:
                 raise ValueError(f"Model Size should be from [s, b, l] i.e. small, base, large, but {model_size} was passed")
         except ValueError as e:
@@ -127,15 +127,15 @@ class MaxViT(nn.Module):
         return self.last_freezed_layer
     
 class CvT(nn.Module):
-    def __init__(self, model_size:str = "b", input_size=(1, 1, 224, 224), num_classes=3, freezeToLayer: str = "blocks.5"): # size should be [s, b, l] small base large
+    def __init__(self, model_size:str = "b", input_size=(1, 1, 224, 224), num_classes=3, freezeToLayer: str = "blocks.5", pretrained = True): # size should be [s, b, l] small base large
         super(CvT, self).__init__()
         try:
             if model_size == "t":
-                self.model = timm.create_model(model_name="convit_tiny.fb_in1k", pretrained=True, in_chans=input_size[1], num_classes = num_classes)
+                self.model = timm.create_model(model_name="convit_tiny.fb_in1k", pretrained=pretrained, in_chans=input_size[1], num_classes = num_classes)
             elif model_size == "s":
-                self.model = timm.create_model(model_name="convit_small.fb_in1k", pretrained=True, in_chans=input_size[1], num_classes = num_classes)
+                self.model = timm.create_model(model_name="convit_small.fb_in1k", pretrained=pretrained, in_chans=input_size[1], num_classes = num_classes)
             elif model_size == "b":
-                self.model = timm.create_model(model_name="convit_base.fb_in1k", pretrained=True, in_chans=input_size[1], num_classes = num_classes)
+                self.model = timm.create_model(model_name="convit_base.fb_in1k", pretrained=pretrained, in_chans=input_size[1], num_classes = num_classes)
             else:
                 raise ValueError(f"Model Size should be from [t, s, b] i.e. tiny, small, base, but {model_size} was passed")
         except ValueError as e:
@@ -164,7 +164,7 @@ class CvT(nn.Module):
     
 if __name__ == "__main__":
     from torchinfo import summary
-    model = CvT(model_size="t")
+    model = MaxViT(model_size="s")
     summary(model, input_size=(1, 1, 224, 224), depth=3, col_names=["input_size","output_size","num_params"])
     for name, param in model.model.named_parameters():
         print(f"NAME: {name}")

@@ -2,8 +2,9 @@ import torch
 from torch import nn
 from torch.optim.lr_scheduler import CosineAnnealingWarmRestarts, ReduceLROnPlateau
 import pandas as pd
+from Utils.Helpers import *
 from Classifiers import ConvNets, TransNets
-from Log import Logger
+from Logger import Logger
 from torchvision import models
 from torchvision.datasets import ImageFolder
 import torchvision.transforms as transforms
@@ -125,75 +126,6 @@ def setup(model:nn.Module, fine_tine = False, openTillLayer:str = None):
         f.write("="*61 + "\n")
         f.write("\n\n")
         f.write(str(summary(model, (1,) + IMG_SIZE , col_names=["input_size","output_size","num_params"], verbose=0)))
-        
-def _isDecreasingOrder(lst: list):
-    for i in range(len(lst) - 1):
-        if lst[i] <= lst[i + 1]:
-            return False
-    return True
-
-def plot_losses(training_losses, validation_losses):
-
-    epochs = range(1, len(training_losses) + 1)
-    plt.figure(figsize=(10, 6))
-    plt.plot(epochs, training_losses, label='Training Loss', marker='o', linestyle='-', color='blue')
-    plt.plot(epochs, validation_losses, label='Validation Loss', marker='x', linestyle='--', color='orange')
-
-    # Add titles and labels
-    plt.title('Training and Validation Losses Over Epochs', fontsize=16)
-    plt.xlabel('Epochs', fontsize=14)
-    plt.ylabel('Loss', fontsize=14)
-    
-    # Set y-axis limits
-    plt.ylim(0, max(max(training_losses), max(validation_losses)) * 1.1)  # Slightly higher than max loss
-
-    # Adding a grid
-    plt.grid(True, linestyle='--', alpha=0.7)
-    
-    # Add a legend
-    plt.legend(fontsize=12)
-
-    # Save the figure
-    if(not os.path.exists(PATH_MODEL_SAVE + "Plots/")):
-        os.makedirs(PATH_MODEL_SAVE + "Plots/", exist_ok=True)
-    count = 0
-    for file_name in os.listdir(PATH_MODEL_SAVE + "Plots/"):
-        if("loss_plot" in file_name): 
-            count +=1
-    plt.savefig(PATH_MODEL_SAVE + "Plots/loss_plot_" + str(count) + ".png", bbox_inches='tight', dpi=300)
-    plt.close()  # Close the figure to free memory
-
-    LOGGER.log(f"Plot saved as {PATH_MODEL_SAVE + 'Plots/loss_plot.png'}")
-
-def get_sample_weights(dataset, indices, name):
-    if indices is not None:
-        targets = torch.tensor([dataset.targets[i] for i in indices])
-        log_string = "\t" + name 
-    else:
-        targets = torch.tensor(dataset.targets)
-        log_string = name
-    class_counts = torch.bincount(targets)
-    class_weights = 1.0 / class_counts.float()
-    sample_weights = class_weights[targets]
-    LOGGER.log(log_string + f" Class Counts: {class_counts}, weights: {class_weights}")
-    return class_weights, sample_weights
-
-def _get_min_val_loss():
-    loss_files = []
-    for file_name in os.listdir(PATH_MODEL_SAVE):
-        if "LOSSES" in file_name:
-            loss_files.append(file_name)
-
-    min_val_loss = float('inf')
-    for loss_file in loss_files:
-        try:
-            val_losses = np.loadtxt(PATH_MODEL_SAVE + loss_file, delimiter=",")[1]
-            min_val_loss = min(min_val_loss, np.min(val_losses))
-        except Exception as e:
-            print(f"Unable to process file: {loss_file}")
-            print(f"Error: {e}")
-    
-    return min_val_loss
 
 def train_KCV():
     global LEARNING_RATE
@@ -207,7 +139,7 @@ def train_KCV():
     p_counter = 1
     
     if FINE_TUNE:
-        min_val_loss = _get_min_val_loss()
+        min_val_loss = get_min_val_loss(path_model_save=PATH_MODEL_SAVE)
         if isinstance(LR_SCHEDULER, ReduceLROnPlateau): LR_SCHEDULER.step(min_val_loss)
         LOGGER.log(f"\tLoaded Last Min Val Loss: {min_val_loss}")
     else:
@@ -223,14 +155,13 @@ def train_KCV():
             _train = Subset(TRAIN_DATA, train_idx)
             _val = Subset(TRAIN_DATA, val_idx)
 
-            _, sample_weights_train = get_sample_weights(TRAIN_DATA, train_idx, "Train")
-            val_class_weights, sample_weights_val = get_sample_weights(TRAIN_DATA, val_idx, "Val")
+            _, sample_weights_train = get_sample_weights(TRAIN_DATA, train_idx, "Train", logger = LOGGER)
+            val_class_weights, sample_weights_val = get_sample_weights(TRAIN_DATA, val_idx, "Val", logger = LOGGER)
 
             
             CRITERION_VAL = nn.CrossEntropyLoss(weight=val_class_weights.to(DEVICE))
             SAMPLER_TRAIN = WeightedRandomSampler(weights=sample_weights_train , num_samples=len(sample_weights_train), replacement=True, generator=GENERATOR)
-            # SAMPLER_VAL = WeightedRandomSampler(weights=sample_weights_val , num_samples=len(sample_weights_val), replacement=True, generator=GENERATOR)
-
+            
             train_loader = DataLoader(dataset = _train, batch_size = BATCH_LOAD, num_workers=WORKERS-1, pin_memory=True, sampler=SAMPLER_TRAIN, generator=GENERATOR)
             val_loader = DataLoader(dataset = _val, batch_size = BATCH_LOAD, num_workers=WORKERS-1, pin_memory=True, generator=GENERATOR)
 
@@ -320,7 +251,7 @@ def train_KCV():
                 # Early Stopping for Overfitting Stopping
                 if(p_counter-1 >= PERSISTANCE):
                     LOGGER.log("\t" + "\tValidation Loss Constant for %d Epochs at EPOCH %d" % (PERSISTANCE, epoch+1))
-                    if(_isDecreasingOrder(training_losses[-PERSISTANCE:])):
+                    if(is_decreasing_order(training_losses[-PERSISTANCE:])):
                         LOGGER.log("\t" + f"\tStopping Training: Overfitting Detected at EPOCH {epoch+1}")
                         # Break out of Training Loop
                         if(AUTO_BREAK): 
@@ -344,7 +275,7 @@ def train_KCV():
                         break
                 LOGGER.log("") # Add New Line
                 end_time = time.time()
-                _logTime(start_time, end_time)
+                logTime(start_time, end_time, logger=LOGGER)
                 
     except KeyboardInterrupt:
         # Exit Loop code
@@ -358,100 +289,7 @@ def train_KCV():
                 count +=1
         path_loss_save = PATH_MODEL_SAVE + "LOSSES_" + str(count) + ".txt"
         np.savetxt(path_loss_save, (training_losses, validation_losses), fmt="%0.5f" , delimiter=",")
-        plot_losses(training_losses, validation_losses)
-
-def _logTime(start_time, end_time):
-    
-    elapsed_time = end_time - start_time
-    # Convert to HH:MM:SS format
-    hours, rem = divmod(elapsed_time, 3600)
-    minutes, seconds = divmod(rem, 60)
-    time_formatted = f"{int(hours):02}:{int(minutes):02}:{int(seconds):02}"
-    LOGGER.log("\t"*9 + f"EPOCH TIME: [{time_formatted}]")
-
-def _binarizeUsingMax(t:torch.tensor):
-        max_values, _ = t.max(dim=1, keepdim=True)
-        return torch.where(t == max_values, torch.tensor(1.0), torch.tensor(0.0)).numpy()
-
-def _calcPerformMetrics(y_pred, y_true, class_names, path_saveDict):
-    y_pred = _binarizeUsingMax(y_pred)
-    y_true = _binarizeUsingMax(y_true)
-    report = classification_report(y_true=y_true, y_pred=y_pred, target_names=class_names, output_dict=True, zero_division=0)
-    with open(path_saveDict, 'w') as f:
-        json.dump(report, f, indent=4)
-        LOGGER.log("Results Written in: " + str(path_saveDict))
-
-    saveAsTable(path_saveDict)
-    return
-
-def saveAsTable(json_file_path: str):
-    with open(json_file_path, 'r') as f:
-        data = json.load(f)
-
-    # Convert JSON data into a DataFrame
-    df: pd.DataFrame
-    df = pd.DataFrame(data).T  # Transpose to get categories as rows
-    df = df.applymap(lambda x: round(x, 3) if isinstance(x, float) else x)
-    df = df.iloc[:3,:3]
-
-    # Set up a Matplotlib figure
-    fig, ax = plt.subplots(figsize=(8, len(df) * 0.8))  # Adjust figure height based on rows
-
-    # Hide axes
-    ax.axis('tight')
-    ax.axis('off')
-
-    # Render the DataFrame as a table
-    table = ax.table(cellText=df.values,
-                     colLabels=df.columns,
-                     rowLabels=df.index,
-                     cellLoc='center',
-                     loc='center')
-
-    # Style the table
-    table.auto_set_font_size(False)
-    table.set_fontsize(10)
-    table.scale(1.2, 1.2)  # Adjust table scale
-
-    # Save the table as an image
-    count = 0
-    for file_name in os.listdir(PATH_MODEL_SAVE):
-        if("performance" in file_name and ".png" in file_name): 
-            count +=1
-    output_path = PATH_MODEL_SAVE + "performance_" + str(count) + ".png"
-    plt.savefig(output_path, dpi=300, bbox_inches='tight')
-    LOGGER.log(f"Table image saved to {output_path}")
-
-def testModel(t_model: nn.Module):
-    y_trueTensor = torch.empty(0,3)
-    y_predTensor = torch.empty(0,3)
-    test_class_weights, _ = get_sample_weights(TEST_DATA, None, "Test")
-    CRITERION_TEST = nn.CrossEntropyLoss(weight=test_class_weights.to(DEVICE))
-    with torch.no_grad():
-        test_loss = 0.0
-        for test_XY in test_loader:
-            x = test_XY[0].to(DEVICE)
-            y = test_XY[1].to(DEVICE)
-
-            y_pred =  t_model(x)
-            test_loss += CRITERION_TEST(y_pred, y).item()
-
-            y_true = torch.zeros(y.shape[0],3)
-            for row in range(y.shape[0]):
-                y_true[row, y[row]] = 1
-            y_trueTensor = torch.vstack([y_trueTensor, y_true.cpu()])
-            y_predTensor = torch.vstack([y_predTensor, torch.nn.functional.softmax(y_pred, dim=1).cpu()])
-
-    test_loss /= len(test_loader)
-    count = 0
-    for file_name in os.listdir(PATH_MODEL_SAVE):
-        if("performance" in file_name and ".json" in file_name): 
-            count +=1
-    path_perfom_save = PATH_MODEL_SAVE + "performance_" + str(count) + ".json"
-    _calcPerformMetrics(y_pred=y_predTensor, y_true=y_trueTensor,class_names=CLASS_NAMES, path_saveDict=path_perfom_save)
-    LOGGER.log(f"Test Loss:{round(test_loss,5)}")
-    return
-
+        plot_losses(training_losses, validation_losses, PATH_MODEL_SAVE, LOGGER)
 
 if __name__ == "__main__":
     
@@ -518,8 +356,4 @@ if __name__ == "__main__":
     setup(model, FINE_TUNE, OPEN_TILL_LAYER)
     # exit()
     train_KCV()
-    
-    LOGGER.log("Testing model: " + PATH_MODEL_SAVE + MODEL_NAME + ".pt")
-    test_loader = DataLoader(dataset = TEST_DATA, batch_size = BATCH_LOAD, num_workers=WORKERS)
-    testModel(torch.load(PATH_MODEL_SAVE + MODEL_NAME + ".pt"))
     LOGGER.log("="*54 + " END " + "="*54 + "\n\n")

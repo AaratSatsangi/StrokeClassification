@@ -1,0 +1,7 @@
+{
+    "DEVICE": "cuda:0",
+    "BATCH_SIZE": 128,
+    "BATCH_LOAD": 128,
+    "LEARNING_RATE": 1e-2,
+    "FREEZE_TO_LAYER": "blocks.9.mlp.fc2.bias"
+}

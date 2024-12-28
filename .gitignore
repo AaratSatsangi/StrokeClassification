@@ -6,3 +6,4 @@ Classifiers/Old/
 Temp/
 **/*__pycache__/
 **/*Heatmaps/
+temp.py

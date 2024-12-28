@@ -18,11 +18,6 @@ MODEL_TYPE_DICT: dict = {"conv": "Convolutional Networks", "trans" : "Transforme
 PATH_MODEL_FOLDER: str = ""
 PATH_SAVE_IMG:str = ""
 PATH_TEST_IMGS: dict = {} 
-# {
-#     "Hemorrhagic": ['Data/Compiled/PNG/Hemorrhagic/15826.png', 'Data/Compiled/PNG/Hemorrhagic/11015.png', 'Data/Compiled/PNG/Hemorrhagic/15597.png', 'Data/Compiled/PNG/Hemorrhagic/11183.png', 'Data/Compiled/PNG/Hemorrhagic/15015.png'],
-#     "Ischemic": ['Data/Compiled/PNG/Ischemic/11626.png', 'Data/Compiled/PNG/Ischemic/15921.png', 'Data/Compiled/PNG/Ischemic/10164.png', 'Data/Compiled/PNG/Ischemic/12608.png', 'Data/Compiled/PNG/Ischemic/16241.png'],
-#     "Normal": ['Data/Compiled/PNG/Normal/13831.png', 'Data/Compiled/PNG/Normal/12456.png', 'Data/Compiled/PNG/Normal/10681.png', 'Data/Compiled/PNG/Normal/13170.png', 'Data/Compiled/PNG/Normal/12024.png']
-# }
 TEST_IMGS: dict = {}
 OVERLAY_IMGS: dict = {}
 IMG_TRANSFORMS_TEST = CTPreprocessor(
@@ -31,11 +26,12 @@ IMG_TRANSFORMS_TEST = CTPreprocessor(
         transforms.Grayscale(),
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.485],std=[0.229],inplace=True),
-    ]
+    ],
+    use_mask=False
 )
 UN_NORMALIZE = transforms.Compose([
     transforms.ToTensor(),
-    transforms.Normalize(mean=[-0.485/0.229], std=[1/0.229], inplace=True)
+    transforms.Normalize(mean=[-0.485/0.229], std=[1/0.229])
 ])
 TARGET_MAP = {
     "Hemorrhagic": 0,
@@ -50,7 +46,7 @@ def setup(model_name, model_type, fine_tuned:bool):
     global model, PATH_MODEL_FOLDER, PATH_SAVE_IMG, TEST_IMGS, PATH_TEST_IMGS
     
     # Load Model
-    PATH_MODEL_FOLDER = "Classifiers/" + MODEL_TYPE_DICT[model_type] + "/" + model_name + "/"
+    PATH_MODEL_FOLDER = "Classifiers/Old/" + MODEL_TYPE_DICT[model_type] + "/" + model_name + "/"
     model_name += "_FT.pt" if fine_tuned else ".pt"
     path = PATH_MODEL_FOLDER + model_name
     assert os.path.exists(path) , f"Model does not exist: {path}"
@@ -199,10 +195,20 @@ def reshape_transform(tensor):
 
 MODEL_NAME = "SWIN_S"
 MODEL_TYPE = "trans"
+
+def deprocess_image(img):
+    """ see https://github.com/jacobgil/keras-grad-cam/blob/master/grad-cam.py#L65 """
+    img = img - np.mean(img)
+    img = img / (np.std(img) + 1e-5)
+    img = img * 0.1
+    img = img + 0.5
+    img = np.clip(img, 0, 1)
+    return np.uint8(img * 255)
     
 from torchinfo import summary    
 
 if __name__ == "__main__":
+
     setup(MODEL_NAME, MODEL_TYPE, True)
     summary(model, input_size=(1,1,224,224), depth = 8, col_names=["input_size", "output_size"])
     # exit()
@@ -231,15 +237,25 @@ if __name__ == "__main__":
                 # 
                 #
             gb_model = GuidedBackpropReLUModel(model=model,device=DEVICE)
-            gb = gb_model(input_tensor, target_category=None)
+            gb = gb_model(input_tensor, target_category=TARGET_MAP[class_name])
             gb = cv2.merge([gb, gb, gb])
-            print(f"GB SHAPE: {gb.shape}")
 
             cam_mask = cv2.merge([grayscale_cam, grayscale_cam, grayscale_cam])
-            cam_gb = UN_NORMALIZE(cam_mask * gb)
-            gb = UN_NORMALIZE(gb)
+            cam_gb = deprocess_image(cam_mask * gb)
+            gb = deprocess_image(gb)
+
+
+            a0 = img[2].astype(np.uint8)
+            a1 = overlay_imgs[i].astype(np.uint8) if class_name != "Normal" else None
+            a2 = cam_image.astype(np.uint8)
+            a3 = (np.array(gb)*255).astype(np.uint8)
+            a4 = (np.array(cam_gb)*255).astype(np.uint8)
+
+            spacer_width = 10
+            _ = np.ones((a0.shape[0], spacer_width, a0.shape[2]), dtype=a0.dtype)*255
             
-            final_img = cv2.hconcat([img[2], overlay_imgs[i], cam_image, np.array(gb), np.array(cam_gb)]) if class_name != "Normal" else cam_image
+            final_img = cv2.hconcat([a0, _ , a1, _ , a2, _ , a3, _ , a4]) if class_name != "Normal" else cv2.hconcat([a0, _ , a2, _ , a3, _ , a4])
+            
             save_dir = PATH_SAVE_IMG + class_name + "/"
             if not os.path.exists(save_dir):
                 os.mkdir(save_dir)
@@ -249,7 +265,7 @@ if __name__ == "__main__":
     
     
     
-    
+    # YOU ARE WORKING WITH OLD NETWORKS ==> MODIFY PATH!!!
     
     
     
