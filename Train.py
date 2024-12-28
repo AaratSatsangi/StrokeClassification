@@ -250,6 +250,21 @@ def train_KCV():
                                 
                     elif(fine_tuning):
                         LOGGER.log("\t" + "Early Stopping Criteria Met: Stopping Training")
+                        del MODEL
+                        LOGGER.log("\t" + "-"*100)
+                        LOGGER.log("\t" + f"Testing Model: {CONFIG.PATH_MODEL_SAVE}")
+                        # Calculate Performance Metrics
+                        MODEL, OPTIMIZER = load_model_and_optim(fold=fold, fineTune=True)
+                        test_class_weights, _ = get_sample_weights(CONFIG.TEST_DATA, None, "Test", LOGGER)
+                        test_model(
+                            t_model=MODEL,
+                            test_loader = DataLoader(dataset = CONFIG.TEST_DATA, batch_size = CONFIG.BATCH_LOAD, num_workers=CONFIG.WORKERS-1),
+                            test_class_weights = test_class_weights,
+                            device = CONFIG.DEVICE,
+                            path_save=CONFIG.PATH_PERFORMANCE_SAVE,
+                            class_names=CONFIG.CLASS_NAMES,
+                            logger = LOGGER
+                        )
                         break
                         
             np.savetxt(CONFIG.PATH_LOSSES_SAVE, verify_lengths(training_losses, validation_losses), fmt="%0.5f", delimiter=",")
@@ -259,6 +274,12 @@ def train_KCV():
     except KeyboardInterrupt:
         # Exit Loop code
         LOGGER.log("\t" + "Keyboard Interrupt: Exiting Loop...")
+
+    fold_min_val_loss = torch.tensor(fold_min_val_loss)
+    LOGGER.log(f"Min Val Losses: {fold_min_val_loss}")
+    LOGGER.log(f"\tMean: {fold_min_val_loss.mean()}")
+    LOGGER.log(f"\tStd: {fold_min_val_loss.std()}")
+    LOGGER.log(f"\tMedian: {fold_min_val_loss.median()}")
 
 
 

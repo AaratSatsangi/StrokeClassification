@@ -6,6 +6,10 @@ import torch
 import json
 from torchvision.transforms import transforms
 from torchvision.datasets import ImageFolder
+from torch.utils.data import DataLoader
+from sklearn.metrics import classification_report
+import pandas as pd
+
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from Logger import MyLogger
@@ -100,6 +104,76 @@ def verify_lengths(l1:list, l2:list):
     
     return l1, l2
 
+
+def saveAsTable(path_save: str):
+    with open(path_save, 'r') as f:
+        data = json.load(f)
+    path_save = path_save[:-5] + ".png"
+    # Convert JSON data into a DataFrame
+    df: pd.DataFrame
+    df = pd.DataFrame(data).T  # Transpose to get categories as rows
+    df = df.applymap(lambda x: round(x, 3) if isinstance(x, float) else x)
+    df = df.iloc[:3,:3]
+
+    # Set up a Matplotlib figure
+    fig, ax = plt.subplots(figsize=(8, len(df) * 0.8))  # Adjust figure height based on rows
+
+    # Hide axes
+    ax.axis('tight')
+    ax.axis('off')
+
+    # Render the DataFrame as a table
+    table = ax.table(cellText=df.values,
+                     colLabels=df.columns,
+                     rowLabels=df.index,
+                     cellLoc='center',
+                     loc='center')
+
+    # Style the table
+    table.auto_set_font_size(False)
+    table.set_fontsize(10)
+    table.scale(1.2, 1.2)  # Adjust table scale
+    plt.savefig(path_save, dpi=300, bbox_inches='tight')
+
+def _binarizeUsingMax(t:torch.tensor):
+        max_values, _ = t.max(dim=1, keepdim=True)
+        return torch.where(t == max_values, torch.tensor(1.0), torch.tensor(0.0)).numpy()
+
+def _calcPerformMetrics(y_pred, y_true, class_names, path_save):
+    y_pred = _binarizeUsingMax(y_pred)
+    y_true = _binarizeUsingMax(y_true)
+    report = classification_report(y_true=y_true, y_pred=y_pred, target_names=class_names, output_dict=True, zero_division=0)
+    with open(path_save, 'w') as f:
+        json.dump(report, f, indent=4)
+    saveAsTable(path_save)
+    return
+
+
+def test_model(t_model: torch.nn.Module, test_loader:ImageFolder,test_class_weights, device, path_save, class_names, logger:MyLogger):
+    y_trueTensor = torch.empty(0,3)
+    y_predTensor = torch.empty(0,3)
+    CRITERION_TEST = torch.nn.CrossEntropyLoss(weight=test_class_weights.to(device))
+    with torch.no_grad():
+        test_loss = 0.0
+        for test_XY in test_loader:
+            x = test_XY[0].to(device)
+            y = test_XY[1].to(device)
+
+            y_pred =  t_model(x)
+            test_loss += CRITERION_TEST(y_pred, y).item()
+
+            y_true = torch.zeros(y.shape[0],3)
+            for row in range(y.shape[0]):
+                y_true[row, y[row]] = 1
+            y_trueTensor = torch.vstack([y_trueTensor, y_true.cpu()])
+            y_predTensor = torch.vstack([y_predTensor, torch.nn.functional.softmax(y_pred, dim=1).cpu()])
+
+    test_loss /= len(test_loader)
+    _calcPerformMetrics(y_pred=y_predTensor, y_true=y_trueTensor, class_names=class_names, path_save=path_save)
+    logger.log(f"\tFinal Test Loss:{round(test_loss,5)}")
+    return
+
+
 class Config:
     def __init__(self, path_init_file="init.json"):
         
@@ -166,6 +240,7 @@ class Config:
         self.CRITERION_TRAIN = torch.nn.CrossEntropyLoss()
         self.CRITERION_VAL:torch.nn.CrossEntropyLoss = None
         self.TRAIN_DATA = ImageFolder(self.PATH_DATASET_TRAIN, self.TRANSFORMS_TRAIN)
+        self.TEST_DATA = ImageFolder(self.PATH_DATASET_TEST, self.TRANSFORMS_TEST)
         self.CLASS_NAMES = self.TRAIN_DATA.classes
 
         self.PATH_MODEL_FOLDER = f"Classifiers/{model_type_dict[self.MODEL_TYPE]}/{self.MODEL_NAME}/"
@@ -173,9 +248,11 @@ class Config:
         self.EXPERIMENT_NUMBER = str(sum(1 for file_name in os.listdir(self.PATH_MODEL_FOLDER) if "architecture" in file_name))
         self.PATH_MODEL_LOG_FILE = f"{self.PATH_MODEL_LOG_FOLDER}/architecture_{self.EXPERIMENT_NUMBER}.txt"
         self.PATH_LOSSPLOT_FOLDER = f"{self.PATH_MODEL_FOLDER}Plots/"
+        self.PATH_PERFORMANCE_FOLDER = f"{self.PATH_MODEL_FOLDER}Performace/"
         self.PATH_MODEL_SAVE = None 
         self.PATH_LOSSES_SAVE = None
         self.PATH_LOSSPLOT_SAVE = None
+        self.PATH_PERFORMANCE_SAVE = None
         if(not os.path.exists(self.PATH_MODEL_LOG_FOLDER)): os.makedirs(self.PATH_MODEL_LOG_FOLDER)
         if(not os.path.exists(self.PATH_LOSSPLOT_FOLDER)): os.makedirs(self.PATH_LOSSPLOT_FOLDER)
         
@@ -200,6 +277,7 @@ class Config:
         self.PATH_MODEL_SAVE = f"{self.PATH_MODEL_FOLDER}F{self.CURRENT_FOLD+1}_Checkpoint.pth"
         self.PATH_LOSSES_SAVE = f"{self.PATH_MODEL_FOLDER}F{self.CURRENT_FOLD+1}_Losses.txt"
         self.PATH_LOSSPLOT_SAVE = f"{self.PATH_LOSSPLOT_FOLDER}F{self.CURRENT_FOLD+1}_lossplot.png"
+        self.PATH_PERFORMANCE_SAVE = f"{self.PATH_PERFORMANCE_FOLDER}F{self.CURRENT_FOLD+1}_performance.json"
 
 
 if __name__ == "__main__":
