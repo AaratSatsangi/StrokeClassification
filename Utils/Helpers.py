@@ -23,9 +23,9 @@ def plot_losses(fold, training_losses, validation_losses, ft_training_losses, ft
     plt.plot(epochs, validation_losses, label='Val Loss', marker='x', linestyle='--', color='orange')
 
     start = len(ft_training_losses) - 1 - ft_training_losses[::-1].index(-1)
-    epochs = range(start, len(ft_training_losses) + 1)
-    plt.plot(epochs, ft_training_losses, label='FT Train Loss', marker='o', linestyle='-', color='green')
-    plt.plot(epochs, ft_validation_losses, label='FT Val Loss', marker='x', linestyle='--', color='red')
+    epochs = range(start+1+1, len(ft_training_losses) + 1)
+    plt.plot(epochs, ft_training_losses[start+1:], label='FT Train Loss', marker='o', linestyle='-', color='green')
+    plt.plot(epochs, ft_validation_losses[start+1:], label='FT Val Loss', marker='x', linestyle='--', color='red')
 
 
     # Add titles and labels
@@ -35,7 +35,7 @@ def plot_losses(fold, training_losses, validation_losses, ft_training_losses, ft
     plt.yscale('log')
     
     # Set y-axis limits
-    plt.ylim(0.0001, max(max(training_losses), max(validation_losses)) * 1.1)  # Slightly higher than max loss
+    plt.ylim(0.0001, max(max(training_losses), max(validation_losses), max(ft_training_losses), max(ft_validation_losses)) * 1.1)  # Slightly higher than max loss
 
     # Adding a grid
     plt.grid(True, linestyle='--', alpha=0.7)

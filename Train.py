@@ -154,8 +154,8 @@ def train_KCV():
             CONFIG.CRITERION_VAL = nn.CrossEntropyLoss(weight=val_class_weights.to(CONFIG.DEVICE))
             SAMPLER_TRAIN = WeightedRandomSampler(weights=sample_weights_train , num_samples=len(sample_weights_train), replacement=True, generator=CONFIG.GENERATOR)
             
-            train_loader = DataLoader(dataset = _train, batch_size = CONFIG.BATCH_LOAD, num_workers=CONFIG.WORKERS-2, pin_memory=True, sampler=SAMPLER_TRAIN, generator=CONFIG.GENERATOR, persistent_workers=True)
-            val_loader = DataLoader(dataset = _val, batch_size = CONFIG.BATCH_LOAD, num_workers=CONFIG.WORKERS-2, pin_memory=True, generator=CONFIG.GENERATOR, persistent_workers=True)
+            train_loader = DataLoader(dataset = _train, batch_size = CONFIG.BATCH_LOAD, num_workers=CONFIG.WORKERS//2, pin_memory=True, sampler=SAMPLER_TRAIN, generator=CONFIG.GENERATOR, persistent_workers=True)
+            val_loader = DataLoader(dataset = _val, batch_size = CONFIG.BATCH_LOAD, num_workers=CONFIG.WORKERS//2, pin_memory=True, generator=CONFIG.GENERATOR, persistent_workers=True)
             
             #Initialize New Model for current fold 
             MODEL, OPTIMIZER, LR_SCHEDULER = load_model(fold=fold)
@@ -256,8 +256,8 @@ def train_KCV():
                         ft_training_losses.extend([-1]*(min_val_at_epoch))
                         ft_validation_losses.extend([-1]*(min_val_at_epoch))
                         
-                        ft_training_losses.extend(training_losses[min_val_at_epoch])
-                        ft_validation_losses.extend(validation_losses[min_val_at_epoch])
+                        ft_training_losses.append(training_losses[min_val_at_epoch])
+                        ft_validation_losses.append(validation_losses[min_val_at_epoch])
                         
                         epoch = 0
                         total_epochs = CONFIG.FINE_TUNE_EPOCHS
