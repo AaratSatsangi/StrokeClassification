@@ -48,26 +48,27 @@ class MyLogger:
                 while not self.server_queue.empty():
                     logs.append(self.server_queue.get_nowait())
                     self.server_queue.task_done()
-                data = {
-                    "msg": "\n".join(logs),
-                    "main_folder": self.SERVER_FOLDER,
-                    "model_name": self.MODEL_NAME,
-                    "user_name": self.SERVER_USERNAME
-                }
-                try:
-                    response = requests.post(url=self.SERVER_URL, data=data)
-                    if response.status_code != 200:
-                        if(not self.IS_SERVER_WORKING):
-                            print(f"Error Writing on Monitor Server: {response.status_code}")
-                            print(f"Response: {response.text}")
-                        self.IS_SERVER_WORKING = False
-                    else:
-                        self.IS_SERVER_WORKING = True
-                
-                except Exception as e:
-                    if(self.IS_SERVER_WORKING):
-                        print(f"Error while logging on server: {e}")
-                        self.IS_SERVER_WORKING = False
+                if(len(logs) > 0):
+                    data = {
+                        "msg": "\n".join(logs),
+                        "main_folder": self.SERVER_FOLDER,
+                        "model_name": self.MODEL_NAME,
+                        "user_name": self.SERVER_USERNAME
+                    }
+                    try:
+                        response = requests.post(url=self.SERVER_URL, data=data)
+                        if response.status_code != 200:
+                            if(not self.IS_SERVER_WORKING):
+                                print(f"Error Writing on Monitor Server: {response.status_code}")
+                                print(f"Response: {response.text}")
+                            self.IS_SERVER_WORKING = False
+                        else:
+                            self.IS_SERVER_WORKING = True
+                    
+                    except Exception as e:
+                        if(self.IS_SERVER_WORKING):
+                            print(f"Error while logging on server: {e}")
+                            self.IS_SERVER_WORKING = False
             except queue.Empty:
                 continue
             except Exception as e:

@@ -154,8 +154,8 @@ def train_KCV():
             CONFIG.CRITERION_VAL = nn.CrossEntropyLoss(weight=val_class_weights.to(CONFIG.DEVICE))
             SAMPLER_TRAIN = WeightedRandomSampler(weights=sample_weights_train , num_samples=len(sample_weights_train), replacement=True, generator=CONFIG.GENERATOR)
             
-            train_loader = DataLoader(dataset = _train, batch_size = CONFIG.BATCH_LOAD, num_workers=CONFIG.WORKERS//2, pin_memory=True, sampler=SAMPLER_TRAIN, generator=CONFIG.GENERATOR, persistent_workers=True, prefetch_factor=4)
-            val_loader = DataLoader(dataset = _val, batch_size = CONFIG.BATCH_LOAD, num_workers=CONFIG.WORKERS//2, pin_memory=True, generator=CONFIG.GENERATOR, persistent_workers=True, prefetch_factor=4)
+            train_loader = DataLoader(dataset = _train, batch_size = CONFIG.BATCH_LOAD, num_workers=CONFIG.WORKERS//2, pin_memory=True, sampler=SAMPLER_TRAIN, generator=CONFIG.GENERATOR, persistent_workers=True)
+            val_loader = DataLoader(dataset = _val, batch_size = CONFIG.BATCH_LOAD, num_workers=CONFIG.WORKERS//2, pin_memory=True, generator=CONFIG.GENERATOR, persistent_workers=True)
             
             #Initialize New Model for current fold 
             MODEL, OPTIMIZER, LR_SCHEDULER = load_model(fold=fold)
@@ -180,7 +180,7 @@ def train_KCV():
                 train_loss = 0.0
                 accum_loss = 0.0
                 count = 0
-                # Training
+                # Training 1 Epoch
                 MODEL.train()
                 for step, train_XY in enumerate(train_loader, 0):
                     
@@ -245,7 +245,7 @@ def train_KCV():
                 if(stop or epoch == total_epochs):
                     if not fine_tuning:
                         # Start Fine Tuning
-                        del MODEL
+                        del MODEL, OPTIMIZER, LR_SCHEDULER,
                         LOGGER.log("\t" + "-"*100)
                         MODEL, OPTIMIZER, LR_SCHEDULER = load_model(fold=fold, load_best=True, fineTune=True)
                         lr = LR_SCHEDULER.get_last_lr()[-1]
@@ -264,7 +264,7 @@ def train_KCV():
                                 
                     elif(fine_tuning):
                         LOGGER.log("\t" + "Early Stopping Criteria Met: Stopping Training")
-                        del MODEL
+                        del MODEL, OPTIMIZER, LR_SCHEDULER
                         LOGGER.log("\t" + "-"*100)
                         LOGGER.log("\t" + f"Testing Model: {CONFIG.PATH_MODEL_SAVE}")
                         # Calculate Performance Metrics
@@ -278,6 +278,7 @@ def train_KCV():
                             class_names=CONFIG.CLASS_NAMES,
                             logger = LOGGER
                         )
+                        del train_loader, val_loader
                         break
                         
             np.savetxt(CONFIG.PATH_LOSSES_SAVE, verify_lengths(training_losses, validation_losses), fmt="%0.5f", delimiter=",")
