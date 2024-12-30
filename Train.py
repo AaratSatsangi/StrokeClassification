@@ -279,9 +279,9 @@ def train_KCV():
                         recall_values[_class].append(metrics["recall"])
                         f1_values[_class].append(metrics["f1-score"])
                         LOGGER.log(f"\t\tClass: {_class}")
-                        LOGGER.log(f"\t\t|--- Precision: {metrics["precision"]}")
-                        LOGGER.log(f"\t\t|--- Recall: {metrics["recall"]}")
-                        LOGGER.log(f"\t\t|--- F1-Score: {metrics["f1-score"]}")
+                        LOGGER.log(f"\t\t|--- Precision: {metrics['precision']}")
+                        LOGGER.log(f"\t\t|--- Recall: {metrics['recall']}")
+                        LOGGER.log(f"\t\t|--- F1-Score: {metrics['f1-score']}")
 
                     del train_loader, val_loader
                     break
