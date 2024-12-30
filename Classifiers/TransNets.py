@@ -164,7 +164,7 @@ class CvT(nn.Module):
     
 if __name__ == "__main__":
     from torchinfo import summary
-    model = SWIN(model_size="s", pretrained=False)
+    model = CvT(model_size="s", pretrained=False)
     summary(model, input_size=(1, 1, 224, 224), depth=3, col_names=["input_size","output_size","num_params"])
     for name, param in model.model.named_parameters():
         print(f"NAME: {name}")

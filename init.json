@@ -1,11 +1,11 @@
 {
     "MODEL_NAME": "ResNet_S",
     "MODEL_TYPE": "conv",
-    "DEVICE": "cuda:1",
+    "DEVICE": "cuda:0",
     
-    "K_FOLD": 10,
-    "TRAIN_EPOCHS": 100,
-    "FINE_TUNE_EPOCHS": 100,
+    "K_FOLD": 2,
+    "TRAIN_EPOCHS": 2,
+    "FINE_TUNE_EPOCHS": 2,
     "PERSISTENCE": 100,
     "IMG_SIZE": [1, 224, 224],
     "AUTO_BREAK": true,
