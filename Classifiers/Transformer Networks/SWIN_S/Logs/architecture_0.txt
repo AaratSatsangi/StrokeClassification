@@ -14465,6 +14465,7 @@ Min Val Losses: tensor([0.0681, 0.0632, 0.0749, 0.0955, 0.1139, 0.0948])
 
 		Training Loss: [0.03216]
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 		Weighted Val Loss: [0.10557]
 		Minimum Val Loss: [0.07307]
 		(-) Learning Rate Decreased: [ 6.91e-03] --> [ 6.73e-03]
@@ -14502,15 +14503,25 @@ Min Val Losses: tensor([0.0681, 0.0632, 0.0749, 0.0955, 0.1139, 0.0948])
 		Weighted Val Loss: [0.11506]
 		Minimum Val Loss: [0.07307]
 		(-) Learning Rate Decreased: [ 6.36e-03] --> [ 6.17e-03]
+=======
+		Weighted Val Loss: [0.10508]
+		Minimum Val Loss: [0.07307]
+		(-) Learning Rate Decreased: [ 4.02e-03] --> [ 3.83e-03]
+>>>>>>> Stashed changes
 
 										  EPOCH TIME: [00:00:40]
 	++--------------------------------------------------------------------------------------------------
 	FOLD: [1/10]
+<<<<<<< Updated upstream
 	EPOCH: [6/100]								PERSISTENCE: [6/100]
+=======
+	EPOCH: [18/100]								PERSISTENCE: [18/100]
+>>>>>>> Stashed changes
 	++--------------------------------------------------------------------------------------------------
 
 
 		Training Loss: [0.03216]
+<<<<<<< Updated upstream
 		Weighted Val Loss: [0.12329]
 		Minimum Val Loss: [0.07307]
 		(-) Learning Rate Decreased: [ 6.17e-03] --> [ 5.98e-03]
@@ -14538,12 +14549,22 @@ Min Val Losses: tensor([0.0681, 0.0632, 0.0749, 0.0955, 0.1139, 0.0948])
 		Weighted Val Loss: [0.12637]
 		Minimum Val Loss: [0.07307]
 		(-) Learning Rate Decreased: [ 5.78e-03] --> [ 5.59e-03]
+=======
+		Weighted Val Loss: [0.07011]
+		Minimum Val Loss: [0.07011]
+		(-) Learning Rate Decreased: [ 3.83e-03] --> [ 3.64e-03]
+>>>>>>> Stashed changes
 
 										  EPOCH TIME: [00:00:40]
 	++--------------------------------------------------------------------------------------------------
 	FOLD: [1/10]
+<<<<<<< Updated upstream
 	EPOCH: [9/100]								PERSISTENCE: [9/100]
 	++--------------------------------------------------------------------------------------------------
 >>>>>>> Stashed changes
 =======
+>>>>>>> Stashed changes
+=======
+	EPOCH: [19/100]								PERSISTENCE: [1/100]
+	++--------------------------------------------------------------------------------------------------
 >>>>>>> Stashed changes

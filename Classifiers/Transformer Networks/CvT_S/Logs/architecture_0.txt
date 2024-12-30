@@ -14484,6 +14484,7 @@ Min Val Losses: tensor([0.1260, 0.1417, 0.0997, 0.1322, 0.1351, 0.1007])
 
 		Training Loss: [0.01753]
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 		Weighted Val Loss: [0.33576]
 		Minimum Val Loss: [0.12245]
 		(-) Learning Rate Decreased: [ 1.00e-02] --> [ 9.99e-03]
@@ -14557,36 +14558,66 @@ Min Val Losses: tensor([0.1260, 0.1417, 0.0997, 0.1322, 0.1351, 0.1007])
 		Weighted Val Loss: [0.25115]
 		Minimum Val Loss: [0.12245]
 		(-) Learning Rate Decreased: [ 9.94e-03] --> [ 9.92e-03]
+=======
+		Weighted Val Loss: [0.21592]
+		Minimum Val Loss: [0.12245]
+		(-) Learning Rate Decreased: [ 9.54e-03] --> [ 9.50e-03]
+>>>>>>> Stashed changes
 
 										  EPOCH TIME: [00:00:28]
 	++--------------------------------------------------------------------------------------------------
 	FOLD: [1/10]
+<<<<<<< Updated upstream
 	EPOCH: [68/100]								PERSISTENCE: [68/100]
+=======
+	EPOCH: [82/100]								PERSISTENCE: [82/100]
+>>>>>>> Stashed changes
 	++--------------------------------------------------------------------------------------------------
 
 
 		Training Loss: [0.01753]
+<<<<<<< Updated upstream
 		Weighted Val Loss: [0.26061]
 		Minimum Val Loss: [0.12245]
 		(-) Learning Rate Decreased: [ 9.92e-03] --> [ 9.90e-03]
+=======
+		Weighted Val Loss: [0.21482]
+		Minimum Val Loss: [0.12245]
+		(-) Learning Rate Decreased: [ 9.50e-03] --> [ 9.46e-03]
+>>>>>>> Stashed changes
 
 										  EPOCH TIME: [00:00:28]
 	++--------------------------------------------------------------------------------------------------
 	FOLD: [1/10]
+<<<<<<< Updated upstream
 	EPOCH: [69/100]								PERSISTENCE: [69/100]
+=======
+	EPOCH: [83/100]								PERSISTENCE: [83/100]
+>>>>>>> Stashed changes
 	++--------------------------------------------------------------------------------------------------
 
 
 		Training Loss: [0.01753]
+<<<<<<< Updated upstream
 		Weighted Val Loss: [0.23139]
 		Minimum Val Loss: [0.12245]
 		(-) Learning Rate Decreased: [ 9.90e-03] --> [ 9.88e-03]
+=======
+		Weighted Val Loss: [0.20057]
+		Minimum Val Loss: [0.12245]
+		(-) Learning Rate Decreased: [ 9.46e-03] --> [ 9.41e-03]
+>>>>>>> Stashed changes
 
 										  EPOCH TIME: [00:00:28]
 	++--------------------------------------------------------------------------------------------------
 	FOLD: [1/10]
+<<<<<<< Updated upstream
 	EPOCH: [70/100]								PERSISTENCE: [70/100]
 	++--------------------------------------------------------------------------------------------------
 >>>>>>> Stashed changes
 =======
+>>>>>>> Stashed changes
+=======
+	EPOCH: [84/100]								PERSISTENCE: [84/100]
+	++--------------------------------------------------------------------------------------------------
 >>>>>>> Stashed changes
