@@ -21,6 +21,8 @@ def load_model(fold:int=0, load_best=False, fineTune = False):
         model = TransNets.CvT(model_size=CONFIG.MODEL_SIZE, freezeToLayer=CONFIG.FREEZE_TO_LAYER, pretrained = not fineTune)
     elif "MaxViT" in CONFIG.MODEL_NAME:
         model = TransNets.MaxViT(model_size=CONFIG.MODEL_SIZE, freezeToLayer=CONFIG.FREEZE_TO_LAYER, pretrained = not fineTune)
+    elif "ResNet" in CONFIG.MODEL_NAME:
+        model = ConvNets.ResNet(model_size=CONFIG.MODEL_SIZE, freezeToLayer=CONFIG.FREEZE_TO_LAYER, pretrained = not fineTune)
     else:
         print(f"Error: {CONFIG.MODEL_NAME} not recognized!")
         exit(1)

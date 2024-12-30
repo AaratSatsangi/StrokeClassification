@@ -1,7 +1,7 @@
 {
-    "MODEL_NAME": "SWIN_S",
-    "MODEL_TYPE": "trans",
-    "DEVICE": "cuda:0",
+    "MODEL_NAME": "ResNet_S",
+    "MODEL_TYPE": "conv",
+    "DEVICE": "cuda:1",
     
     "K_FOLD": 10,
     "TRAIN_EPOCHS": 100,

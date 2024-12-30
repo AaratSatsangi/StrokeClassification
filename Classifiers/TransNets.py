@@ -65,31 +65,31 @@ class SWIN(nn.Module):
         
         # Load the Swin Transformer model
         if model_size == 'b':
-            self.swin = models.swin_b(weights=models.Swin_B_Weights.IMAGENET1K_V1 if pretrained else None)
+            self.model = models.swin_b(weights=models.Swin_B_Weights.IMAGENET1K_V1 if pretrained else None)
         elif model_size == 's':
-            self.swin = models.swin_s(weights=models.Swin_S_Weights.IMAGENET1K_V1 if pretrained else None)
+            self.model = models.swin_s(weights=models.Swin_S_Weights.IMAGENET1K_V1 if pretrained else None)
         elif model_size == 't':
-            self.swin = models.swin_t(weights=models.Swin_T_Weights.IMAGENET1K_V1 if pretrained else None)
+            self.model = models.swin_t(weights=models.Swin_T_Weights.IMAGENET1K_V1 if pretrained else None)
         self.last_freezed_layer = ""
 
         # Optionally freeze layers up to a certain layer
         if freezeToLayer is not None:
-            for name, param in self.swin.named_parameters():
+            for name, param in self.model.named_parameters():
                 if freezeToLayer in name:
                     self.last_freezed_layer = name
                     break
                 param.requires_grad = False
 
         # Modify the input layer for single-channel images if needed
-        self.swin.features[0][0] = nn.Conv2d(input_size[1], self.swin.features[0][0].out_channels, 
+        self.model.features[0][0] = nn.Conv2d(input_size[1], self.model.features[0][0].out_channels, 
                                               kernel_size=4, stride=4, padding=0)
 
         # Modify the final fully connected layer to match the number of output classes
-        in_features = self.swin.head.in_features
-        self.swin.head = nn.Linear(in_features, num_classes)
+        in_features = self.model.head.in_features
+        self.model.head = nn.Linear(in_features, num_classes)
 
     def forward(self, x):
-        return self.swin(x)
+        return self.model(x)
     
     def get_last_freezed_layer(self):
         return self.last_freezed_layer
@@ -164,7 +164,7 @@ class CvT(nn.Module):
     
 if __name__ == "__main__":
     from torchinfo import summary
-    model = MaxViT(model_size="s")
+    model = SWIN(model_size="s", pretrained=False)
     summary(model, input_size=(1, 1, 224, 224), depth=3, col_names=["input_size","output_size","num_params"])
     for name, param in model.model.named_parameters():
         print(f"NAME: {name}")

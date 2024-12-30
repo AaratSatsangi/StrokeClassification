@@ -1,34 +1,44 @@
-import torch
+import sys
 from torch import nn
 from torchinfo import summary
 from torchvision import models
 
-class ResNet101(nn.Module):
-    def __init__(self, input_size = (1, 1, 224, 224), num_classes = 3, freezeToLayer:str = "layer3.12"): #Freezing half of the layers
-        super(ResNet101, self).__init__()
-        
+class ResNet(nn.Module):
+    def __init__(self, model_size:str, input_size=(1, 1, 224, 224), num_classes=3, freezeToLayer:str = "layer3.12", pretrained=True): # model size can be [t,s,b]
+        super(ResNet, self).__init__()
+        try:
         # Load the ResNet101 model
-        self.resnet101 = models.resnet101(weights = models.ResNet101_Weights.IMAGENET1K_V1)
+            if model_size == "t":
+                self.model = models.resnet50(weights = models.ResNet50_Weights.IMAGENET1K_V1 if pretrained else None)
+            elif model_size == "s":
+                self.model = models.resnet101(weights = models.ResNet101_Weights.IMAGENET1K_V1 if pretrained else None)
+            elif model_size == "b":
+                self.model = models.resnet152(weights = models.ResNet152_Weights.IMAGENET1K_V1 if pretrained else None)
+            else:
+                raise ValueError(f"Model Size should be from [t, s, b] i.e. tiny (ResNet50), small (ResNet101), base (ResNet152), but {model_size} was passed")
+        except ValueError as e:
+            print(f"Error: {e}")
+            sys.exit(1)
         self.last_freezed_layer = ""
         
         # Optionally freeze layers up to a certain layer
         if freezeToLayer is not None:
-            for name, param in self.resnet101.named_parameters():
+            for name, param in self.model.named_parameters():
                 if(freezeToLayer in name):
                     self.last_freezed_layer = name
                     break
                 param.requires_grad = False
         
         # Modify the input layer for single-channel images if needed
-        self.resnet101.conv1 = nn.Conv2d(input_size[1], 64, kernel_size=7, stride=2, padding=3, bias=False)
-        self.resnet101.bn1.requires_grad_(True)
+        self.model.conv1 = nn.Conv2d(input_size[1], 64, kernel_size=7, stride=2, padding=3, bias=False)
+        self.model.bn1.requires_grad_(True)
         
         # Modify the final fully connected layer to match the number of output classes
-        in_features = self.resnet101.fc.in_features
-        self.resnet101.fc = nn.Linear(in_features, num_classes)
+        in_features = self.model.fc.in_features
+        self.model.fc = nn.Linear(in_features, num_classes)
 
     def forward(self, x):
-        return self.resnet101(x)
+        return self.model(x)
     
     def get_last_freezed_layer(self):
         return self.last_freezed_layer
@@ -66,8 +76,10 @@ class VGG19_BN(nn.Module):
 
 # Example usage
 if __name__ == "__main__":
-    model = VGG19_BN(input_size=(1, 1, 224, 224), num_classes=3)
-    summary(model)
+    model = ResNet(model_size="s", pretrained=False)
+    summary(model, input_size=(1, 1, 224, 224), depth=3, col_names=["input_size","output_size","num_params"])
+    for name, param in model.model.named_parameters():
+        print(f"NAME: {name}")
     # Test with a dummy input
     # dummy_input = torch.randn(1, 1, 224, 224)  # Batch size 1, 1 channel, 224x224 image
     # output = model(dummy_input)
