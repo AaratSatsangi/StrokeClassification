@@ -154,8 +154,8 @@ def train_KCV():
             CONFIG.CRITERION_VAL = nn.CrossEntropyLoss(weight=val_class_weights.to(CONFIG.DEVICE))
             SAMPLER_TRAIN = WeightedRandomSampler(weights=sample_weights_train , num_samples=len(sample_weights_train), replacement=True, generator=CONFIG.GENERATOR)
             
-            train_loader = DataLoader(dataset = _train, batch_size = CONFIG.BATCH_LOAD, num_workers=CONFIG.WORKERS//2, pin_memory=True, sampler=SAMPLER_TRAIN, generator=CONFIG.GENERATOR, persistent_workers=True)
-            val_loader = DataLoader(dataset = _val, batch_size = CONFIG.BATCH_LOAD, num_workers=CONFIG.WORKERS//2, pin_memory=True, generator=CONFIG.GENERATOR, persistent_workers=True)
+            train_loader = DataLoader(dataset = _train, batch_size = CONFIG.BATCH_LOAD, num_workers=CONFIG.WORKERS//2, pin_memory=True, sampler=SAMPLER_TRAIN, generator=CONFIG.GENERATOR, persistent_workers=True, prefetch_factor=4)
+            val_loader = DataLoader(dataset = _val, batch_size = CONFIG.BATCH_LOAD, num_workers=CONFIG.WORKERS//2, pin_memory=True, generator=CONFIG.GENERATOR, persistent_workers=True, prefetch_factor=4)
             
             #Initialize New Model for current fold 
             MODEL, OPTIMIZER, LR_SCHEDULER = load_model(fold=fold)

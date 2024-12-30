@@ -215,7 +215,7 @@ class Config:
 
         self.SERVER_USERNAME = train_vars["SERVER_USERNAME"]
         self.SERVER_FOLDER = train_vars["SERVER_FOLDER"]
-        self.SERVER_URL = train_vars["SERVER_URL"]
+        self.SERVER_URL = train_vars["SERVER_URL"] if  train_vars["SERVER_URL"] != "" else None
         self.PATH_DATASET_TRAIN = train_vars["PATH_DATASET_TRAIN"]
         self.PATH_DATASET_TEST = train_vars["PATH_DATASET_TEST"]
         
