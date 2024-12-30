@@ -244,7 +244,6 @@ def train_KCV():
                 LOGGER.log("") # Add New Line
                 end_time = time.time()
                 logTime(start_time, end_time, logger=LOGGER)
-                epoch += 1
 
                 if epoch == CONFIG.TRAIN_EPOCHS-1:
                     LOGGER.log("\t" + "-"*100)
@@ -278,10 +277,10 @@ def train_KCV():
                         precision_values[_class].append(metrics["precision"])
                         recall_values[_class].append(metrics["recall"])
                         f1_values[_class].append(metrics["f1-score"])
-                        LOGGER.log(f"\t\tClass: {_class}")
-                        LOGGER.log(f"\t\t|--- Precision: {metrics['precision']}")
-                        LOGGER.log(f"\t\t|--- Recall: {metrics['recall']}")
-                        LOGGER.log(f"\t\t|--- F1-Score: {metrics['f1-score']}")
+                        LOGGER.log(f"\n\t\tClass: {_class}")
+                        LOGGER.log(f"\t\t|--- Precision: {metrics['precision']: 0.5f}")
+                        LOGGER.log(f"\t\t|--- Recall: {metrics['recall']: 0.5f}")
+                        LOGGER.log(f"\t\t|--- F1-Score: {metrics['f1-score']: 0.5f}")
 
                     del train_loader, val_loader
                     break
@@ -312,9 +311,9 @@ def train_KCV():
                 "f1-score": f1_values[_class]
             }
             LOGGER.log(f"\tClass: {_class}")
-            LOGGER.log(f"\t|--- Precision: mean={p.mean()}, std={p.std()}, median={p.median}")
-            LOGGER.log(f"\t|--- Recall: mean={r.mean()}, std={r.std()}, median={r.median}")
-            LOGGER.log(f"\t|--- F1-Score: mean={f1.mean()}, std={f1.std()}, median={f1.median}")
+            LOGGER.log(f"\t|--- Precision: mean={p.mean(): 0.5f}, std={p.std(): 0.5f}, median={p.median(): 0.5f}")
+            LOGGER.log(f"\t|--- Recall: mean={r.mean(): 0.5f}, std={r.std(): 0.5f}, median={r.median(): 0.5f}")
+            LOGGER.log(f"\t|--- F1-Score: mean={f1.mean(): 0.5f}, std={f1.std(): 0.5f}, median={f1.median(): 0.5f}")
         
         with open(CONFIG.PATH_PERFORMANCE_FOLDER + "final_performance.json", "w") as json_file:
             json.dump(final_values, json_file, indent=4)
