@@ -15,17 +15,17 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from Logger import MyLogger
 from Preprocessor import CTPreprocessor
 
-def plot_losses(fold, training_losses, validation_losses, ft_training_losses, ft_validation_losses, save_path: str, logger:MyLogger):
+def plot_losses(fold, training_losses, validation_losses, save_path: str, logger:MyLogger):
 
     epochs = range(1, len(training_losses) + 1)
     plt.figure(figsize=(10, 6))
     plt.plot(epochs, training_losses, label='Train Loss', marker='o', linestyle='-', color='blue')
     plt.plot(epochs, validation_losses, label='Val Loss', marker='x', linestyle='--', color='orange')
 
-    start = len(ft_training_losses) - 1 - ft_training_losses[::-1].index(-1)
-    epochs = range(start+1+1, len(ft_training_losses) + 1)
-    plt.plot(epochs, ft_training_losses[start+1:], label='FT Train Loss', marker='o', linestyle='-', color='green')
-    plt.plot(epochs, ft_validation_losses[start+1:], label='FT Val Loss', marker='x', linestyle='--', color='red')
+    # start = len(ft_training_losses) - 1 - ft_training_losses[::-1].index(-1)
+    # epochs = range(start+1+1, len(ft_training_losses) + 1)
+    # plt.plot(epochs, ft_training_losses[start+1:], label='FT Train Loss', marker='o', linestyle='-', color='green')
+    # plt.plot(epochs, ft_validation_losses[start+1:], label='FT Val Loss', marker='x', linestyle='--', color='red')
 
 
     # Add titles and labels
@@ -35,7 +35,7 @@ def plot_losses(fold, training_losses, validation_losses, ft_training_losses, ft
     plt.yscale('log')
     
     # Set y-axis limits
-    plt.ylim(0.0001, max(max(training_losses), max(validation_losses), max(ft_training_losses), max(ft_validation_losses)) * 1.1)  # Slightly higher than max loss
+    plt.ylim(0.0001, max(max(training_losses), max(validation_losses)) * 1.2)  # Slightly higher than max loss
 
     # Adding a grid
     plt.grid(True, linestyle='--', alpha=0.7)
@@ -152,7 +152,7 @@ def _calcPerformMetrics(y_pred, y_true, class_names, path_save):
     with open(path_save, 'w') as f:
         json.dump(report, f, indent=4)
     saveAsTable(path_save)
-    return
+    return report
 
 
 def test_model(t_model: torch.nn.Module, test_loader:ImageFolder,test_class_weights, device, path_save, class_names, logger:MyLogger):
@@ -175,9 +175,9 @@ def test_model(t_model: torch.nn.Module, test_loader:ImageFolder,test_class_weig
             y_predTensor = torch.vstack([y_predTensor, torch.nn.functional.softmax(y_pred, dim=1).cpu()])
 
     test_loss /= len(test_loader)
-    _calcPerformMetrics(y_pred=y_predTensor, y_true=y_trueTensor, class_names=class_names, path_save=path_save)
+    report = _calcPerformMetrics(y_pred=y_predTensor, y_true=y_trueTensor, class_names=class_names, path_save=path_save)
     logger.log(f"\tFinal Test Loss:{round(test_loss,5)}")
-    return
+    return report
 
 
 class Config:

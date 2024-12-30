@@ -40,7 +40,7 @@ def load_model(fold:int=0, load_best=False, fineTune = False):
             LOGGER.log("\t" + "+"*100)
             LOGGER.log("\t"*6 + "STARTING FINE TUNING")
             LOGGER.log("\t" + "+"*100)
-            LOGGER.log(f"\tMin Val Loss: [{checkpoint['val_loss']: 0.5f}] at Epoch {checkpoint['epoch']}")
+            LOGGER.log(f"\tMin Train Loss: [{checkpoint['train_loss']: 0.5f}] at Epoch {checkpoint['epoch']}")
             LOGGER.log(f"\tLoading Best {CONFIG.MODEL_NAME} Model for Fold: [{fold+1}/{CONFIG.K_FOLD}]")
         
             # Open all Layers
@@ -53,12 +53,12 @@ def load_model(fold:int=0, load_best=False, fineTune = False):
     save_arch(model=model, fineTune=fineTune)  
     return model, optim, lr_schedular
 
-def save_model(model:nn.Module, optim:torch.optim.SGD, lr_schedular:CosineAnnealingWarmRestarts, epoch, val_loss):
+def save_model(model:nn.Module, optim:torch.optim.SGD, lr_schedular:CosineAnnealingWarmRestarts, epoch, train_loss):
     torch.save({
         "model_state_dict": model.state_dict(),
         "optimizer_state_dict": optim.state_dict(),
         "lr_schedular_state_dict": lr_schedular.state_dict(),
-        "val_loss": val_loss,
+        "train_loss": train_loss,
         "epoch": epoch
     }, CONFIG.PATH_MODEL_SAVE)
 
@@ -139,7 +139,10 @@ def train_KCV():
     LOGGER.log("\t\t\t\t\tTraining: " + CONFIG.MODEL_NAME)
     LOGGER.log("\n" + "#"*115)
 
-    fold_min_val_loss = []
+    # fold_min_val_loss = []
+    precision_values = {key: [] for key in CONFIG.CLASS_NAMES}
+    recall_values = {key: [] for key in CONFIG.CLASS_NAMES}
+    f1_values = {key: [] for key in CONFIG.CLASS_NAMES}
     try:
         for fold, (train_idx, val_idx) in enumerate(KF.split(CONFIG.TRAIN_DATA)):
             LOGGER.log("\t" + "="*100)
@@ -162,17 +165,16 @@ def train_KCV():
             #Initialize New Model for current fold 
             MODEL, OPTIMIZER, LR_SCHEDULER = load_model(fold=fold)
             training_losses = []
-            ft_training_losses = []
             validation_losses = []
-            ft_validation_losses = []
             p_counter = 1
-            min_val_loss = float('inf')
+            # min_val_loss = float('inf')
+            min_train_loss = float('inf')
             lr = CONFIG.LEARNING_RATE
 
             epoch = 0
             fine_tuning = False
-            total_epochs = CONFIG.TRAIN_EPOCHS
-            while (epoch < total_epochs):
+            total_epochs = CONFIG.TRAIN_EPOCHS + CONFIG.FINE_TUNE_EPOCHS
+            for epoch in range(total_epochs):
                 start_time = time.time()
                 LOGGER.log("\t" + f"{('--' if not fine_tuning else '++')}" + "-"*98)
                 LOGGER.log("\t" + f"FOLD: [{fold+1}/{CONFIG.K_FOLD}]")
@@ -209,7 +211,7 @@ def train_KCV():
                     count += 1
                 # avg epoch loss
                 train_loss /= len(train_loader)
-                training_losses.append(train_loss) if not fine_tuning else ft_training_losses.append(train_loss)
+                training_losses.append(train_loss)
                 LOGGER.log("\n\n\t" +"\tTraining Loss: [%0.5f]" % (training_losses[-1]))
 
                 # Validation
@@ -223,16 +225,16 @@ def train_KCV():
                         y_pred = MODEL(imgs)
                         val_loss += CONFIG.CRITERION_VAL(y_pred, labels).item()
                 val_loss /= len(val_loader)
-                validation_losses.append(val_loss) if not fine_tuning else ft_validation_losses.append(val_loss)
+                validation_losses.append(val_loss)
                 LOGGER.log("\t" +"\tWeighted Val Loss: [%0.5f]" % (val_loss))
 
-                # Save Best Model
+                # Save Best Model with minimum training loss
                 p_counter += 1
-                if(val_loss < min_val_loss):
-                    min_val_loss = val_loss
-                    save_model(model=MODEL, optim=OPTIMIZER, lr_schedular=LR_SCHEDULER, epoch=epoch, val_loss=val_loss)
+                if(train_loss < min_train_loss):
+                    min_train_loss = train_loss
+                    save_model(model=MODEL, optim=OPTIMIZER, lr_schedular=LR_SCHEDULER, epoch=epoch, train_loss=train_loss)
                     p_counter = 1
-                LOGGER.log("\t" +"\tMinimum Val Loss: [%0.5f]" % (min_val_loss))
+                LOGGER.log("\t" +"\tMinimum Training Loss: [%0.5f]" % (min_train_loss))
 
                 # Learning Rate Schedular Step
                 lr = scheduler_step(LR_SCHEDULER, lr, val_loss = val_loss)
@@ -243,70 +245,79 @@ def train_KCV():
                 end_time = time.time()
                 logTime(start_time, end_time, logger=LOGGER)
                 epoch += 1
+
+                if epoch == CONFIG.TRAIN_EPOCHS-1:
+                    LOGGER.log("\t" + "-"*100)
+                    LOGGER.log("\t" + "\t\t\tFine Tuning")
+                    LOGGER.log("\t" + "-"*100)
+                    # Open all layers
+                    for _, param in MODEL.named_parameters():
+                        param.requires_grad = True
+                    fine_tuning = True
+                    p_counter = 1
                 
-                if(stop or epoch == total_epochs):
-                    if not fine_tuning:
-                        # Start Fine Tuning
-                        del MODEL, OPTIMIZER, LR_SCHEDULER,
-                        LOGGER.log("\t" + "-"*100)
-                        MODEL, OPTIMIZER, LR_SCHEDULER = load_model(fold=fold, load_best=True, fineTune=True)
-                        lr = LR_SCHEDULER.get_last_lr()[-1]
-                        fine_tuning = True
-                        p_counter = 1
-                        
-                        min_val_at_epoch = np.argmin(validation_losses)
-                        ft_training_losses.extend([-1]*(min_val_at_epoch))
-                        ft_validation_losses.extend([-1]*(min_val_at_epoch))
-                        
-                        ft_training_losses.append(training_losses[min_val_at_epoch])
-                        ft_validation_losses.append(validation_losses[min_val_at_epoch])
-                        
-                        epoch = 0
-                        total_epochs = CONFIG.FINE_TUNE_EPOCHS
-                                
-                    elif(fine_tuning):
-                        LOGGER.log("\t" + "Early Stopping Criteria Met: Stopping Training")
-                        del MODEL, OPTIMIZER, LR_SCHEDULER
-                        LOGGER.log("\t" + "-"*100)
-                        LOGGER.log("\t" + f"Testing Model: {CONFIG.PATH_MODEL_SAVE}")
-                        # Calculate Performance Metrics
-                        MODEL, OPTIMIZER, LR_SCHEDULER = load_model(fold=fold, load_best=True, fineTune=False)
-                        test_model(
-                            t_model=MODEL,
-                            test_loader = val_loader,
-                            test_class_weights = val_class_weights,
-                            device = CONFIG.DEVICE,
-                            path_save=CONFIG.PATH_PERFORMANCE_SAVE,
-                            class_names=CONFIG.CLASS_NAMES,
-                            logger = LOGGER
-                        )
-                        del train_loader, val_loader
-                        break
+                elif epoch == total_epochs-1:
+                    del MODEL, OPTIMIZER, LR_SCHEDULER
+                    LOGGER.log("\t" + "-"*100)
+                    LOGGER.log("\t" + f"For Fold [{fold+1}] Testing Model: {CONFIG.PATH_MODEL_SAVE}")
+                    # Calculate Performance Metrics
+                    MODEL, OPTIMIZER, LR_SCHEDULER = load_model(fold=fold, load_best=True, fineTune=False)
+                    MODEL.eval()
+                    report = test_model(
+                        t_model=MODEL,
+                        test_loader = val_loader,
+                        test_class_weights = val_class_weights,
+                        device = CONFIG.DEVICE,
+                        path_save=CONFIG.PATH_PERFORMANCE_SAVE,
+                        class_names=CONFIG.CLASS_NAMES,
+                        logger = LOGGER
+                    )
+
+                    for _class in CONFIG.CLASS_NAMES:
+                        metrics = report[_class]
+                        precision_values[_class].append(metrics["precision"])
+                        recall_values[_class].append(metrics["recall"])
+                        f1_values[_class].append(metrics["f1-score"])
+                        LOGGER.log(f"\t\tClass: {_class}")
+                        LOGGER.log(f"\t\t|--- Precision: {metrics["precision"]}")
+                        LOGGER.log(f"\t\t|--- Recall: {metrics["recall"]}")
+                        LOGGER.log(f"\t\t|--- F1-Score: {metrics["f1-score"]}")
+
+                    del train_loader, val_loader
+                    break
                         
             np.savetxt(CONFIG.PATH_LOSSES_SAVE, verify_lengths(training_losses, validation_losses), fmt="%0.5f", delimiter=",")
-            np.savetxt(CONFIG.PATH_LOSSES_SAVE[:-4]+"_FT.txt", verify_lengths(ft_training_losses, ft_validation_losses), fmt="%0.5f", delimiter=",")
             
             plot_losses(
                 fold=fold,
                 training_losses=training_losses, 
                 validation_losses=validation_losses,
-                ft_training_losses=ft_training_losses,
-                ft_validation_losses=ft_validation_losses,
                 save_path=CONFIG.PATH_LOSSPLOT_SAVE, 
                 logger=LOGGER
             )
-            fold_min_val_loss.append(min_val_loss)
+            # fold_min_val_loss.append(min_val_loss)
 
     except KeyboardInterrupt:
         # Exit Loop code
         LOGGER.log("\t" + "Keyboard Interrupt: Exiting Loop...")
     finally:
-        fold_min_val_loss = torch.tensor(fold_min_val_loss)
-        LOGGER.log(f"Min Val Losses: {fold_min_val_loss}")
-        LOGGER.log(f"\tMean: {fold_min_val_loss.mean()}")
-        LOGGER.log(f"\tStd: {fold_min_val_loss.std()}")
-        LOGGER.log(f"\tMedian: {fold_min_val_loss.median()}")
-        LOGGER.stop()
+        final_values = {}
+        for _class in CONFIG.CLASS_NAMES:
+            p = torch.tensor(precision_values[_class])
+            r = torch.tensor(recall_values[_class])
+            f1 = torch.tensor(f1_values[_class])
+            final_values[_class] = {
+                "precision": precision_values[_class],
+                "recall": recall_values[_class],
+                "f1-score": f1_values[_class]
+            }
+            LOGGER.log(f"\tClass: {_class}")
+            LOGGER.log(f"\t|--- Precision: mean={p.mean()}, std={p.std()}, median={p.median}")
+            LOGGER.log(f"\t|--- Recall: mean={r.mean()}, std={r.std()}, median={r.median}")
+            LOGGER.log(f"\t|--- F1-Score: mean={f1.mean()}, std={f1.std()}, median={f1.median}")
+        
+        with open(CONFIG.PATH_PERFORMANCE_FOLDER + "final_performance.json", "w") as json_file:
+            json.dump(final_values, json_file, indent=4)
 
    
 

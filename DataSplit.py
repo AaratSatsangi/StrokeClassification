@@ -18,7 +18,7 @@ def get_nums():
 
     percent_num = copy.deepcopy(total_num)
     for key in percent_num.keys():
-        percent_num[key] = np.round(percent_num[key] / total, 3)
+        percent_num[key] = np.round(percent_num[key] / total, 5)
     
     return total_num, percent_num
 
@@ -66,7 +66,7 @@ if __name__ == "__main__":
     test_indices = {}
     total_train = 0
     total_test = 0
-    
+    exit()
     for _class in total_num.keys():
         train_indices[_class], test_indices[_class] = train_test_split(pick_percent=SPLIT[0], total_class_num = total_num[_class])
         total_train += len(train_indices[_class])
