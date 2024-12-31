@@ -7,9 +7,11 @@ import random
 from PIL import Image
 from Preprocessor import CTPreprocessor
 from torchvision import transforms
-from pytorch_grad_cam import GradCAMPlusPlus, GuidedBackpropReLUModel
+from pytorch_grad_cam import GradCAMPlusPlus, GuidedBackpropReLUModel, AblationCAM, GradCAM, ScoreCAM, EigenCAM
 from pytorch_grad_cam.utils.model_targets import ClassifierOutputSoftmaxTarget
 from pytorch_grad_cam.utils.image import show_cam_on_image
+from Classifiers import TransNets, ConvNets
+from torchinfo import summary    
 
 # ========= DO NOT TOUCH CONSTANTS ===========
 random.seed(26)
@@ -42,21 +44,33 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 # ============================================
 model:torch.nn.Module = None
 
-def setup(model_name, model_type, fine_tuned:bool):
+def load_model(model_name, path):
+    if "SWIN" in model_name:
+        model = TransNets.SWIN(model_size="s")
+    elif "CvT" in model_name:
+        model = TransNets.CvT(model_size="s")
+    elif "MaxViT" in model_name:
+        model = TransNets.MaxViT(model_size="s")
+    elif "ResNet" in model_name:
+        model = ConvNets.ResNet(model_size="s")
+    else:
+        print(f"Error: {model_name} not recognized!")
+        exit(1)
+
+    checkpoint = torch.load(path, "cuda:0")
+    model.load_state_dict(checkpoint["model_state_dict"])
+    model.eval()
+    return model   
+
+def setup(model_name, model_type, fold):
     global model, PATH_MODEL_FOLDER, PATH_SAVE_IMG, TEST_IMGS, PATH_TEST_IMGS
     
     # Load Model
-    PATH_MODEL_FOLDER = "Classifiers/Old/" + MODEL_TYPE_DICT[model_type] + "/" + model_name + "/"
-    model_name += "_FT.pt" if fine_tuned else ".pt"
-    path = PATH_MODEL_FOLDER + model_name
-    assert os.path.exists(path) , f"Model does not exist: {path}"
-    try:
-        print(f"Loading Model: {model_name}")
-        _, model = next(torch.load(path, map_location="cuda:0").named_children())
-        model.to(DEVICE).eval()
-    except Exception as e:
-        print(f"Exception occured while loading model: {e}")
-        sys.exit(1)
+    PATH_MODEL_FOLDER = "Classifiers/" + MODEL_TYPE_DICT[model_type] + "/" + model_name + "/"
+    # model_name += "_FT.pt" if fine_tuned else ".pt"
+    path_checkpoint = PATH_MODEL_FOLDER + f"F{fold}_Checkpoint.pth"
+    assert os.path.exists(path_checkpoint) , f"Model does not exist: {path_checkpoint}"
+    model = load_model(model_name=model_name, path=path_checkpoint)
 
     # Check Directory exists to save heatmaps
     PATH_SAVE_IMG = PATH_MODEL_FOLDER + "Heatmaps/"
@@ -64,14 +78,14 @@ def setup(model_name, model_type, fine_tuned:bool):
         os.mkdir(PATH_SAVE_IMG)
 
     # get random image paths
-    main_path = "Data/Compiled/PNG/"
-    main_overlay_path = "Data/Compiled/Overlay/"
+    main_path = "Data/Compiled/Test Images/PNG/"
+    main_overlay_path = "Data/Compiled/Test Images/Overlay/"
     for class_name in os.listdir(main_path):
         imgs_main_path = main_path + class_name + "/"
         imgs_overlay_path = main_overlay_path + class_name + "/"
         imgs_paths = []
         overlay_paths = []
-        for img_path in random.sample(os.listdir(imgs_main_path), 10):
+        for img_path in os.listdir(imgs_main_path):
             imgs_paths.append(os.path.join(imgs_main_path, img_path))
             if class_name != "Normal": 
                 overlay_paths.append(os.path.join(imgs_overlay_path, img_path))
@@ -92,16 +106,15 @@ def setup(model_name, model_type, fine_tuned:bool):
                 overlay = Image.open(overlay_path).convert("RGB")
                 OVERLAY_IMGS[class_name].append(np.uint8(resize(overlay)))
 
-
-def _get_target_layer(model_name):
+def _get_target_layer(model_name, model: torch.nn.Module):
     target_layer = []
     if "ResNet" in model_name: 
         for name, module in model.named_children():
             # print(name)
-            if(name == "layer2" or name == "layer3" or name == "layer4" ):
+            if(name == "layer4"):
                 target_layer.append(module[-1])
-            elif (name == "avgpool"):
-                target_layer.append(module)
+            # elif (name == "avgpool"):
+            #     target_layer.append(module)
     
     
     elif "SWIN" in model_name:
@@ -117,7 +130,9 @@ def _get_target_layer(model_name):
                                 target_layer.append(sub)
                     except:
                         print()
-                        
+            # if name == "permute":
+            #     print(f"\t\t Appended: ==> {sub}")
+            #     target_layer.append(module)
                 # target_layer.append(module)
     
     
@@ -154,15 +169,14 @@ def reshape_transform(tensor):
         result = result.transpose(2, 3).transpose(1, 2)
     elif "SWIN" in MODEL_NAME:
         result = tensor.transpose(2, 3).transpose(1, 2)
+    elif "ResNet" in MODEL_NAME:
+        return tensor
     else:
         print("ERROR")
         exit()
     # print(result.shape)
     # exit()
     return result
-
-MODEL_NAME = "SWIN_S"
-MODEL_TYPE = "trans"
 
 def deprocess_image(img):
     """ see https://github.com/jacobgil/keras-grad-cam/blob/master/grad-cam.py#L65 """
@@ -173,15 +187,18 @@ def deprocess_image(img):
     img = np.clip(img, 0, 1)
     return np.uint8(img * 255)
     
-from torchinfo import summary    
+MODEL_NAME = "ResNet_S"
+MODEL_TYPE = "conv"
+FOLD = 5
 
 if __name__ == "__main__":
 
-    setup(MODEL_NAME, MODEL_TYPE, True)
+    setup(MODEL_NAME, MODEL_TYPE, FOLD)
     summary(model, input_size=(1,1,224,224), depth = 8, col_names=["input_size", "output_size"])
     # exit()
     # getAttentionMap(model_name=MODEL_NAME)
-    target_layer = _get_target_layer(MODEL_NAME)
+    _, model = next(model.named_children())
+    target_layer = _get_target_layer(MODEL_NAME, model)
     
     for class_name, imgs in TEST_IMGS.items():
         targets = [ClassifierOutputSoftmaxTarget(TARGET_MAP[class_name])]
@@ -191,17 +208,20 @@ if __name__ == "__main__":
         for img in imgs:
             input_tensor = img[0].unsqueeze(0)
 
-            with GradCAMPlusPlus(model=model, target_layers=target_layer, reshape_transform=reshape_transform) as cam:
+            with ScoreCAM(model=model, target_layers=target_layer, reshape_transform=reshape_transform) as cam:
                 # You can also pass aug_smooth=True and eigen_smooth=True, to apply smoothing.
                 grayscale_cam = cam(input_tensor=input_tensor, targets=targets)
                 # In this example grayscale_cam has only one image in the batch:
                 grayscale_cam = grayscale_cam[0, :]
+                cv2.imwrite(PATH_SAVE_IMG + class_name + "/" + "CAM_" + str(i) + ".jpg", grayscale_cam*255)
+                exit()            
                 # print(grayscale_cam.shape)
                 cam_image = show_cam_on_image(img[1], grayscale_cam, use_rgb=True, image_weight=0.5)
                 # You can also get the model outputs without having to redo inference
                 model_outputs = cam.outputs
                 output_prob = torch.nn.functional.softmax(model_outputs, dim=1)[0][TARGET_MAP[class_name]]
                 # Save grayscale cam
+                # cv2.imwrite("tmp.png", cam_image)
                 # 
                 #
             gb_model = GuidedBackpropReLUModel(model=model,device=DEVICE)
@@ -229,11 +249,6 @@ if __name__ == "__main__":
                 os.mkdir(save_dir)
             cv2.imwrite(save_dir + "cam" + str(i) + f"_P[{output_prob: 0.4f}]" + ".jpg", final_img)
             i+=1
-
-    
-    
-    
-    # YOU ARE WORKING WITH OLD NETWORKS ==> MODIFY PATH!!!
     
     
     

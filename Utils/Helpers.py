@@ -7,6 +7,7 @@ import json
 from torchvision.datasets import ImageFolder
 from sklearn.metrics import classification_report
 import pandas as pd
+from scipy.spatial.distance import jensenshannon
 
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
@@ -174,3 +175,23 @@ def test_model(t_model: torch.nn.Module, test_loader:ImageFolder,test_class_weig
     report = _calcPerformMetrics(y_pred=y_predTensor, y_true=y_trueTensor, class_names=class_names, path_save=path_save)
     logger.log(f"\tFinal Test Loss:{round(test_loss,5)}")
     return report
+
+def normalize_img(img):
+    total = np.sum(img)
+    return img/total
+
+def get_confidence_score(cam: list):
+    normalized_imgs = [normalize_img(img) for img in cam]
+    avg_dist = np.mean(normalized_imgs, axis=0)
+    js_divergence = sum(
+        1/3 * jensenshannon(img.flatten(), avg_dist.flatten(), base=2)**2 for img in normalized_imgs
+    )
+    return js_divergence
+
+
+if __name__ == "__main__":
+    import cv2
+    img1 = cv2.imread('CAM_0.jpg', cv2.IMREAD_GRAYSCALE).astype(np.float32)
+    img2 = cv2.imread('CAM_1.jpg', cv2.IMREAD_GRAYSCALE).astype(np.float32)
+
+    print(get_confidence_score([img1, img2]))
