@@ -29,7 +29,7 @@ class Config:
         self.MODEL_NAME = train_vars["MODEL_NAME"]
         self.MODEL_TYPE = train_vars["MODEL_TYPE"]
         self.MODEL_SIZE = (self.MODEL_NAME[-1]).lower()
-        self.START_FOLD = train_vars["START_FOLD"]
+        self.LOAD_CHECKPOINT = train_vars["LOAD_CHECKPOINT"]
         self.K_FOLD = train_vars["K_FOLD"]
         self.TRAIN_EPOCHS = train_vars["TRAIN_EPOCHS"]
         self.FINE_TUNE_EPOCHS = train_vars["FINE_TUNE_EPOCHS"]
@@ -94,7 +94,8 @@ class Config:
         try:
             with open(self.PATH_MODEL_FOLDER + "init.json", "r") as file:
                 model_vars:dict = json.load(file)
-                model_vars["COMPLETED_FOLD"] = self.CURRENT_FOLD+1
+                if not self.LOAD_CHECKPOINT:
+                    model_vars["COMPLETED_FOLD"] = self.CURRENT_FOLD
         except Exception as e:
             print(f"Error decoding JSON from the file: {self.PATH_MODEL_FOLDER + 'init.json'} ==> {e}")
             exit(1)
@@ -105,6 +106,7 @@ class Config:
         self.BATCH_LOAD = model_vars["BATCH_LOAD"]
         self.LEARNING_RATE = model_vars["LEARNING_RATE"]
         self.FREEZE_TO_LAYER = model_vars["FREEZE_TO_LAYER"]
+        self.START_FOLD = model_vars["COMPLETED_FOLD"] + 1
 
     def updateFold(self, fold:int):
         self.CURRENT_FOLD = fold

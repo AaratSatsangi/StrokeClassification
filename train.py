@@ -154,7 +154,7 @@ def train_KCV():
     LOGGER.log("\n" + "#"*115)
 
     # fold_min_val_loss = []
-    if CONFIG.START_FOLD > 1:
+    if CONFIG.LOAD_CHECKPOINT and CONFIG.START_FOLD > 1:
         precision_values, recall_values, f1_values = load_checkpoint(CONFIG.START_FOLD)
     else:
         precision_values = {key: [] for key in CONFIG.CLASS_NAMES}
@@ -165,7 +165,7 @@ def train_KCV():
             LOGGER.log("\t" + "="*100)
             LOGGER.log(f"\tFold {fold+1}/{CONFIG.K_FOLD}")
             LOGGER.log("\t" + "="*100)
-            if fold+1 < CONFIG.START_FOLD:
+            if CONFIG.LOAD_CHECKPOINT and fold+1 < CONFIG.START_FOLD:
                 LOGGER.log(f"\tSkipping till: {CONFIG.START_FOLD}")
                 continue 
 

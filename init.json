@@ -2,7 +2,7 @@
     "MODEL_NAME": "CvT_S",
     "MODEL_TYPE": "trans",
     "DEVICE": "cuda:0",
-    "START_FOLD": 7,
+    "LOAD_CHECKPOINT": true,
     
     "K_FOLD": 10,
     "TRAIN_EPOCHS": 50,

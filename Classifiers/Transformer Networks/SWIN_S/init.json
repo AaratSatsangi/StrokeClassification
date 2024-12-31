@@ -2,5 +2,6 @@
     "BATCH_SIZE": 128,
     "BATCH_LOAD": 128,
     "LEARNING_RATE": 1e-2,
+    "COMPLETED_FOLD": 7,
     "FREEZE_TO_LAYER": "features.5.0"
 }

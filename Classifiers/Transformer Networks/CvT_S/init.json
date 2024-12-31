@@ -1,6 +1,7 @@
 {
     "BATCH_SIZE": 128,
     "BATCH_LOAD": 128,
-    "LEARNING_RATE": 1e-2,
+    "LEARNING_RATE": 0.01,
+    "COMPLETED_FOLD": 3,
     "FREEZE_TO_LAYER": "blocks.9.mlp.fc2.bias"
 }
