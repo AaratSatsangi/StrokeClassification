@@ -2,6 +2,7 @@ import torch
 from torch import nn
 from torch.optim.lr_scheduler import CosineAnnealingWarmRestarts, ReduceLROnPlateau
 from Utils.Helpers import *
+from Config import Config
 from Classifiers import ConvNets, TransNets
 from Logger import MyLogger
 from torch.utils.data import DataLoader, Subset, WeightedRandomSampler
@@ -134,20 +135,39 @@ def early_stop(p_counter, training_losses):
     else:
         return False, p_counter
 
+def load_checkpoint(fold):
+    with open(CONFIG.PATH_PERFORMANCE_FOLDER + "final_performance.json", "r") as json_file:
+        final_values = json.load(json_file)
+    precision_values = {}
+    recall_values = {}
+    f1_values = {}
+    for _class in CONFIG.CLASS_NAMES:
+        precision_values[_class] = final_values[_class]["precision"][:fold]
+        recall_values[_class] = final_values[_class]["recall"][:fold]
+        f1_values[_class] = final_values[_class]["f1-score"][:fold]
+    
+    return precision_values, recall_values, f1_values
+
 def train_KCV():
     LOGGER.log("\n" + "#"*115 + "\n")
     LOGGER.log("\t\t\t\t\tTraining: " + CONFIG.MODEL_NAME)
     LOGGER.log("\n" + "#"*115)
 
     # fold_min_val_loss = []
-    precision_values = {key: [] for key in CONFIG.CLASS_NAMES}
-    recall_values = {key: [] for key in CONFIG.CLASS_NAMES}
-    f1_values = {key: [] for key in CONFIG.CLASS_NAMES}
+    if CONFIG.START_FOLD > 1:
+        precision_values, recall_values, f1_values = load_checkpoint(CONFIG.START_FOLD)
+    else:
+        precision_values = {key: [] for key in CONFIG.CLASS_NAMES}
+        recall_values = {key: [] for key in CONFIG.CLASS_NAMES}
+        f1_values = {key: [] for key in CONFIG.CLASS_NAMES}
     try:
         for fold, (train_idx, val_idx) in enumerate(KF.split(CONFIG.TRAIN_DATA)):
             LOGGER.log("\t" + "="*100)
             LOGGER.log(f"\tFold {fold+1}/{CONFIG.K_FOLD}")
             LOGGER.log("\t" + "="*100)
+            if fold+1 < CONFIG.START_FOLD:
+                LOGGER.log(f"\tSkipping till: {CONFIG.START_FOLD}")
+                continue 
 
             _train = Subset(CONFIG.TRAIN_DATA, train_idx)
             _val = Subset(CONFIG.TRAIN_DATA, val_idx)

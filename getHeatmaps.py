@@ -161,38 +161,6 @@ def reshape_transform(tensor):
     # exit()
     return result
 
-
-# attentionMaps = []
-
-# def attentionHook(m ,i ,o):
-#     attention_map = o.squeeze(0)  # Remove batch dimension
-#     attention_map = attention_map.reshape(32, attention_map.shape[0], attention_map.shape[1], attention_map.shape[2] / 32)
-#     attention_map = attention_map / attention_map.sum(axis=(0, 1), keepdims=True)
-#     attentionMaps.append(o)
-
-# def getAttentionMap(model_name):
-#     target_layer = []
-#     if "SWIN" in model_name:
-#         for name, module in model.named_children():
-#             print(f"Layer Name: {name}")
-#             if(name == "features"):
-#                 for n, sub in module[-1][0].named_children():
-#                     print(f"\tLast Module: LayerName ==> {n}")
-#                     if n == "attn":
-#                         sub.register_forward_hook(attentionHook)
-#     for class_name, imgs in TEST_IMGS.items():
-        
-#         overlay_imgs = OVERLAY_IMGS[class_name]
-#         i = 0
-#         for img in imgs:
-#             output = model(img[0].unsqueeze(0).to(DEVICE))
-#             # Normalize attention weights (optional, but recommended):
-#             attention_map = attention_map / attention_map.sum(axis=(0, 1), keepdims=True)
-#             exit()
-#             final_img = cv2.hconcat([overlay_imgs[i], cam_image]) if class_name != "Normal" else cam_image
-#             cv2.imwrite(PATH_SAVE_IMG + class_name[0] + "_cam_" + str(i) + f"_P[{output_prob: 0.4f}]" + ".jpg", final_img)
-#     exit()
-
 MODEL_NAME = "SWIN_S"
 MODEL_TYPE = "trans"
 

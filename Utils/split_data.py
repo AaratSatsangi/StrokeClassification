@@ -3,8 +3,8 @@ import copy
 import os
 import shutil
 
-PATH_DATASET = "./Data/Compiled/PNG/"
-PATH_DATASET_SPLIT = "./Data/Compiled/Split/"
+PATH_DATASET = "../Data/Compiled/PNG/"
+PATH_DATASET_SPLIT = "../Data/Compiled/Split/"
 GENERATOR = np.random.default_rng(seed=26)
 SPLIT = [0.8, 0.2]   
     

@@ -164,7 +164,7 @@ class CvT(nn.Module):
     
 if __name__ == "__main__":
     from torchinfo import summary
-    model = CvT(model_size="s", pretrained=False)
-    summary(model, input_size=(1, 1, 224, 224), depth=3, col_names=["input_size","output_size","num_params"])
+    model = CvT(model_size="s", pretrained=False, freezeToLayer="blocks.10.norm1.weight")
     for name, param in model.model.named_parameters():
-        print(f"NAME: {name}")
+        print(f"NAME: {name}{'\t\t (Freezed Before Here)' if model.get_last_freezed_layer() in name else ''}")
+    summary(model, input_size=(1, 1, 224, 224), depth=3, col_names=["input_size","output_size","num_params"], verbose=1)
