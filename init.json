@@ -1,7 +1,7 @@
 {
     "MODEL_NAME": "CvT_S",
     "MODEL_TYPE": "trans",
-    "DEVICE": "cuda:0",
+    "DEVICE": "cuda:1",
     "LOAD_CHECKPOINT": true,
     
     "K_FOLD": 10,
