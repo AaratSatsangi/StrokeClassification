@@ -31,10 +31,6 @@ IMG_TRANSFORMS_TEST = CTPreprocessor(
     ],
     use_mask=False
 )
-UN_NORMALIZE = transforms.Compose([
-    transforms.ToTensor(),
-    transforms.Normalize(mean=[-0.485/0.229], std=[1/0.229])
-])
 TARGET_MAP = {
     "Hemorrhagic": 0,
     "Ischemic": 1,
@@ -187,9 +183,9 @@ def deprocess_image(img):
     img = np.clip(img, 0, 1)
     return np.uint8(img * 255)
     
-MODEL_NAME = "ResNet_S"
-MODEL_TYPE = "conv"
-FOLD = 5
+MODEL_NAME = "SWIN_S"
+MODEL_TYPE = "trans"
+FOLD = 10
 
 if __name__ == "__main__":
 
@@ -213,8 +209,7 @@ if __name__ == "__main__":
                 grayscale_cam = cam(input_tensor=input_tensor, targets=targets)
                 # In this example grayscale_cam has only one image in the batch:
                 grayscale_cam = grayscale_cam[0, :]
-                cv2.imwrite(PATH_SAVE_IMG + class_name + "/" + "CAM_" + str(i) + ".jpg", grayscale_cam*255)
-                exit()            
+                cv2.imwrite(PATH_SAVE_IMG + class_name + "/" + "CAM_" + str(i) + ".png", grayscale_cam*255)
                 # print(grayscale_cam.shape)
                 cam_image = show_cam_on_image(img[1], grayscale_cam, use_rgb=True, image_weight=0.5)
                 # You can also get the model outputs without having to redo inference

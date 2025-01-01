@@ -184,9 +184,9 @@ def get_confidence_score(cam: list):
     normalized_imgs = [normalize_img(img) for img in cam]
     avg_dist = np.mean(normalized_imgs, axis=0)
     js_divergence = sum(
-        1/3 * jensenshannon(img.flatten(), avg_dist.flatten(), base=2)**2 for img in normalized_imgs
+        1/len(normalized_imgs) * jensenshannon(img.flatten(), avg_dist.flatten(), base=2)**2 for img in normalized_imgs
     )
-    return js_divergence
+    return (1-js_divergence)*100
 
 
 if __name__ == "__main__":
