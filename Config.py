@@ -60,7 +60,7 @@ class Config:
                 ],
                 use_mask=False
         )
-        self.TRANSFORMS_TEST = IMG_TRANSFORMS_TEST = CTPreprocessor(
+        self.TRANSFORMS_TEST = CTPreprocessor(
                 img_size=self.IMG_SIZE[1:],
                 transformations=[
                     transforms.Grayscale(),
@@ -76,9 +76,10 @@ class Config:
         self.CLASS_NAMES = self.TRAIN_DATA.classes
 
         self.PATH_MODEL_FOLDER = f"Classifiers/{model_type_dict[self.MODEL_TYPE]}/{self.MODEL_NAME}/"
+        self.PATH_MODEL_FOLDER += "K-Fold/" if self.K_FOLD is not None else "Single/"
         self.PATH_MODEL_LOG_FOLDER = f"{self.PATH_MODEL_FOLDER}Logs/"
-        self.EXPERIMENT_NUMBER = str(sum(1 for file_name in os.listdir(self.PATH_MODEL_FOLDER) if "architecture" in file_name))
-        self.PATH_MODEL_LOG_FILE = f"{self.PATH_MODEL_LOG_FOLDER}/architecture_{self.EXPERIMENT_NUMBER}.txt"
+        self.EXPERIMENT_NUMBER = str(sum(1 for file_name in os.listdir(self.PATH_MODEL_LOG_FOLDER) if "architecture" in file_name))
+        self.PATH_MODEL_LOG_FILE = f"{self.PATH_MODEL_LOG_FOLDER}/architecture_{self.EXPERIMENT_NUMBER+1}.txt"
         self.PATH_LOSSPLOT_FOLDER = f"{self.PATH_MODEL_FOLDER}Plots/"
         self.PATH_PERFORMANCE_FOLDER = f"{self.PATH_MODEL_FOLDER}Performance/"
         self.PATH_MODEL_SAVE = None 
@@ -109,6 +110,7 @@ class Config:
         self.START_FOLD = model_vars["COMPLETED_FOLD"] + 1
 
     def updateFold(self, fold:int):
+        if fold is None: return
         self.CURRENT_FOLD = fold
         self.PATH_MODEL_SAVE = f"{self.PATH_MODEL_FOLDER}F{self.CURRENT_FOLD+1}_Checkpoint.pth"
         self.PATH_LOSSES_SAVE = f"{self.PATH_MODEL_FOLDER}F{self.CURRENT_FOLD+1}_Losses.txt"

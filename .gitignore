@@ -11,3 +11,4 @@ temp.py
 .DS_Store
 __pycache__/Preprocessor.cpython-312.pyc
 __pycache__/Preprocessor.cpython-312.pyc
+**/*.DS_Store

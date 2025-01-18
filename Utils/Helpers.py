@@ -12,6 +12,7 @@ from scipy.spatial.distance import jensenshannon
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from Logger import MyLogger
+from Classifiers import TransNets, ConvNets
 
 
 def plot_losses(fold, training_losses, validation_losses, save_path: str, logger:MyLogger):
@@ -28,7 +29,8 @@ def plot_losses(fold, training_losses, validation_losses, save_path: str, logger
 
 
     # Add titles and labels
-    plt.title(f'Fold: {fold+1}\nTraining and Validation Losses Over Epochs', fontsize=16)
+    title = f"Fold: {fold+1}\n" if fold is not None else ""
+    plt.title(title + 'Training and Validation Losses Over Epochs', fontsize=16)
     plt.xlabel('Epochs', fontsize=14)
     plt.ylabel('Loss', fontsize=14)
     plt.yscale('log')
@@ -188,6 +190,23 @@ def get_confidence_score(cam: list):
     )
     return (1-js_divergence)*100
 
+def load_model(model_name, path):
+    if "SWIN" in model_name:
+        model = TransNets.SWIN(model_size="s")
+    elif "CvT" in model_name:
+        model = TransNets.CvT(model_size="s")
+    elif "MaxViT" in model_name:
+        model = TransNets.MaxViT(model_size="s")
+    elif "ResNet" in model_name:
+        model = ConvNets.ResNet(model_size="s")
+    else:
+        print(f"Error: {model_name} not recognized!")
+        exit(1)
+
+    checkpoint = torch.load(path, "cuda:0")
+    model.load_state_dict(checkpoint["model_state_dict"])
+    model.eval()
+    return model
 
 if __name__ == "__main__":
     import cv2
