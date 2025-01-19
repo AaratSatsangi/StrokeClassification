@@ -222,8 +222,8 @@ def train():
     train_data, val_data = random_split(CONFIG.TRAIN_DATA, lengths=[0.8, 0.2], generator=CONFIG.GENERATOR) 
     
     # Getting sample weights to use in random sampler and loss calculation
-    _, sample_weights_train = get_sample_weights(train_data, None, "Train", logger = LOGGER)
-    val_class_weights, sample_weights_val = get_sample_weights(val_data, None, "Val", logger = LOGGER)
+    _, sample_weights_train = get_sample_weights(train_data.dataset, None, "Train", logger = LOGGER)
+    val_class_weights, sample_weights_val = get_sample_weights(val_data.dataset, None, "Val", logger = LOGGER)
     
     # Setting up Loss functions
     CONFIG.CRITERION_TRAIN = nn.CrossEntropyLoss()
