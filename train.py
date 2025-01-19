@@ -239,7 +239,7 @@ def train():
     val_loader = DataLoader(dataset = val_data, batch_size = CONFIG.BATCH_LOAD, num_workers=CONFIG.WORKERS//2, pin_memory=True, generator=CONFIG.GENERATOR, persistent_workers=True, prefetch_factor=4)
     
     # Setup model, optimizer and schedular
-    MODEL, OPTIMIZER, LR_SCHEDULER = load_model(CONFIG=CONFIG, LOGGER=LOGGER, num_classes=2)
+    MODEL, OPTIMIZER, LR_SCHEDULER = load_model(fold=-1, CONFIG=CONFIG, LOGGER=LOGGER, num_classes=2)
     try:
 
         for epoch in range(total_epochs):
@@ -360,7 +360,7 @@ def test():
     test_loader = DataLoader(dataset = CONFIG.TEST_DATA, batch_size = CONFIG.BATCH_LOAD, num_workers=CONFIG.WORKERS//2, pin_memory=True, generator=CONFIG.GENERATOR, persistent_workers=True, prefetch_factor=4)
 
     # Load best model
-    MODEL, OPTIMIZER, LR_SCHEDULER = load_model(CONFIG=CONFIG, LOGGER=LOGGER, load_best=True, fineTune=False)
+    MODEL, OPTIMIZER, LR_SCHEDULER = load_model(fold=-1, CONFIG=CONFIG, LOGGER=LOGGER, load_best=True, fineTune=False, num_classes=2)
     MODEL.eval()
     report = test_model(
         t_model=MODEL,
