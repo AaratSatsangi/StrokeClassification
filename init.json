@@ -1,13 +1,13 @@
 {
-    "MODEL_NAME": "CvT_S",
+    "MODEL_NAME": "SWIN_S",
     "MODEL_TYPE": "trans",
-    "DEVICE": "cuda:1",
+    "DEVICE": "cuda:0",
     "LOAD_CHECKPOINT": true,
     
     "K_FOLD": 10,
-    "TRAIN_EPOCHS": 50,
+    "TRAIN_EPOCHS": 200,
     "FINE_TUNE_EPOCHS": 50,
-    "PERSISTENCE": 100,
+    "PERSISTENCE": 250,
     "IMG_SIZE": [1, 224, 224],
     "AUTO_BREAK": true,
     "LRS_PATIENCE": 5,
