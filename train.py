@@ -224,8 +224,8 @@ def train():
     val_data = Subset(CONFIG.TRAIN_DATA, splits[1].indices)
     
     # Getting sample weights to use in random sampler and loss calculation
-    _, sample_weights_train = get_sample_weights(train_data.dataset, train_data.indices, "Train", logger = LOGGER)
-    val_class_weights, sample_weights_val = get_sample_weights(val_data.dataset, val_data.indices, "Val", logger = LOGGER)
+    _, sample_weights_train = get_sample_weights(train_data.dataset.dataset, train_data.indices, "Train", logger = LOGGER)
+    val_class_weights, sample_weights_val = get_sample_weights(val_data.dataset.dataset, val_data.indices, "Val", logger = LOGGER)
     
     # Setting up Loss functions
     CONFIG.CRITERION_TRAIN = nn.CrossEntropyLoss()
@@ -356,7 +356,7 @@ def test():
     f1_values = {key: [] for key in CONFIG.CLASS_NAMES}
 
     # Create Test loader
-    test_class_weights, test_sample_weights = get_sample_weights(CONFIG.TEST_DATA, None, "Test", logger = LOGGER)
+    test_class_weights, test_sample_weights = get_sample_weights(CONFIG.TEST_DATA.dataset, CONFIG.TEST_DATA.indicies, "Test", logger = LOGGER)
     test_loader = DataLoader(dataset = CONFIG.TEST_DATA, batch_size = CONFIG.BATCH_LOAD, num_workers=CONFIG.WORKERS//2, pin_memory=True, generator=CONFIG.GENERATOR, persistent_workers=True, prefetch_factor=4)
 
     # Load best model
