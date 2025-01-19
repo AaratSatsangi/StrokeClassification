@@ -422,6 +422,8 @@ if __name__ == "__main__":
     else:
         # Train test split
         CONFIG.TRAIN_DATA, CONFIG.VAL_DATA, CONFIG.TEST_DATA = random_split(dataset=CONFIG.DATA, lengths=[0.7, 0.1, 0.2], generator=CONFIG.GENERATOR)
+        CONFIG.VAL_DATA.transform = CONFIG.TRANSFORMS_TEST
+        CONFIG.TEST_DATA.transform = CONFIG.TRANSFORMS_TEST
         train()
         test()
     
