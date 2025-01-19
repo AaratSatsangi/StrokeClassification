@@ -158,8 +158,8 @@ def plot_losses(fold, training_losses, validation_losses, save_path: str, logger
 
     epochs = range(1, len(training_losses) + 1)
     plt.figure(figsize=(10, 6))
-    plt.plot(epochs, training_losses, label='Train Loss', marker='o', linestyle='-', color='blue')
-    plt.plot(epochs, validation_losses, label='Val Loss', marker='x', linestyle='--', color='orange')
+    plt.plot(epochs, training_losses, label='Train Loss', linestyle='-', color='blue')
+    plt.plot(epochs, validation_losses, label='Val Loss', linestyle='--', color='orange')
 
     # start = len(ft_training_losses) - 1 - ft_training_losses[::-1].index(-1)
     # epochs = range(start+1+1, len(ft_training_losses) + 1)

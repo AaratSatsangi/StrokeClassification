@@ -202,7 +202,7 @@ def get_score_cam(model_name:str, model:nn.Module, image:dict, pred_class):
         
         outputs_dict['imgs'] = [image['original_img'], image['annotated_img'], overlay_img]
         outputs_dict['class'] = pred_class
-        outputs_dict['prob'] = torch.nn.functional.softmax(cam.outputs, dim=1)[0][TARGET_MAP[pred_class]]
+        outputs_dict['prob'] = torch.nn.functional.softmax(cam.outputs, dim=1)[pred_class].detach()[0]
         outputs_dict['mask'] = cam_img[0, :] * 255
 
     return outputs_dict
