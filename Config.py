@@ -76,7 +76,7 @@ class Config:
         self.CLASS_NAMES = self.TRAIN_DATA.classes
 
         self.PATH_MODEL_FOLDER = f"Classifiers/{model_type_dict[self.MODEL_TYPE]}/{self.MODEL_NAME}/"
-        self.PATH_MODEL_FOLDER += "K-Fold/" if self.K_FOLD is not None else "Single/"
+        self.PATH_MODEL_FOLDER += "K-Fold/" if self.K_FOLD > 0 else "Simple/"
         self.PATH_MODEL_LOG_FOLDER = f"{self.PATH_MODEL_FOLDER}Logs/"
         self.EXPERIMENT_NUMBER = str(sum(1 for file_name in os.listdir(self.PATH_MODEL_LOG_FOLDER) if "architecture" in file_name))
         self.PATH_MODEL_LOG_FILE = f"{self.PATH_MODEL_LOG_FOLDER}/architecture_{self.EXPERIMENT_NUMBER+1}.txt"
@@ -110,17 +110,22 @@ class Config:
         self.START_FOLD = model_vars["COMPLETED_FOLD"] + 1
 
     def updateFold(self, fold:int):
-        if fold is None: return
-        self.CURRENT_FOLD = fold
-        self.PATH_MODEL_SAVE = f"{self.PATH_MODEL_FOLDER}F{self.CURRENT_FOLD+1}_Checkpoint.pth"
-        self.PATH_LOSSES_SAVE = f"{self.PATH_MODEL_FOLDER}F{self.CURRENT_FOLD+1}_Losses.txt"
-        self.PATH_LOSSPLOT_SAVE = f"{self.PATH_LOSSPLOT_FOLDER}F{self.CURRENT_FOLD+1}_lossplot.png"
-        self.PATH_PERFORMANCE_SAVE = f"{self.PATH_PERFORMANCE_FOLDER}F{self.CURRENT_FOLD+1}_performance.json"
-        with open(self.PATH_MODEL_FOLDER + "init.json", "r") as file:
-            model_vars:dict = json.load(file)
-            model_vars["COMPLETED_FOLD"] = self.CURRENT_FOLD
-        with open(self.PATH_MODEL_FOLDER + "init.json", "w") as file:
-            json.dump(model_vars, file, indent=4)
+        if fold is None or fold < 0:
+            self.PATH_MODEL_SAVE = f"{self.PATH_MODEL_FOLDER}Checkpoint.pth"
+            self.PATH_LOSSES_SAVE = f"{self.PATH_MODEL_FOLDER}Losses.txt"
+            self.PATH_LOSSPLOT_SAVE = f"{self.PATH_LOSSPLOT_FOLDER}lossplot.png"
+            self.PATH_PERFORMANCE_SAVE = f"{self.PATH_PERFORMANCE_FOLDER}performance.json"
+        else:
+            self.CURRENT_FOLD = fold
+            self.PATH_MODEL_SAVE = f"{self.PATH_MODEL_FOLDER}F{self.CURRENT_FOLD+1}_Checkpoint.pth"
+            self.PATH_LOSSES_SAVE = f"{self.PATH_MODEL_FOLDER}F{self.CURRENT_FOLD+1}_Losses.txt"
+            self.PATH_LOSSPLOT_SAVE = f"{self.PATH_LOSSPLOT_FOLDER}F{self.CURRENT_FOLD+1}_lossplot.png"
+            self.PATH_PERFORMANCE_SAVE = f"{self.PATH_PERFORMANCE_FOLDER}F{self.CURRENT_FOLD+1}_performance.json"
+            with open(self.PATH_MODEL_FOLDER + "init.json", "r") as file:
+                model_vars:dict = json.load(file)
+                model_vars["COMPLETED_FOLD"] = self.CURRENT_FOLD
+            with open(self.PATH_MODEL_FOLDER + "init.json", "w") as file:
+                json.dump(model_vars, file, indent=4)
 
 
 if __name__ == "__main__":

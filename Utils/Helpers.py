@@ -3,6 +3,9 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 import torch
+from torch import nn
+from torch.optim.lr_scheduler import CosineAnnealingWarmRestarts, ReduceLROnPlateau
+from torchinfo import summary
 import json
 from torchvision.datasets import ImageFolder
 from sklearn.metrics import classification_report
@@ -13,7 +16,143 @@ from scipy.spatial.distance import jensenshannon
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from Logger import MyLogger
 from Classifiers import TransNets, ConvNets
+from Config import Config
 
+def load_model(CONFIG:Config, LOGGER:MyLogger, fold:int=0, load_best=False, fineTune = False, num_classes = 3):
+    torch.cuda.empty_cache()
+    CONFIG.updateFold(fold)
+    
+    if "SWIN" in CONFIG.MODEL_NAME:
+        model = TransNets.SWIN(model_size=CONFIG.MODEL_SIZE, num_classes=num_classes, freezeToLayer=CONFIG.FREEZE_TO_LAYER, pretrained = not fineTune)
+    elif "CvT" in CONFIG.MODEL_NAME:
+        model = TransNets.CvT(model_size=CONFIG.MODEL_SIZE, num_classes=num_classes, freezeToLayer=CONFIG.FREEZE_TO_LAYER, pretrained = not fineTune)
+    elif "MaxViT" in CONFIG.MODEL_NAME:
+        model = TransNets.MaxViT(model_size=CONFIG.MODEL_SIZE, num_classes=num_classes, freezeToLayer=CONFIG.FREEZE_TO_LAYER, pretrained = not fineTune)
+    elif "ResNet" in CONFIG.MODEL_NAME:
+        model = ConvNets.ResNet(model_size=CONFIG.MODEL_SIZE, num_classes=num_classes, freezeToLayer=CONFIG.FREEZE_TO_LAYER, pretrained = not fineTune)
+    else:
+        print(f"Error: {CONFIG.MODEL_NAME} not recognized!")
+        exit(1)
+    
+    model.to(CONFIG.DEVICE)
+    optim = torch.optim.SGD(params=model.parameters(), lr=CONFIG.LEARNING_RATE, weight_decay=0.0005, dampening=0, momentum=0.9, nesterov=True)      
+    lr_schedular = CosineAnnealingWarmRestarts(optim, T_0=10, T_mult=2)
+    if load_best:
+        # Load the best model
+        checkpoint = torch.load(CONFIG.PATH_MODEL_SAVE)
+        model.load_state_dict(checkpoint["model_state_dict"])
+        if fineTune:
+            optim.load_state_dict(checkpoint["optimizer_state_dict"])
+            lr_schedular.load_state_dict(checkpoint["lr_schedular_state_dict"])
+            LOGGER.log("\t" + "+"*100)
+            LOGGER.log("\t"*6 + "STARTING FINE TUNING")
+            LOGGER.log("\t" + "+"*100)
+            LOGGER.log(f"\tMin Train Loss: [{checkpoint['train_loss']: 0.5f}] at Epoch {checkpoint['epoch']}")
+            LOGGER.log(f"\tLoading Best {CONFIG.MODEL_NAME} Model for Fold: [{fold+1}/{CONFIG.K_FOLD}]")
+        
+            # Open all Layers
+            for _, param in model.named_parameters():
+                param.requires_grad = True
+        
+    else:
+        LOGGER.log(f"\n\tNew {CONFIG.MODEL_NAME} loaded successfully")
+
+    save_arch(CONFIG=CONFIG, model=model, fineTune=fineTune)  
+    return model, optim, lr_schedular
+
+def save_model(CONFIG:Config, model:nn.Module, optim:torch.optim.SGD, lr_schedular:CosineAnnealingWarmRestarts, epoch, train_loss):
+    torch.save({
+        "model_state_dict": model.state_dict(),
+        "optimizer_state_dict": optim.state_dict(),
+        "lr_schedular_state_dict": lr_schedular.state_dict(),
+        "train_loss": train_loss,
+        "epoch": epoch
+    }, CONFIG.PATH_MODEL_SAVE)
+
+def save_arch(CONFIG:Config, model:nn.Module, fineTune=False):
+    # Check Architecture Folder Exists or not
+    path = f"{CONFIG.PATH_MODEL_FOLDER}Architecture/"
+    if not os.path.exists(path):
+        os.mkdir(path)
+    
+    # Write Architecture
+    path += f"arch{'_FT' if fineTune else ''}_{CONFIG.EXPERIMENT_NUMBER}.txt" 
+    last_freezed_layer = CONFIG.FREEZE_TO_LAYER if not fineTune else ""
+    with open(path, "w") as f:
+        f.write("="*25 + "Layer Names" + "="*25 + "\n")
+        for i, (name, param) in enumerate(model.named_parameters()):
+            if last_freezed_layer in name and last_freezed_layer != "":
+                f.write(str(i) + ": " + name + "\t\t(freezed till here)\n")
+            else:
+                f.write(str(i) + ": " + name + "\n")
+        f.write("="*61 + "\n")
+        f.write("\n\n")
+        f.write(str(summary(model, (1,) + CONFIG.IMG_SIZE, depth=8 , col_names=["input_size","output_size","num_params"], verbose=0)))
+
+def scheduler_step(LOGGER:MyLogger, schedular, lr, **kwargs):
+    if(isinstance(schedular, CosineAnnealingWarmRestarts)): 
+        schedular.step()
+        if(lr > schedular.get_last_lr()[-1]):
+            LOGGER.log(f"\t\t(-) Learning Rate Decreased: [{lr: 0.2e}] --> [{schedular.get_last_lr()[-1]: 0.2e}]")
+            lr = schedular.get_last_lr()[-1]
+        elif(lr < schedular.get_last_lr()[-1]):
+            LOGGER.log(f"\t\t(+) Learning Rate Increased: [{lr: 0.2e}] --> [{schedular.get_last_lr()[-1]: 0.2e}]")
+            lr = schedular.get_last_lr()[-1]
+
+    elif(isinstance(schedular, ReduceLROnPlateau)): 
+        schedular.step(kwargs["val_loss"])
+        if(lr > schedular.get_last_lr()[-1]):
+            LOGGER.log(f"\t\t(-) Learning Rate Decreased: [{lr: 0.2e}] --> [{schedular.get_last_lr()[-1]: 0.2e}]")
+            lr = schedular.get_last_lr()[-1]
+        elif(lr < schedular.get_last_lr()[-1]):
+            LOGGER.log(f"\t\t(+) Learning Rate Increased: [{lr: 0.2e}] --> [{schedular.get_last_lr()[-1]: 0.2e}]")
+            lr = schedular.get_last_lr()[-1]
+    else: raise Exception("LR Schedular not recognized!\nType: " + type(schedular))
+    return lr
+
+def early_stop(LOGGER:MyLogger, CONFIG:Config, p_counter, training_losses):
+    if(p_counter-1 >= CONFIG.PERSIST):
+        LOGGER.log("\t" + f"\tValidation Loss not decreasing for {CONFIG.PERSIST}")
+        if(is_decreasing_order(training_losses[-CONFIG.PERSIST:])):
+            LOGGER.log("\t" + f"\tStopping Training: Overfitting Detected")
+            # Break out of Training Loop
+            if(CONFIG.AUTO_BREAK): 
+                p_counter = 1
+                return True, p_counter
+        else:
+            LOGGER.log("\t" + "\tTraining Loss Fluctuating")
+        
+        # Unsure about Overfitting, ask the user to continue
+        while(True):
+            if(CONFIG.AUTO_BREAK):
+                flag = "n"
+                break
+            flag = input("\t" + "Keep Training? (y/n) : ")
+            if(flag == "y" or flag == "n"):
+                break
+            else:
+                LOGGER.log("\t" + "Wrong Input!!\n")
+        
+        p_counter = 1
+        if(flag == "n"):    
+            return True, p_counter
+        else:
+            return False, p_counter
+    else:
+        return False, p_counter
+
+def load_checkpoint(CONFIG:Config):
+    with open(CONFIG.PATH_PERFORMANCE_FOLDER + "final_performance.json", "r") as json_file:
+        final_values = json.load(json_file)
+    precision_values = {}
+    recall_values = {}
+    f1_values = {}
+    for _class in CONFIG.CLASS_NAMES:
+        precision_values[_class] = final_values[_class]["precision"][:CONFIG.START_FOLD]
+        recall_values[_class] = final_values[_class]["recall"][:CONFIG.START_FOLD]
+        f1_values[_class] = final_values[_class]["f1-score"][:CONFIG.START_FOLD]
+    
+    return precision_values, recall_values, f1_values
 
 def plot_losses(fold, training_losses, validation_losses, save_path: str, logger:MyLogger):
 
@@ -190,23 +329,23 @@ def get_confidence_score(cam: list):
     )
     return (1-js_divergence)*100
 
-def load_model(model_name, path):
-    if "SWIN" in model_name:
-        model = TransNets.SWIN(model_size="s")
-    elif "CvT" in model_name:
-        model = TransNets.CvT(model_size="s")
-    elif "MaxViT" in model_name:
-        model = TransNets.MaxViT(model_size="s")
-    elif "ResNet" in model_name:
-        model = ConvNets.ResNet(model_size="s")
-    else:
-        print(f"Error: {model_name} not recognized!")
-        exit(1)
+# def load_model(model_name, path):
+#     if "SWIN" in model_name:
+#         model = TransNets.SWIN(model_size="s")
+#     elif "CvT" in model_name:
+#         model = TransNets.CvT(model_size="s")
+#     elif "MaxViT" in model_name:
+#         model = TransNets.MaxViT(model_size="s")
+#     elif "ResNet" in model_name:
+#         model = ConvNets.ResNet(model_size="s")
+#     else:
+#         print(f"Error: {model_name} not recognized!")
+#         exit(1)
 
-    checkpoint = torch.load(path, "cuda:0")
-    model.load_state_dict(checkpoint["model_state_dict"])
-    model.eval()
-    return model
+#     checkpoint = torch.load(path, "cuda:0")
+#     model.load_state_dict(checkpoint["model_state_dict"])
+#     model.eval()
+#     return model
 
 if __name__ == "__main__":
     import cv2
