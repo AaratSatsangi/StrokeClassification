@@ -75,25 +75,26 @@ class Config:
         self.TEST_DATA = None
         self.CLASS_NAMES = self.TRAIN_DATA.classes
 
-        self.PATH_MODEL_FOLDER = f"Classifiers/{model_type_dict[self.MODEL_TYPE]}/{self.MODEL_NAME}/"
-        self.PATH_MODEL_FOLDER += "K-Fold/" if self.K_FOLD > 0 else "Simple/"
+        self.PATH_MODEL_MAIN_FOLDER = f"Classifiers/{model_type_dict[self.MODEL_TYPE]}/{self.MODEL_NAME}/"
+        self.PATH_MODEL_FOLDER = self.PATH_MODEL_MAIN_FOLDER + "K-Fold/" if self.K_FOLD > 0 else self.PATH_MODEL_MAIN_FOLDER + "Simple/"
         self.PATH_MODEL_LOG_FOLDER = f"{self.PATH_MODEL_FOLDER}Logs/"
-        self.EXPERIMENT_NUMBER = str(sum(1 for file_name in os.listdir(self.PATH_MODEL_LOG_FOLDER) if "architecture" in file_name))
-        self.PATH_MODEL_LOG_FILE = f"{self.PATH_MODEL_LOG_FOLDER}/architecture_{self.EXPERIMENT_NUMBER+1}.txt"
+        if(not os.path.exists(self.PATH_MODEL_LOG_FOLDER)): os.makedirs(self.PATH_MODEL_LOG_FOLDER)
+        self.EXPERIMENT_NUMBER = sum(1 for file_name in os.listdir(self.PATH_MODEL_LOG_FOLDER) if "architecture" in file_name)
+        self.PATH_MODEL_LOG_FILE = f"{self.PATH_MODEL_LOG_FOLDER}/architecture_{str(self.EXPERIMENT_NUMBER+1)}.txt"
         self.PATH_LOSSPLOT_FOLDER = f"{self.PATH_MODEL_FOLDER}Plots/"
         self.PATH_PERFORMANCE_FOLDER = f"{self.PATH_MODEL_FOLDER}Performance/"
         self.PATH_MODEL_SAVE = None 
         self.PATH_LOSSES_SAVE = None
         self.PATH_LOSSPLOT_SAVE = None
         self.PATH_PERFORMANCE_SAVE = None
-        if(not os.path.exists(self.PATH_MODEL_LOG_FOLDER)): os.makedirs(self.PATH_MODEL_LOG_FOLDER)
+
         if(not os.path.exists(self.PATH_LOSSPLOT_FOLDER)): os.makedirs(self.PATH_LOSSPLOT_FOLDER)
         if(not os.path.exists(self.PATH_PERFORMANCE_FOLDER)): os.makedirs(self.PATH_PERFORMANCE_FOLDER)
         
         # Model Specific Variables
         print("Initializing Model Specific Variables...")    
         try:
-            with open(self.PATH_MODEL_FOLDER + "init.json", "r") as file:
+            with open(self.PATH_MODEL_MAIN_FOLDER + "init.json", "r") as file:
                 model_vars:dict = json.load(file)
                 if not self.LOAD_CHECKPOINT:
                     model_vars["COMPLETED_FOLD"] = self.CURRENT_FOLD
@@ -121,10 +122,10 @@ class Config:
             self.PATH_LOSSES_SAVE = f"{self.PATH_MODEL_FOLDER}F{self.CURRENT_FOLD+1}_Losses.txt"
             self.PATH_LOSSPLOT_SAVE = f"{self.PATH_LOSSPLOT_FOLDER}F{self.CURRENT_FOLD+1}_lossplot.png"
             self.PATH_PERFORMANCE_SAVE = f"{self.PATH_PERFORMANCE_FOLDER}F{self.CURRENT_FOLD+1}_performance.json"
-            with open(self.PATH_MODEL_FOLDER + "init.json", "r") as file:
+            with open(self.PATH_MODEL_MAIN_FOLDER + "init.json", "r") as file:
                 model_vars:dict = json.load(file)
                 model_vars["COMPLETED_FOLD"] = self.CURRENT_FOLD
-            with open(self.PATH_MODEL_FOLDER + "init.json", "w") as file:
+            with open(self.PATH_MODEL_MAIN_FOLDER + "init.json", "w") as file:
                 json.dump(model_vars, file, indent=4)
 
 

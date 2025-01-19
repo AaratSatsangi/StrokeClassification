@@ -219,7 +219,7 @@ def train():
     total_epochs = CONFIG.TRAIN_EPOCHS + CONFIG.FINE_TUNE_EPOCHS
 
     # Splitting the dataset into train-val
-    train_data, val_data = random_split(train_data, lengths=[0.8, 0.2], generator=CONFIG.GENERATOR) 
+    train_data, val_data = random_split(CONFIG.TRAIN_DATA, lengths=[0.8, 0.2], generator=CONFIG.GENERATOR) 
     
     # Getting sample weights to use in random sampler and loss calculation
     _, sample_weights_train = get_sample_weights(train_data, None, "Train", logger = LOGGER)
@@ -400,7 +400,7 @@ if __name__ == "__main__":
     MODEL: torch.nn.Module = None
 
     LOGGER.log("\n\n" + "="*54 + " START " + "="*54)
-    LOGGER.log(f"Strategy: {"K-Fold" if CONFIG.K_FOLD > 0 else "Simple"}")
+    LOGGER.log(f"Strategy: {'K-Fold' if CONFIG.K_FOLD > 0 else 'Simple'}")
     LOGGER.log(f"Training Epochs: {CONFIG.TRAIN_EPOCHS}")
     LOGGER.log(f"Fine Tuning Epochs: {CONFIG.FINE_TUNE_EPOCHS}")
     LOGGER.log(f"Using GPU: {CONFIG.DEVICE}")
