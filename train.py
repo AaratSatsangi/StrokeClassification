@@ -138,6 +138,9 @@ def train_KCV():
                         param.requires_grad = True
                     fine_tuning = True
                     p_counter = 1
+                    LR_SCHEDULER = ReduceLROnPlateau(optimizer=OPTIMIZER, factor=CONFIG.LRS_FACTOR, patience=CONFIG.LRS_PATIENCE)
+                    for param_group in OPTIMIZER.param_groups:
+                        param_group['lr'] = 1e-4
                 
                 elif epoch == total_epochs-1:
                     del MODEL, OPTIMIZER, LR_SCHEDULER
@@ -318,6 +321,9 @@ def train():
                     param.requires_grad = True
                 fine_tuning = True
                 p_counter = 1
+                LR_SCHEDULER = ReduceLROnPlateau(optimizer=OPTIMIZER, factor=CONFIG.LRS_FACTOR, patience=CONFIG.LRS_PATIENCE)
+                for param_group in OPTIMIZER.param_groups:
+                    param_group['lr'] = 1e-4
             
             # After last epoch, clean up stuff
             elif epoch == total_epochs-1:
@@ -404,7 +410,7 @@ if __name__ == "__main__":
     LOGGER.log(f"Batch Size: {CONFIG.BATCH_SIZE}")
     LOGGER.log(f"Learning Rate: {CONFIG.LEARNING_RATE}")
     LOGGER.log(f"Early Stopping with Persistence: {CONFIG.PERSIST}")
-    LOGGER.log(f"LR Schedular: CosineAnnealingWarmRestarts")
+    LOGGER.log(f"LR Schedular: CosineAnnealingWarmRestarts + ReduceLROnPlataue")
     # Add if statement
     if isinstance(LR_SCHEDULER, ReduceLROnPlateau):
         LOGGER.log(f"|---Patience: {CONFIG.LRS_PATIENCE}")
