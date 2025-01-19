@@ -294,8 +294,8 @@ def _calcPerformMetrics(y_pred, y_true, class_names, path_save):
     return report
 
 def test_model(t_model: torch.nn.Module, test_loader:ImageFolder,test_class_weights, device, path_save, class_names, logger:MyLogger):
-    y_trueTensor = torch.empty(0,3)
-    y_predTensor = torch.empty(0,3)
+    y_trueTensor = torch.empty(0,len(class_names))
+    y_predTensor = torch.empty(0,len(class_names))
     CRITERION_TEST = torch.nn.CrossEntropyLoss(weight=test_class_weights.to(device))
     with torch.no_grad():
         test_loss = 0.0

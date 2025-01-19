@@ -218,14 +218,9 @@ def train():
     fine_tuning = False
     total_epochs = CONFIG.TRAIN_EPOCHS + CONFIG.FINE_TUNE_EPOCHS
 
-    # Splitting the dataset into train-val
-    splits = random_split(CONFIG.TRAIN_DATA, lengths=[0.8, 0.2], generator=CONFIG.GENERATOR)
-    train_data = Subset(CONFIG.TRAIN_DATA, splits[0].indices)
-    val_data = Subset(CONFIG.TRAIN_DATA, splits[1].indices)
-    
     # Getting sample weights to use in random sampler and loss calculation
-    _, sample_weights_train = get_sample_weights(train_data.dataset.dataset, train_data.indices, "Train", logger = LOGGER)
-    val_class_weights, sample_weights_val = get_sample_weights(val_data.dataset.dataset, val_data.indices, "Val", logger = LOGGER)
+    _, sample_weights_train = get_sample_weights(CONFIG.TRAIN_DATA.dataset, CONFIG.TRAIN_DATA.indices, "Train", logger = LOGGER)
+    val_class_weights, sample_weights_val = get_sample_weights(CONFIG.VAL_DATA.dataset, CONFIG.VAL_DATA.indices, "Val", logger = LOGGER)
     
     # Setting up Loss functions
     CONFIG.CRITERION_TRAIN = nn.CrossEntropyLoss()
@@ -235,8 +230,8 @@ def train():
     SAMPLER_TRAIN = WeightedRandomSampler(weights=sample_weights_train , num_samples=len(sample_weights_train), replacement=True, generator=CONFIG.GENERATOR)
     
     # Creating Dataloaders
-    train_loader = DataLoader(dataset = train_data, batch_size = CONFIG.BATCH_LOAD, num_workers=CONFIG.WORKERS//2, pin_memory=True, sampler=SAMPLER_TRAIN, generator=CONFIG.GENERATOR, persistent_workers=True, prefetch_factor=4)
-    val_loader = DataLoader(dataset = val_data, batch_size = CONFIG.BATCH_LOAD, num_workers=CONFIG.WORKERS//2, pin_memory=True, generator=CONFIG.GENERATOR, persistent_workers=True, prefetch_factor=4)
+    train_loader = DataLoader(dataset = CONFIG.TRAIN_DATA, batch_size = CONFIG.BATCH_LOAD, num_workers=CONFIG.WORKERS//2, pin_memory=True, sampler=SAMPLER_TRAIN, generator=CONFIG.GENERATOR, persistent_workers=True, prefetch_factor=4)
+    val_loader = DataLoader(dataset = CONFIG.VAL_DATA, batch_size = CONFIG.BATCH_LOAD, num_workers=CONFIG.WORKERS//2, pin_memory=True, generator=CONFIG.GENERATOR, persistent_workers=True, prefetch_factor=4)
     
     # Setup model, optimizer and schedular
     MODEL, OPTIMIZER, LR_SCHEDULER = load_model(fold=-1, CONFIG=CONFIG, LOGGER=LOGGER, num_classes=2)
@@ -356,7 +351,7 @@ def test():
     f1_values = {key: [] for key in CONFIG.CLASS_NAMES}
 
     # Create Test loader
-    test_class_weights, test_sample_weights = get_sample_weights(CONFIG.TEST_DATA.dataset, CONFIG.TEST_DATA.indicies, "Test", logger = LOGGER)
+    test_class_weights, test_sample_weights = get_sample_weights(CONFIG.TEST_DATA.dataset, CONFIG.TEST_DATA.indices, "Test", logger = LOGGER)
     test_loader = DataLoader(dataset = CONFIG.TEST_DATA, batch_size = CONFIG.BATCH_LOAD, num_workers=CONFIG.WORKERS//2, pin_memory=True, generator=CONFIG.GENERATOR, persistent_workers=True, prefetch_factor=4)
 
     # Load best model
@@ -420,9 +415,7 @@ if __name__ == "__main__":
         train_KCV()
     else:
         # Train test split
-        splits = random_split(dataset=CONFIG.DATA, lengths=[0.8, 0.2], generator=CONFIG.GENERATOR)
-        CONFIG.TRAIN_DATA = Subset(CONFIG.DATA, splits[0].indices)
-        CONFIG.TEST_DATA = Subset(CONFIG.DATA, splits[1].indices)
+        CONFIG.TRAIN_DATA, CONFIG.VAL_DATA, CONFIG.TEST_DATA = random_split(dataset=CONFIG.DATA, lengths=[0.7, 0.1, 0.2], generator=CONFIG.GENERATOR)
         train()
         test()
     

@@ -73,6 +73,7 @@ class Config:
         self.CRITERION_VAL:torch.nn.CrossEntropyLoss = None
         self.DATA:ImageFolder = ImageFolder(self.PATH_DATASET_TRAIN, self.TRANSFORMS_TRAIN)
         self.TRAIN_DATA:ImageFolder = ImageFolder(self.PATH_DATASET_TRAIN, self.TRANSFORMS_TRAIN)
+        self.VAL_DATA: ImageFolder = None
         self.TEST_DATA: ImageFolder = None
         self.CLASS_NAMES = self.TRAIN_DATA.classes
 
