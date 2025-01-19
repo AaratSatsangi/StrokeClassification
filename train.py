@@ -219,11 +219,13 @@ def train():
     total_epochs = CONFIG.TRAIN_EPOCHS + CONFIG.FINE_TUNE_EPOCHS
 
     # Splitting the dataset into train-val
-    train_data, val_data = random_split(CONFIG.TRAIN_DATA, lengths=[0.8, 0.2], generator=CONFIG.GENERATOR) 
+    splits = random_split(CONFIG.TRAIN_DATA, lengths=[0.8, 0.2], generator=CONFIG.GENERATOR)
+    train_data = splits[0].dataset
+    val_data = splits[1].dataset
 
     # Getting sample weights to use in random sampler and loss calculation
-    _, sample_weights_train = get_sample_weights(train_data.dataset, None, "Train", logger = LOGGER)
-    val_class_weights, sample_weights_val = get_sample_weights(val_data.dataset, None, "Val", logger = LOGGER)
+    _, sample_weights_train = get_sample_weights(train_data, None, "Train", logger = LOGGER)
+    val_class_weights, sample_weights_val = get_sample_weights(val_data, None, "Val", logger = LOGGER)
     
     # Setting up Loss functions
     CONFIG.CRITERION_TRAIN = nn.CrossEntropyLoss()
@@ -418,7 +420,9 @@ if __name__ == "__main__":
         train_KCV()
     else:
         # Train test split
-        CONFIG.TRAIN_DATA, CONFIG.TEST_DATA = random_split(dataset=CONFIG.TRAIN_DATA, lengths=[0.8, 0.2], generator=CONFIG.GENERATOR)
+        splits = random_split(dataset=CONFIG.TRAIN_DATA, lengths=[0.8, 0.2], generator=CONFIG.GENERATOR)
+        CONFIG.TRAIN_DATA = splits[0].dataset
+        CONFIG.TEST_DATA = splits[1].dataset
         train()
         test()
     
