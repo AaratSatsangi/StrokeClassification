@@ -220,12 +220,12 @@ def train():
 
     # Splitting the dataset into train-val
     splits = random_split(CONFIG.TRAIN_DATA, lengths=[0.8, 0.2], generator=CONFIG.GENERATOR)
-    train_data = splits[0].dataset
-    val_data = splits[1].dataset
-
+    train_data = Subset(CONFIG.TRAIN_DATA, splits[0].indices)
+    val_data = Subset(CONFIG.TRAIN_DATA, splits[1].indices)
+    
     # Getting sample weights to use in random sampler and loss calculation
-    _, sample_weights_train = get_sample_weights(train_data, None, "Train", logger = LOGGER)
-    val_class_weights, sample_weights_val = get_sample_weights(val_data, None, "Val", logger = LOGGER)
+    _, sample_weights_train = get_sample_weights(train_data.dataset, train_data.indices, "Train", logger = LOGGER)
+    val_class_weights, sample_weights_val = get_sample_weights(val_data.dataset, val_data.indices, "Val", logger = LOGGER)
     
     # Setting up Loss functions
     CONFIG.CRITERION_TRAIN = nn.CrossEntropyLoss()
@@ -420,9 +420,9 @@ if __name__ == "__main__":
         train_KCV()
     else:
         # Train test split
-        splits = random_split(dataset=CONFIG.TRAIN_DATA, lengths=[0.8, 0.2], generator=CONFIG.GENERATOR)
-        CONFIG.TRAIN_DATA = splits[0].dataset
-        CONFIG.TEST_DATA = splits[1].dataset
+        splits = random_split(dataset=CONFIG.DATA, lengths=[0.8, 0.2], generator=CONFIG.GENERATOR)
+        CONFIG.TRAIN_DATA = Subset(CONFIG.DATA, splits[0].indices)
+        CONFIG.TEST_DATA = Subset(CONFIG.DATA, splits[1].indices)
         train()
         test()
     

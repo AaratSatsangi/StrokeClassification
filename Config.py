@@ -71,8 +71,9 @@ class Config:
         )
         self.CRITERION_TRAIN = torch.nn.CrossEntropyLoss()
         self.CRITERION_VAL:torch.nn.CrossEntropyLoss = None
-        self.TRAIN_DATA = ImageFolder(self.PATH_DATASET_TRAIN, self.TRANSFORMS_TRAIN)
-        self.TEST_DATA = None
+        self.DATA:ImageFolder = ImageFolder(self.PATH_DATASET_TRAIN, self.TRANSFORMS_TRAIN)
+        self.TRAIN_DATA:ImageFolder = ImageFolder(self.PATH_DATASET_TRAIN, self.TRANSFORMS_TRAIN)
+        self.TEST_DATA: ImageFolder = None
         self.CLASS_NAMES = self.TRAIN_DATA.classes
 
         self.PATH_MODEL_MAIN_FOLDER = f"Classifiers/{model_type_dict[self.MODEL_TYPE]}/{self.MODEL_NAME}/"
