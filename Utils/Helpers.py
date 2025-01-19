@@ -221,10 +221,7 @@ def get_sample_weights(dataset, indices, name, logger: MyLogger):
         targets = torch.tensor([dataset.targets[i] for i in indices])
         log_string = "\t" + name 
     else:
-        if isinstance(dataset, torch.utils.data.Subset):
-            targets = torch.tensor([dataset.dataset.targets[i] for i in dataset.indices])
-        else:
-            targets = torch.tensor(dataset.targets)
+        targets = torch.tensor(dataset.targets)
         log_string = name
     class_counts = torch.bincount(targets)
     class_weights = 1.0 / class_counts.float()
