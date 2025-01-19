@@ -8,3 +8,6 @@ Temp/
 **/*__pycache__/
 **/*Heatmaps/
 temp.py
+.DS_Store
+__pycache__/Preprocessor.cpython-312.pyc
+__pycache__/Preprocessor.cpython-312.pyc
