@@ -1,0 +1,660 @@
+=========================Layer Names=========================
+0: model.features.0.0.weight
+1: model.features.0.0.bias
+2: model.features.0.2.weight
+3: model.features.0.2.bias
+4: model.features.1.0.norm1.weight
+5: model.features.1.0.norm1.bias
+6: model.features.1.0.attn.relative_position_bias_table
+7: model.features.1.0.attn.qkv.weight
+8: model.features.1.0.attn.qkv.bias
+9: model.features.1.0.attn.proj.weight
+10: model.features.1.0.attn.proj.bias
+11: model.features.1.0.norm2.weight
+12: model.features.1.0.norm2.bias
+13: model.features.1.0.mlp.0.weight
+14: model.features.1.0.mlp.0.bias
+15: model.features.1.0.mlp.3.weight
+16: model.features.1.0.mlp.3.bias
+17: model.features.1.1.norm1.weight
+18: model.features.1.1.norm1.bias
+19: model.features.1.1.attn.relative_position_bias_table
+20: model.features.1.1.attn.qkv.weight
+21: model.features.1.1.attn.qkv.bias
+22: model.features.1.1.attn.proj.weight
+23: model.features.1.1.attn.proj.bias
+24: model.features.1.1.norm2.weight
+25: model.features.1.1.norm2.bias
+26: model.features.1.1.mlp.0.weight
+27: model.features.1.1.mlp.0.bias
+28: model.features.1.1.mlp.3.weight
+29: model.features.1.1.mlp.3.bias
+30: model.features.2.reduction.weight
+31: model.features.2.norm.weight
+32: model.features.2.norm.bias
+33: model.features.3.0.norm1.weight
+34: model.features.3.0.norm1.bias
+35: model.features.3.0.attn.relative_position_bias_table
+36: model.features.3.0.attn.qkv.weight
+37: model.features.3.0.attn.qkv.bias
+38: model.features.3.0.attn.proj.weight
+39: model.features.3.0.attn.proj.bias
+40: model.features.3.0.norm2.weight
+41: model.features.3.0.norm2.bias
+42: model.features.3.0.mlp.0.weight
+43: model.features.3.0.mlp.0.bias
+44: model.features.3.0.mlp.3.weight
+45: model.features.3.0.mlp.3.bias
+46: model.features.3.1.norm1.weight
+47: model.features.3.1.norm1.bias
+48: model.features.3.1.attn.relative_position_bias_table
+49: model.features.3.1.attn.qkv.weight
+50: model.features.3.1.attn.qkv.bias
+51: model.features.3.1.attn.proj.weight
+52: model.features.3.1.attn.proj.bias
+53: model.features.3.1.norm2.weight
+54: model.features.3.1.norm2.bias
+55: model.features.3.1.mlp.0.weight
+56: model.features.3.1.mlp.0.bias
+57: model.features.3.1.mlp.3.weight
+58: model.features.3.1.mlp.3.bias
+59: model.features.4.reduction.weight
+60: model.features.4.norm.weight
+61: model.features.4.norm.bias
+62: model.features.5.0.norm1.weight		(freezed till here)
+63: model.features.5.0.norm1.bias		(freezed till here)
+64: model.features.5.0.attn.relative_position_bias_table		(freezed till here)
+65: model.features.5.0.attn.qkv.weight		(freezed till here)
+66: model.features.5.0.attn.qkv.bias		(freezed till here)
+67: model.features.5.0.attn.proj.weight		(freezed till here)
+68: model.features.5.0.attn.proj.bias		(freezed till here)
+69: model.features.5.0.norm2.weight		(freezed till here)
+70: model.features.5.0.norm2.bias		(freezed till here)
+71: model.features.5.0.mlp.0.weight		(freezed till here)
+72: model.features.5.0.mlp.0.bias		(freezed till here)
+73: model.features.5.0.mlp.3.weight		(freezed till here)
+74: model.features.5.0.mlp.3.bias		(freezed till here)
+75: model.features.5.1.norm1.weight
+76: model.features.5.1.norm1.bias
+77: model.features.5.1.attn.relative_position_bias_table
+78: model.features.5.1.attn.qkv.weight
+79: model.features.5.1.attn.qkv.bias
+80: model.features.5.1.attn.proj.weight
+81: model.features.5.1.attn.proj.bias
+82: model.features.5.1.norm2.weight
+83: model.features.5.1.norm2.bias
+84: model.features.5.1.mlp.0.weight
+85: model.features.5.1.mlp.0.bias
+86: model.features.5.1.mlp.3.weight
+87: model.features.5.1.mlp.3.bias
+88: model.features.5.2.norm1.weight
+89: model.features.5.2.norm1.bias
+90: model.features.5.2.attn.relative_position_bias_table
+91: model.features.5.2.attn.qkv.weight
+92: model.features.5.2.attn.qkv.bias
+93: model.features.5.2.attn.proj.weight
+94: model.features.5.2.attn.proj.bias
+95: model.features.5.2.norm2.weight
+96: model.features.5.2.norm2.bias
+97: model.features.5.2.mlp.0.weight
+98: model.features.5.2.mlp.0.bias
+99: model.features.5.2.mlp.3.weight
+100: model.features.5.2.mlp.3.bias
+101: model.features.5.3.norm1.weight
+102: model.features.5.3.norm1.bias
+103: model.features.5.3.attn.relative_position_bias_table
+104: model.features.5.3.attn.qkv.weight
+105: model.features.5.3.attn.qkv.bias
+106: model.features.5.3.attn.proj.weight
+107: model.features.5.3.attn.proj.bias
+108: model.features.5.3.norm2.weight
+109: model.features.5.3.norm2.bias
+110: model.features.5.3.mlp.0.weight
+111: model.features.5.3.mlp.0.bias
+112: model.features.5.3.mlp.3.weight
+113: model.features.5.3.mlp.3.bias
+114: model.features.5.4.norm1.weight
+115: model.features.5.4.norm1.bias
+116: model.features.5.4.attn.relative_position_bias_table
+117: model.features.5.4.attn.qkv.weight
+118: model.features.5.4.attn.qkv.bias
+119: model.features.5.4.attn.proj.weight
+120: model.features.5.4.attn.proj.bias
+121: model.features.5.4.norm2.weight
+122: model.features.5.4.norm2.bias
+123: model.features.5.4.mlp.0.weight
+124: model.features.5.4.mlp.0.bias
+125: model.features.5.4.mlp.3.weight
+126: model.features.5.4.mlp.3.bias
+127: model.features.5.5.norm1.weight
+128: model.features.5.5.norm1.bias
+129: model.features.5.5.attn.relative_position_bias_table
+130: model.features.5.5.attn.qkv.weight
+131: model.features.5.5.attn.qkv.bias
+132: model.features.5.5.attn.proj.weight
+133: model.features.5.5.attn.proj.bias
+134: model.features.5.5.norm2.weight
+135: model.features.5.5.norm2.bias
+136: model.features.5.5.mlp.0.weight
+137: model.features.5.5.mlp.0.bias
+138: model.features.5.5.mlp.3.weight
+139: model.features.5.5.mlp.3.bias
+140: model.features.5.6.norm1.weight
+141: model.features.5.6.norm1.bias
+142: model.features.5.6.attn.relative_position_bias_table
+143: model.features.5.6.attn.qkv.weight
+144: model.features.5.6.attn.qkv.bias
+145: model.features.5.6.attn.proj.weight
+146: model.features.5.6.attn.proj.bias
+147: model.features.5.6.norm2.weight
+148: model.features.5.6.norm2.bias
+149: model.features.5.6.mlp.0.weight
+150: model.features.5.6.mlp.0.bias
+151: model.features.5.6.mlp.3.weight
+152: model.features.5.6.mlp.3.bias
+153: model.features.5.7.norm1.weight
+154: model.features.5.7.norm1.bias
+155: model.features.5.7.attn.relative_position_bias_table
+156: model.features.5.7.attn.qkv.weight
+157: model.features.5.7.attn.qkv.bias
+158: model.features.5.7.attn.proj.weight
+159: model.features.5.7.attn.proj.bias
+160: model.features.5.7.norm2.weight
+161: model.features.5.7.norm2.bias
+162: model.features.5.7.mlp.0.weight
+163: model.features.5.7.mlp.0.bias
+164: model.features.5.7.mlp.3.weight
+165: model.features.5.7.mlp.3.bias
+166: model.features.5.8.norm1.weight
+167: model.features.5.8.norm1.bias
+168: model.features.5.8.attn.relative_position_bias_table
+169: model.features.5.8.attn.qkv.weight
+170: model.features.5.8.attn.qkv.bias
+171: model.features.5.8.attn.proj.weight
+172: model.features.5.8.attn.proj.bias
+173: model.features.5.8.norm2.weight
+174: model.features.5.8.norm2.bias
+175: model.features.5.8.mlp.0.weight
+176: model.features.5.8.mlp.0.bias
+177: model.features.5.8.mlp.3.weight
+178: model.features.5.8.mlp.3.bias
+179: model.features.5.9.norm1.weight
+180: model.features.5.9.norm1.bias
+181: model.features.5.9.attn.relative_position_bias_table
+182: model.features.5.9.attn.qkv.weight
+183: model.features.5.9.attn.qkv.bias
+184: model.features.5.9.attn.proj.weight
+185: model.features.5.9.attn.proj.bias
+186: model.features.5.9.norm2.weight
+187: model.features.5.9.norm2.bias
+188: model.features.5.9.mlp.0.weight
+189: model.features.5.9.mlp.0.bias
+190: model.features.5.9.mlp.3.weight
+191: model.features.5.9.mlp.3.bias
+192: model.features.5.10.norm1.weight
+193: model.features.5.10.norm1.bias
+194: model.features.5.10.attn.relative_position_bias_table
+195: model.features.5.10.attn.qkv.weight
+196: model.features.5.10.attn.qkv.bias
+197: model.features.5.10.attn.proj.weight
+198: model.features.5.10.attn.proj.bias
+199: model.features.5.10.norm2.weight
+200: model.features.5.10.norm2.bias
+201: model.features.5.10.mlp.0.weight
+202: model.features.5.10.mlp.0.bias
+203: model.features.5.10.mlp.3.weight
+204: model.features.5.10.mlp.3.bias
+205: model.features.5.11.norm1.weight
+206: model.features.5.11.norm1.bias
+207: model.features.5.11.attn.relative_position_bias_table
+208: model.features.5.11.attn.qkv.weight
+209: model.features.5.11.attn.qkv.bias
+210: model.features.5.11.attn.proj.weight
+211: model.features.5.11.attn.proj.bias
+212: model.features.5.11.norm2.weight
+213: model.features.5.11.norm2.bias
+214: model.features.5.11.mlp.0.weight
+215: model.features.5.11.mlp.0.bias
+216: model.features.5.11.mlp.3.weight
+217: model.features.5.11.mlp.3.bias
+218: model.features.5.12.norm1.weight
+219: model.features.5.12.norm1.bias
+220: model.features.5.12.attn.relative_position_bias_table
+221: model.features.5.12.attn.qkv.weight
+222: model.features.5.12.attn.qkv.bias
+223: model.features.5.12.attn.proj.weight
+224: model.features.5.12.attn.proj.bias
+225: model.features.5.12.norm2.weight
+226: model.features.5.12.norm2.bias
+227: model.features.5.12.mlp.0.weight
+228: model.features.5.12.mlp.0.bias
+229: model.features.5.12.mlp.3.weight
+230: model.features.5.12.mlp.3.bias
+231: model.features.5.13.norm1.weight
+232: model.features.5.13.norm1.bias
+233: model.features.5.13.attn.relative_position_bias_table
+234: model.features.5.13.attn.qkv.weight
+235: model.features.5.13.attn.qkv.bias
+236: model.features.5.13.attn.proj.weight
+237: model.features.5.13.attn.proj.bias
+238: model.features.5.13.norm2.weight
+239: model.features.5.13.norm2.bias
+240: model.features.5.13.mlp.0.weight
+241: model.features.5.13.mlp.0.bias
+242: model.features.5.13.mlp.3.weight
+243: model.features.5.13.mlp.3.bias
+244: model.features.5.14.norm1.weight
+245: model.features.5.14.norm1.bias
+246: model.features.5.14.attn.relative_position_bias_table
+247: model.features.5.14.attn.qkv.weight
+248: model.features.5.14.attn.qkv.bias
+249: model.features.5.14.attn.proj.weight
+250: model.features.5.14.attn.proj.bias
+251: model.features.5.14.norm2.weight
+252: model.features.5.14.norm2.bias
+253: model.features.5.14.mlp.0.weight
+254: model.features.5.14.mlp.0.bias
+255: model.features.5.14.mlp.3.weight
+256: model.features.5.14.mlp.3.bias
+257: model.features.5.15.norm1.weight
+258: model.features.5.15.norm1.bias
+259: model.features.5.15.attn.relative_position_bias_table
+260: model.features.5.15.attn.qkv.weight
+261: model.features.5.15.attn.qkv.bias
+262: model.features.5.15.attn.proj.weight
+263: model.features.5.15.attn.proj.bias
+264: model.features.5.15.norm2.weight
+265: model.features.5.15.norm2.bias
+266: model.features.5.15.mlp.0.weight
+267: model.features.5.15.mlp.0.bias
+268: model.features.5.15.mlp.3.weight
+269: model.features.5.15.mlp.3.bias
+270: model.features.5.16.norm1.weight
+271: model.features.5.16.norm1.bias
+272: model.features.5.16.attn.relative_position_bias_table
+273: model.features.5.16.attn.qkv.weight
+274: model.features.5.16.attn.qkv.bias
+275: model.features.5.16.attn.proj.weight
+276: model.features.5.16.attn.proj.bias
+277: model.features.5.16.norm2.weight
+278: model.features.5.16.norm2.bias
+279: model.features.5.16.mlp.0.weight
+280: model.features.5.16.mlp.0.bias
+281: model.features.5.16.mlp.3.weight
+282: model.features.5.16.mlp.3.bias
+283: model.features.5.17.norm1.weight
+284: model.features.5.17.norm1.bias
+285: model.features.5.17.attn.relative_position_bias_table
+286: model.features.5.17.attn.qkv.weight
+287: model.features.5.17.attn.qkv.bias
+288: model.features.5.17.attn.proj.weight
+289: model.features.5.17.attn.proj.bias
+290: model.features.5.17.norm2.weight
+291: model.features.5.17.norm2.bias
+292: model.features.5.17.mlp.0.weight
+293: model.features.5.17.mlp.0.bias
+294: model.features.5.17.mlp.3.weight
+295: model.features.5.17.mlp.3.bias
+296: model.features.6.reduction.weight
+297: model.features.6.norm.weight
+298: model.features.6.norm.bias
+299: model.features.7.0.norm1.weight
+300: model.features.7.0.norm1.bias
+301: model.features.7.0.attn.relative_position_bias_table
+302: model.features.7.0.attn.qkv.weight
+303: model.features.7.0.attn.qkv.bias
+304: model.features.7.0.attn.proj.weight
+305: model.features.7.0.attn.proj.bias
+306: model.features.7.0.norm2.weight
+307: model.features.7.0.norm2.bias
+308: model.features.7.0.mlp.0.weight
+309: model.features.7.0.mlp.0.bias
+310: model.features.7.0.mlp.3.weight
+311: model.features.7.0.mlp.3.bias
+312: model.features.7.1.norm1.weight
+313: model.features.7.1.norm1.bias
+314: model.features.7.1.attn.relative_position_bias_table
+315: model.features.7.1.attn.qkv.weight
+316: model.features.7.1.attn.qkv.bias
+317: model.features.7.1.attn.proj.weight
+318: model.features.7.1.attn.proj.bias
+319: model.features.7.1.norm2.weight
+320: model.features.7.1.norm2.bias
+321: model.features.7.1.mlp.0.weight
+322: model.features.7.1.mlp.0.bias
+323: model.features.7.1.mlp.3.weight
+324: model.features.7.1.mlp.3.bias
+325: model.norm.weight
+326: model.norm.bias
+327: model.head.weight
+328: model.head.bias
+=============================================================
+
+
+==================================================================================================================================
+Layer (type:depth-idx)                                  Input Shape               Output Shape              Param #
+==================================================================================================================================
+SWIN                                                    [1, 1, 224, 224]          [1, 2]                    --
+├─SwinTransformer: 1-1                                  [1, 1, 224, 224]          [1, 2]                    --
+│    └─Sequential: 2-1                                  [1, 1, 224, 224]          [1, 7, 7, 768]            --
+│    │    └─Sequential: 3-1                             [1, 1, 224, 224]          [1, 56, 56, 96]           --
+│    │    │    └─Conv2d: 4-1                            [1, 1, 224, 224]          [1, 96, 56, 56]           1,632
+│    │    │    └─Permute: 4-2                           [1, 96, 56, 56]           [1, 56, 56, 96]           --
+│    │    │    └─LayerNorm: 4-3                         [1, 56, 56, 96]           [1, 56, 56, 96]           (192)
+│    │    └─Sequential: 3-2                             [1, 56, 56, 96]           [1, 56, 56, 96]           --
+│    │    │    └─SwinTransformerBlock: 4-4              [1, 56, 56, 96]           [1, 56, 56, 96]           --
+│    │    │    │    └─LayerNorm: 5-1                    [1, 56, 56, 96]           [1, 56, 56, 96]           (192)
+│    │    │    │    └─ShiftedWindowAttention: 5-2       [1, 56, 56, 96]           [1, 56, 56, 96]           37,755
+│    │    │    │    └─StochasticDepth: 5-3              [1, 56, 56, 96]           [1, 56, 56, 96]           --
+│    │    │    │    └─LayerNorm: 5-4                    [1, 56, 56, 96]           [1, 56, 56, 96]           (192)
+│    │    │    │    └─MLP: 5-5                          [1, 56, 56, 96]           [1, 56, 56, 96]           --
+│    │    │    │    │    └─Linear: 6-1                  [1, 56, 56, 96]           [1, 56, 56, 384]          (37,248)
+│    │    │    │    │    └─GELU: 6-2                    [1, 56, 56, 384]          [1, 56, 56, 384]          --
+│    │    │    │    │    └─Dropout: 6-3                 [1, 56, 56, 384]          [1, 56, 56, 384]          --
+│    │    │    │    │    └─Linear: 6-4                  [1, 56, 56, 384]          [1, 56, 56, 96]           (36,960)
+│    │    │    │    │    └─Dropout: 6-5                 [1, 56, 56, 96]           [1, 56, 56, 96]           --
+│    │    │    │    └─StochasticDepth: 5-6              [1, 56, 56, 96]           [1, 56, 56, 96]           --
+│    │    │    └─SwinTransformerBlock: 4-5              [1, 56, 56, 96]           [1, 56, 56, 96]           --
+│    │    │    │    └─LayerNorm: 5-7                    [1, 56, 56, 96]           [1, 56, 56, 96]           (192)
+│    │    │    │    └─ShiftedWindowAttention: 5-8       [1, 56, 56, 96]           [1, 56, 56, 96]           37,755
+│    │    │    │    └─StochasticDepth: 5-9              [1, 56, 56, 96]           [1, 56, 56, 96]           --
+│    │    │    │    └─LayerNorm: 5-10                   [1, 56, 56, 96]           [1, 56, 56, 96]           (192)
+│    │    │    │    └─MLP: 5-11                         [1, 56, 56, 96]           [1, 56, 56, 96]           --
+│    │    │    │    │    └─Linear: 6-6                  [1, 56, 56, 96]           [1, 56, 56, 384]          (37,248)
+│    │    │    │    │    └─GELU: 6-7                    [1, 56, 56, 384]          [1, 56, 56, 384]          --
+│    │    │    │    │    └─Dropout: 6-8                 [1, 56, 56, 384]          [1, 56, 56, 384]          --
+│    │    │    │    │    └─Linear: 6-9                  [1, 56, 56, 384]          [1, 56, 56, 96]           (36,960)
+│    │    │    │    │    └─Dropout: 6-10                [1, 56, 56, 96]           [1, 56, 56, 96]           --
+│    │    │    │    └─StochasticDepth: 5-12             [1, 56, 56, 96]           [1, 56, 56, 96]           --
+│    │    └─PatchMerging: 3-3                           [1, 56, 56, 96]           [1, 28, 28, 192]          --
+│    │    │    └─LayerNorm: 4-6                         [1, 28, 28, 384]          [1, 28, 28, 384]          (768)
+│    │    │    └─Linear: 4-7                            [1, 28, 28, 384]          [1, 28, 28, 192]          (73,728)
+│    │    └─Sequential: 3-4                             [1, 28, 28, 192]          [1, 28, 28, 192]          --
+│    │    │    └─SwinTransformerBlock: 4-8              [1, 28, 28, 192]          [1, 28, 28, 192]          --
+│    │    │    │    └─LayerNorm: 5-13                   [1, 28, 28, 192]          [1, 28, 28, 192]          (384)
+│    │    │    │    └─ShiftedWindowAttention: 5-14      [1, 28, 28, 192]          [1, 28, 28, 192]          149,238
+│    │    │    │    └─StochasticDepth: 5-15             [1, 28, 28, 192]          [1, 28, 28, 192]          --
+│    │    │    │    └─LayerNorm: 5-16                   [1, 28, 28, 192]          [1, 28, 28, 192]          (384)
+│    │    │    │    └─MLP: 5-17                         [1, 28, 28, 192]          [1, 28, 28, 192]          --
+│    │    │    │    │    └─Linear: 6-11                 [1, 28, 28, 192]          [1, 28, 28, 768]          (148,224)
+│    │    │    │    │    └─GELU: 6-12                   [1, 28, 28, 768]          [1, 28, 28, 768]          --
+│    │    │    │    │    └─Dropout: 6-13                [1, 28, 28, 768]          [1, 28, 28, 768]          --
+│    │    │    │    │    └─Linear: 6-14                 [1, 28, 28, 768]          [1, 28, 28, 192]          (147,648)
+│    │    │    │    │    └─Dropout: 6-15                [1, 28, 28, 192]          [1, 28, 28, 192]          --
+│    │    │    │    └─StochasticDepth: 5-18             [1, 28, 28, 192]          [1, 28, 28, 192]          --
+│    │    │    └─SwinTransformerBlock: 4-9              [1, 28, 28, 192]          [1, 28, 28, 192]          --
+│    │    │    │    └─LayerNorm: 5-19                   [1, 28, 28, 192]          [1, 28, 28, 192]          (384)
+│    │    │    │    └─ShiftedWindowAttention: 5-20      [1, 28, 28, 192]          [1, 28, 28, 192]          149,238
+│    │    │    │    └─StochasticDepth: 5-21             [1, 28, 28, 192]          [1, 28, 28, 192]          --
+│    │    │    │    └─LayerNorm: 5-22                   [1, 28, 28, 192]          [1, 28, 28, 192]          (384)
+│    │    │    │    └─MLP: 5-23                         [1, 28, 28, 192]          [1, 28, 28, 192]          --
+│    │    │    │    │    └─Linear: 6-16                 [1, 28, 28, 192]          [1, 28, 28, 768]          (148,224)
+│    │    │    │    │    └─GELU: 6-17                   [1, 28, 28, 768]          [1, 28, 28, 768]          --
+│    │    │    │    │    └─Dropout: 6-18                [1, 28, 28, 768]          [1, 28, 28, 768]          --
+│    │    │    │    │    └─Linear: 6-19                 [1, 28, 28, 768]          [1, 28, 28, 192]          (147,648)
+│    │    │    │    │    └─Dropout: 6-20                [1, 28, 28, 192]          [1, 28, 28, 192]          --
+│    │    │    │    └─StochasticDepth: 5-24             [1, 28, 28, 192]          [1, 28, 28, 192]          --
+│    │    └─PatchMerging: 3-5                           [1, 28, 28, 192]          [1, 14, 14, 384]          --
+│    │    │    └─LayerNorm: 4-10                        [1, 14, 14, 768]          [1, 14, 14, 768]          (1,536)
+│    │    │    └─Linear: 4-11                           [1, 14, 14, 768]          [1, 14, 14, 384]          (294,912)
+│    │    └─Sequential: 3-6                             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    └─SwinTransformerBlock: 4-12             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─LayerNorm: 5-25                   [1, 14, 14, 384]          [1, 14, 14, 384]          768
+│    │    │    │    └─ShiftedWindowAttention: 5-26      [1, 14, 14, 384]          [1, 14, 14, 384]          593,388
+│    │    │    │    └─StochasticDepth: 5-27             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─LayerNorm: 5-28                   [1, 14, 14, 384]          [1, 14, 14, 384]          768
+│    │    │    │    └─MLP: 5-29                         [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    │    └─Linear: 6-21                 [1, 14, 14, 384]          [1, 14, 14, 1536]         591,360
+│    │    │    │    │    └─GELU: 6-22                   [1, 14, 14, 1536]         [1, 14, 14, 1536]         --
+│    │    │    │    │    └─Dropout: 6-23                [1, 14, 14, 1536]         [1, 14, 14, 1536]         --
+│    │    │    │    │    └─Linear: 6-24                 [1, 14, 14, 1536]         [1, 14, 14, 384]          590,208
+│    │    │    │    │    └─Dropout: 6-25                [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─StochasticDepth: 5-30             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    └─SwinTransformerBlock: 4-13             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─LayerNorm: 5-31                   [1, 14, 14, 384]          [1, 14, 14, 384]          768
+│    │    │    │    └─ShiftedWindowAttention: 5-32      [1, 14, 14, 384]          [1, 14, 14, 384]          593,388
+│    │    │    │    └─StochasticDepth: 5-33             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─LayerNorm: 5-34                   [1, 14, 14, 384]          [1, 14, 14, 384]          768
+│    │    │    │    └─MLP: 5-35                         [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    │    └─Linear: 6-26                 [1, 14, 14, 384]          [1, 14, 14, 1536]         591,360
+│    │    │    │    │    └─GELU: 6-27                   [1, 14, 14, 1536]         [1, 14, 14, 1536]         --
+│    │    │    │    │    └─Dropout: 6-28                [1, 14, 14, 1536]         [1, 14, 14, 1536]         --
+│    │    │    │    │    └─Linear: 6-29                 [1, 14, 14, 1536]         [1, 14, 14, 384]          590,208
+│    │    │    │    │    └─Dropout: 6-30                [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─StochasticDepth: 5-36             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    └─SwinTransformerBlock: 4-14             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─LayerNorm: 5-37                   [1, 14, 14, 384]          [1, 14, 14, 384]          768
+│    │    │    │    └─ShiftedWindowAttention: 5-38      [1, 14, 14, 384]          [1, 14, 14, 384]          593,388
+│    │    │    │    └─StochasticDepth: 5-39             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─LayerNorm: 5-40                   [1, 14, 14, 384]          [1, 14, 14, 384]          768
+│    │    │    │    └─MLP: 5-41                         [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    │    └─Linear: 6-31                 [1, 14, 14, 384]          [1, 14, 14, 1536]         591,360
+│    │    │    │    │    └─GELU: 6-32                   [1, 14, 14, 1536]         [1, 14, 14, 1536]         --
+│    │    │    │    │    └─Dropout: 6-33                [1, 14, 14, 1536]         [1, 14, 14, 1536]         --
+│    │    │    │    │    └─Linear: 6-34                 [1, 14, 14, 1536]         [1, 14, 14, 384]          590,208
+│    │    │    │    │    └─Dropout: 6-35                [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─StochasticDepth: 5-42             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    └─SwinTransformerBlock: 4-15             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─LayerNorm: 5-43                   [1, 14, 14, 384]          [1, 14, 14, 384]          768
+│    │    │    │    └─ShiftedWindowAttention: 5-44      [1, 14, 14, 384]          [1, 14, 14, 384]          593,388
+│    │    │    │    └─StochasticDepth: 5-45             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─LayerNorm: 5-46                   [1, 14, 14, 384]          [1, 14, 14, 384]          768
+│    │    │    │    └─MLP: 5-47                         [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    │    └─Linear: 6-36                 [1, 14, 14, 384]          [1, 14, 14, 1536]         591,360
+│    │    │    │    │    └─GELU: 6-37                   [1, 14, 14, 1536]         [1, 14, 14, 1536]         --
+│    │    │    │    │    └─Dropout: 6-38                [1, 14, 14, 1536]         [1, 14, 14, 1536]         --
+│    │    │    │    │    └─Linear: 6-39                 [1, 14, 14, 1536]         [1, 14, 14, 384]          590,208
+│    │    │    │    │    └─Dropout: 6-40                [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─StochasticDepth: 5-48             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    └─SwinTransformerBlock: 4-16             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─LayerNorm: 5-49                   [1, 14, 14, 384]          [1, 14, 14, 384]          768
+│    │    │    │    └─ShiftedWindowAttention: 5-50      [1, 14, 14, 384]          [1, 14, 14, 384]          593,388
+│    │    │    │    └─StochasticDepth: 5-51             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─LayerNorm: 5-52                   [1, 14, 14, 384]          [1, 14, 14, 384]          768
+│    │    │    │    └─MLP: 5-53                         [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    │    └─Linear: 6-41                 [1, 14, 14, 384]          [1, 14, 14, 1536]         591,360
+│    │    │    │    │    └─GELU: 6-42                   [1, 14, 14, 1536]         [1, 14, 14, 1536]         --
+│    │    │    │    │    └─Dropout: 6-43                [1, 14, 14, 1536]         [1, 14, 14, 1536]         --
+│    │    │    │    │    └─Linear: 6-44                 [1, 14, 14, 1536]         [1, 14, 14, 384]          590,208
+│    │    │    │    │    └─Dropout: 6-45                [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─StochasticDepth: 5-54             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    └─SwinTransformerBlock: 4-17             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─LayerNorm: 5-55                   [1, 14, 14, 384]          [1, 14, 14, 384]          768
+│    │    │    │    └─ShiftedWindowAttention: 5-56      [1, 14, 14, 384]          [1, 14, 14, 384]          593,388
+│    │    │    │    └─StochasticDepth: 5-57             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─LayerNorm: 5-58                   [1, 14, 14, 384]          [1, 14, 14, 384]          768
+│    │    │    │    └─MLP: 5-59                         [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    │    └─Linear: 6-46                 [1, 14, 14, 384]          [1, 14, 14, 1536]         591,360
+│    │    │    │    │    └─GELU: 6-47                   [1, 14, 14, 1536]         [1, 14, 14, 1536]         --
+│    │    │    │    │    └─Dropout: 6-48                [1, 14, 14, 1536]         [1, 14, 14, 1536]         --
+│    │    │    │    │    └─Linear: 6-49                 [1, 14, 14, 1536]         [1, 14, 14, 384]          590,208
+│    │    │    │    │    └─Dropout: 6-50                [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─StochasticDepth: 5-60             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    └─SwinTransformerBlock: 4-18             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─LayerNorm: 5-61                   [1, 14, 14, 384]          [1, 14, 14, 384]          768
+│    │    │    │    └─ShiftedWindowAttention: 5-62      [1, 14, 14, 384]          [1, 14, 14, 384]          593,388
+│    │    │    │    └─StochasticDepth: 5-63             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─LayerNorm: 5-64                   [1, 14, 14, 384]          [1, 14, 14, 384]          768
+│    │    │    │    └─MLP: 5-65                         [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    │    └─Linear: 6-51                 [1, 14, 14, 384]          [1, 14, 14, 1536]         591,360
+│    │    │    │    │    └─GELU: 6-52                   [1, 14, 14, 1536]         [1, 14, 14, 1536]         --
+│    │    │    │    │    └─Dropout: 6-53                [1, 14, 14, 1536]         [1, 14, 14, 1536]         --
+│    │    │    │    │    └─Linear: 6-54                 [1, 14, 14, 1536]         [1, 14, 14, 384]          590,208
+│    │    │    │    │    └─Dropout: 6-55                [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─StochasticDepth: 5-66             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    └─SwinTransformerBlock: 4-19             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─LayerNorm: 5-67                   [1, 14, 14, 384]          [1, 14, 14, 384]          768
+│    │    │    │    └─ShiftedWindowAttention: 5-68      [1, 14, 14, 384]          [1, 14, 14, 384]          593,388
+│    │    │    │    └─StochasticDepth: 5-69             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─LayerNorm: 5-70                   [1, 14, 14, 384]          [1, 14, 14, 384]          768
+│    │    │    │    └─MLP: 5-71                         [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    │    └─Linear: 6-56                 [1, 14, 14, 384]          [1, 14, 14, 1536]         591,360
+│    │    │    │    │    └─GELU: 6-57                   [1, 14, 14, 1536]         [1, 14, 14, 1536]         --
+│    │    │    │    │    └─Dropout: 6-58                [1, 14, 14, 1536]         [1, 14, 14, 1536]         --
+│    │    │    │    │    └─Linear: 6-59                 [1, 14, 14, 1536]         [1, 14, 14, 384]          590,208
+│    │    │    │    │    └─Dropout: 6-60                [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─StochasticDepth: 5-72             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    └─SwinTransformerBlock: 4-20             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─LayerNorm: 5-73                   [1, 14, 14, 384]          [1, 14, 14, 384]          768
+│    │    │    │    └─ShiftedWindowAttention: 5-74      [1, 14, 14, 384]          [1, 14, 14, 384]          593,388
+│    │    │    │    └─StochasticDepth: 5-75             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─LayerNorm: 5-76                   [1, 14, 14, 384]          [1, 14, 14, 384]          768
+│    │    │    │    └─MLP: 5-77                         [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    │    └─Linear: 6-61                 [1, 14, 14, 384]          [1, 14, 14, 1536]         591,360
+│    │    │    │    │    └─GELU: 6-62                   [1, 14, 14, 1536]         [1, 14, 14, 1536]         --
+│    │    │    │    │    └─Dropout: 6-63                [1, 14, 14, 1536]         [1, 14, 14, 1536]         --
+│    │    │    │    │    └─Linear: 6-64                 [1, 14, 14, 1536]         [1, 14, 14, 384]          590,208
+│    │    │    │    │    └─Dropout: 6-65                [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─StochasticDepth: 5-78             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    └─SwinTransformerBlock: 4-21             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─LayerNorm: 5-79                   [1, 14, 14, 384]          [1, 14, 14, 384]          768
+│    │    │    │    └─ShiftedWindowAttention: 5-80      [1, 14, 14, 384]          [1, 14, 14, 384]          593,388
+│    │    │    │    └─StochasticDepth: 5-81             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─LayerNorm: 5-82                   [1, 14, 14, 384]          [1, 14, 14, 384]          768
+│    │    │    │    └─MLP: 5-83                         [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    │    └─Linear: 6-66                 [1, 14, 14, 384]          [1, 14, 14, 1536]         591,360
+│    │    │    │    │    └─GELU: 6-67                   [1, 14, 14, 1536]         [1, 14, 14, 1536]         --
+│    │    │    │    │    └─Dropout: 6-68                [1, 14, 14, 1536]         [1, 14, 14, 1536]         --
+│    │    │    │    │    └─Linear: 6-69                 [1, 14, 14, 1536]         [1, 14, 14, 384]          590,208
+│    │    │    │    │    └─Dropout: 6-70                [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─StochasticDepth: 5-84             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    └─SwinTransformerBlock: 4-22             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─LayerNorm: 5-85                   [1, 14, 14, 384]          [1, 14, 14, 384]          768
+│    │    │    │    └─ShiftedWindowAttention: 5-86      [1, 14, 14, 384]          [1, 14, 14, 384]          593,388
+│    │    │    │    └─StochasticDepth: 5-87             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─LayerNorm: 5-88                   [1, 14, 14, 384]          [1, 14, 14, 384]          768
+│    │    │    │    └─MLP: 5-89                         [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    │    └─Linear: 6-71                 [1, 14, 14, 384]          [1, 14, 14, 1536]         591,360
+│    │    │    │    │    └─GELU: 6-72                   [1, 14, 14, 1536]         [1, 14, 14, 1536]         --
+│    │    │    │    │    └─Dropout: 6-73                [1, 14, 14, 1536]         [1, 14, 14, 1536]         --
+│    │    │    │    │    └─Linear: 6-74                 [1, 14, 14, 1536]         [1, 14, 14, 384]          590,208
+│    │    │    │    │    └─Dropout: 6-75                [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─StochasticDepth: 5-90             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    └─SwinTransformerBlock: 4-23             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─LayerNorm: 5-91                   [1, 14, 14, 384]          [1, 14, 14, 384]          768
+│    │    │    │    └─ShiftedWindowAttention: 5-92      [1, 14, 14, 384]          [1, 14, 14, 384]          593,388
+│    │    │    │    └─StochasticDepth: 5-93             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─LayerNorm: 5-94                   [1, 14, 14, 384]          [1, 14, 14, 384]          768
+│    │    │    │    └─MLP: 5-95                         [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    │    └─Linear: 6-76                 [1, 14, 14, 384]          [1, 14, 14, 1536]         591,360
+│    │    │    │    │    └─GELU: 6-77                   [1, 14, 14, 1536]         [1, 14, 14, 1536]         --
+│    │    │    │    │    └─Dropout: 6-78                [1, 14, 14, 1536]         [1, 14, 14, 1536]         --
+│    │    │    │    │    └─Linear: 6-79                 [1, 14, 14, 1536]         [1, 14, 14, 384]          590,208
+│    │    │    │    │    └─Dropout: 6-80                [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─StochasticDepth: 5-96             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    └─SwinTransformerBlock: 4-24             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─LayerNorm: 5-97                   [1, 14, 14, 384]          [1, 14, 14, 384]          768
+│    │    │    │    └─ShiftedWindowAttention: 5-98      [1, 14, 14, 384]          [1, 14, 14, 384]          593,388
+│    │    │    │    └─StochasticDepth: 5-99             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─LayerNorm: 5-100                  [1, 14, 14, 384]          [1, 14, 14, 384]          768
+│    │    │    │    └─MLP: 5-101                        [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    │    └─Linear: 6-81                 [1, 14, 14, 384]          [1, 14, 14, 1536]         591,360
+│    │    │    │    │    └─GELU: 6-82                   [1, 14, 14, 1536]         [1, 14, 14, 1536]         --
+│    │    │    │    │    └─Dropout: 6-83                [1, 14, 14, 1536]         [1, 14, 14, 1536]         --
+│    │    │    │    │    └─Linear: 6-84                 [1, 14, 14, 1536]         [1, 14, 14, 384]          590,208
+│    │    │    │    │    └─Dropout: 6-85                [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─StochasticDepth: 5-102            [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    └─SwinTransformerBlock: 4-25             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─LayerNorm: 5-103                  [1, 14, 14, 384]          [1, 14, 14, 384]          768
+│    │    │    │    └─ShiftedWindowAttention: 5-104     [1, 14, 14, 384]          [1, 14, 14, 384]          593,388
+│    │    │    │    └─StochasticDepth: 5-105            [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─LayerNorm: 5-106                  [1, 14, 14, 384]          [1, 14, 14, 384]          768
+│    │    │    │    └─MLP: 5-107                        [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    │    └─Linear: 6-86                 [1, 14, 14, 384]          [1, 14, 14, 1536]         591,360
+│    │    │    │    │    └─GELU: 6-87                   [1, 14, 14, 1536]         [1, 14, 14, 1536]         --
+│    │    │    │    │    └─Dropout: 6-88                [1, 14, 14, 1536]         [1, 14, 14, 1536]         --
+│    │    │    │    │    └─Linear: 6-89                 [1, 14, 14, 1536]         [1, 14, 14, 384]          590,208
+│    │    │    │    │    └─Dropout: 6-90                [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─StochasticDepth: 5-108            [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    └─SwinTransformerBlock: 4-26             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─LayerNorm: 5-109                  [1, 14, 14, 384]          [1, 14, 14, 384]          768
+│    │    │    │    └─ShiftedWindowAttention: 5-110     [1, 14, 14, 384]          [1, 14, 14, 384]          593,388
+│    │    │    │    └─StochasticDepth: 5-111            [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─LayerNorm: 5-112                  [1, 14, 14, 384]          [1, 14, 14, 384]          768
+│    │    │    │    └─MLP: 5-113                        [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    │    └─Linear: 6-91                 [1, 14, 14, 384]          [1, 14, 14, 1536]         591,360
+│    │    │    │    │    └─GELU: 6-92                   [1, 14, 14, 1536]         [1, 14, 14, 1536]         --
+│    │    │    │    │    └─Dropout: 6-93                [1, 14, 14, 1536]         [1, 14, 14, 1536]         --
+│    │    │    │    │    └─Linear: 6-94                 [1, 14, 14, 1536]         [1, 14, 14, 384]          590,208
+│    │    │    │    │    └─Dropout: 6-95                [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─StochasticDepth: 5-114            [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    └─SwinTransformerBlock: 4-27             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─LayerNorm: 5-115                  [1, 14, 14, 384]          [1, 14, 14, 384]          768
+│    │    │    │    └─ShiftedWindowAttention: 5-116     [1, 14, 14, 384]          [1, 14, 14, 384]          593,388
+│    │    │    │    └─StochasticDepth: 5-117            [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─LayerNorm: 5-118                  [1, 14, 14, 384]          [1, 14, 14, 384]          768
+│    │    │    │    └─MLP: 5-119                        [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    │    └─Linear: 6-96                 [1, 14, 14, 384]          [1, 14, 14, 1536]         591,360
+│    │    │    │    │    └─GELU: 6-97                   [1, 14, 14, 1536]         [1, 14, 14, 1536]         --
+│    │    │    │    │    └─Dropout: 6-98                [1, 14, 14, 1536]         [1, 14, 14, 1536]         --
+│    │    │    │    │    └─Linear: 6-99                 [1, 14, 14, 1536]         [1, 14, 14, 384]          590,208
+│    │    │    │    │    └─Dropout: 6-100               [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─StochasticDepth: 5-120            [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    └─SwinTransformerBlock: 4-28             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─LayerNorm: 5-121                  [1, 14, 14, 384]          [1, 14, 14, 384]          768
+│    │    │    │    └─ShiftedWindowAttention: 5-122     [1, 14, 14, 384]          [1, 14, 14, 384]          593,388
+│    │    │    │    └─StochasticDepth: 5-123            [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─LayerNorm: 5-124                  [1, 14, 14, 384]          [1, 14, 14, 384]          768
+│    │    │    │    └─MLP: 5-125                        [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    │    └─Linear: 6-101                [1, 14, 14, 384]          [1, 14, 14, 1536]         591,360
+│    │    │    │    │    └─GELU: 6-102                  [1, 14, 14, 1536]         [1, 14, 14, 1536]         --
+│    │    │    │    │    └─Dropout: 6-103               [1, 14, 14, 1536]         [1, 14, 14, 1536]         --
+│    │    │    │    │    └─Linear: 6-104                [1, 14, 14, 1536]         [1, 14, 14, 384]          590,208
+│    │    │    │    │    └─Dropout: 6-105               [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─StochasticDepth: 5-126            [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    └─SwinTransformerBlock: 4-29             [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─LayerNorm: 5-127                  [1, 14, 14, 384]          [1, 14, 14, 384]          768
+│    │    │    │    └─ShiftedWindowAttention: 5-128     [1, 14, 14, 384]          [1, 14, 14, 384]          593,388
+│    │    │    │    └─StochasticDepth: 5-129            [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─LayerNorm: 5-130                  [1, 14, 14, 384]          [1, 14, 14, 384]          768
+│    │    │    │    └─MLP: 5-131                        [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    │    └─Linear: 6-106                [1, 14, 14, 384]          [1, 14, 14, 1536]         591,360
+│    │    │    │    │    └─GELU: 6-107                  [1, 14, 14, 1536]         [1, 14, 14, 1536]         --
+│    │    │    │    │    └─Dropout: 6-108               [1, 14, 14, 1536]         [1, 14, 14, 1536]         --
+│    │    │    │    │    └─Linear: 6-109                [1, 14, 14, 1536]         [1, 14, 14, 384]          590,208
+│    │    │    │    │    └─Dropout: 6-110               [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    │    │    └─StochasticDepth: 5-132            [1, 14, 14, 384]          [1, 14, 14, 384]          --
+│    │    └─PatchMerging: 3-7                           [1, 14, 14, 384]          [1, 7, 7, 768]            --
+│    │    │    └─LayerNorm: 4-30                        [1, 7, 7, 1536]           [1, 7, 7, 1536]           3,072
+│    │    │    └─Linear: 4-31                           [1, 7, 7, 1536]           [1, 7, 7, 768]            1,179,648
+│    │    └─Sequential: 3-8                             [1, 7, 7, 768]            [1, 7, 7, 768]            --
+│    │    │    └─SwinTransformerBlock: 4-32             [1, 7, 7, 768]            [1, 7, 7, 768]            --
+│    │    │    │    └─LayerNorm: 5-133                  [1, 7, 7, 768]            [1, 7, 7, 768]            1,536
+│    │    │    │    └─ShiftedWindowAttention: 5-134     [1, 7, 7, 768]            [1, 7, 7, 768]            2,366,424
+│    │    │    │    └─StochasticDepth: 5-135            [1, 7, 7, 768]            [1, 7, 7, 768]            --
+│    │    │    │    └─LayerNorm: 5-136                  [1, 7, 7, 768]            [1, 7, 7, 768]            1,536
+│    │    │    │    └─MLP: 5-137                        [1, 7, 7, 768]            [1, 7, 7, 768]            --
+│    │    │    │    │    └─Linear: 6-111                [1, 7, 7, 768]            [1, 7, 7, 3072]           2,362,368
+│    │    │    │    │    └─GELU: 6-112                  [1, 7, 7, 3072]           [1, 7, 7, 3072]           --
+│    │    │    │    │    └─Dropout: 6-113               [1, 7, 7, 3072]           [1, 7, 7, 3072]           --
+│    │    │    │    │    └─Linear: 6-114                [1, 7, 7, 3072]           [1, 7, 7, 768]            2,360,064
+│    │    │    │    │    └─Dropout: 6-115               [1, 7, 7, 768]            [1, 7, 7, 768]            --
+│    │    │    │    └─StochasticDepth: 5-138            [1, 7, 7, 768]            [1, 7, 7, 768]            --
+│    │    │    └─SwinTransformerBlock: 4-33             [1, 7, 7, 768]            [1, 7, 7, 768]            --
+│    │    │    │    └─LayerNorm: 5-139                  [1, 7, 7, 768]            [1, 7, 7, 768]            1,536
+│    │    │    │    └─ShiftedWindowAttention: 5-140     [1, 7, 7, 768]            [1, 7, 7, 768]            2,366,424
+│    │    │    │    └─StochasticDepth: 5-141            [1, 7, 7, 768]            [1, 7, 7, 768]            --
+│    │    │    │    └─LayerNorm: 5-142                  [1, 7, 7, 768]            [1, 7, 7, 768]            1,536
+│    │    │    │    └─MLP: 5-143                        [1, 7, 7, 768]            [1, 7, 7, 768]            --
+│    │    │    │    │    └─Linear: 6-116                [1, 7, 7, 768]            [1, 7, 7, 3072]           2,362,368
+│    │    │    │    │    └─GELU: 6-117                  [1, 7, 7, 3072]           [1, 7, 7, 3072]           --
+│    │    │    │    │    └─Dropout: 6-118               [1, 7, 7, 3072]           [1, 7, 7, 3072]           --
+│    │    │    │    │    └─Linear: 6-119                [1, 7, 7, 3072]           [1, 7, 7, 768]            2,360,064
+│    │    │    │    │    └─Dropout: 6-120               [1, 7, 7, 768]            [1, 7, 7, 768]            --
+│    │    │    │    └─StochasticDepth: 5-144            [1, 7, 7, 768]            [1, 7, 7, 768]            --
+│    └─LayerNorm: 2-2                                   [1, 7, 7, 768]            [1, 7, 7, 768]            1,536
+│    └─Permute: 2-3                                     [1, 7, 7, 768]            [1, 768, 7, 7]            --
+│    └─AdaptiveAvgPool2d: 2-4                           [1, 768, 7, 7]            [1, 768, 1, 1]            --
+│    └─Flatten: 2-5                                     [1, 768, 1, 1]            [1, 768]                  --
+│    └─Linear: 2-6                                      [1, 768]                  [1, 2]                    1,538
+==================================================================================================================================
+Total params: 48,835,724
+Trainable params: 47,348,138
+Non-trainable params: 1,487,586
+Total mult-adds (M): 38.16
+==================================================================================================================================
+Input size (MB): 0.20
+Forward/backward pass size (MB): 142.10
+Params size (MB): 132.19
+Estimated Total Size (MB): 274.49
+==================================================================================================================================

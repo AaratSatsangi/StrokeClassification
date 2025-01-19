@@ -1,7 +1,7 @@
 {
-    "MODEL_NAME": "CvT_S",
+    "MODEL_NAME": "SWIN_S",
     "MODEL_TYPE": "trans",
-    "DEVICE": "cuda:1",
+    "DEVICE": "cuda:0",
     "LOAD_CHECKPOINT": false,
     
     "K_FOLD": -1,
