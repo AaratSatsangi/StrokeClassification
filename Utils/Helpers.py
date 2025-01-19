@@ -306,7 +306,7 @@ def test_model(t_model: torch.nn.Module, test_loader:ImageFolder,test_class_weig
             y_pred =  t_model(x)
             test_loss += CRITERION_TEST(y_pred, y).item()
 
-            y_true = torch.zeros(y.shape[0],3)
+            y_true = torch.zeros(y.shape[0],len(class_names))
             for row in range(y.shape[0]):
                 y_true[row, y[row]] = 1
             y_trueTensor = torch.vstack([y_trueTensor, y_true.cpu()])
