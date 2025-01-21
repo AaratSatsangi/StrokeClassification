@@ -1,0 +1,17 @@
+
+
+====================================================== START ======================================================
+Strategy: K-Fold
+Training Epochs: 200
+Fine Tuning Epochs: 100
+Using GPU: cuda:0
+Batch Size: 128
+Learning Rate: 0.01
+Early Stopping with Persistence: 300
+LR Schedular: CosineAnnealingWarmRestarts + ReduceLROnPlataue
+
+###################################################################################################################
+
+					Training: SWIN_S
+
+###################################################################################################################

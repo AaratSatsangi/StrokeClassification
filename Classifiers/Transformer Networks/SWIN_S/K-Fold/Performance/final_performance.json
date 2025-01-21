@@ -1,0 +1,17 @@
+{
+    "Hemorrhagic": {
+        "precision": [],
+        "recall": [],
+        "f1-score": []
+    },
+    "Ischemic": {
+        "precision": [],
+        "recall": [],
+        "f1-score": []
+    },
+    "Normal": {
+        "precision": [],
+        "recall": [],
+        "f1-score": []
+    }
+}

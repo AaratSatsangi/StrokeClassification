@@ -1,7 +1,7 @@
 {
     "BATCH_SIZE": 128,
-    "BATCH_LOAD": 16,
-    "COMPLETED_FOLD": 10,
+    "BATCH_LOAD": 128,
+    "COMPLETED_FOLD": 3,
     "LEARNING_RATE": 0.01,
     "FREEZE_TO_LAYER": "layer3.12"
 }

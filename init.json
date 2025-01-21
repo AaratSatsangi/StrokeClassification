@@ -1,10 +1,10 @@
 {
-    "MODEL_NAME": "SWIN_S",
-    "MODEL_TYPE": "trans",
-    "DEVICE": "cuda:0",
+    "MODEL_NAME": "ResNet_S",
+    "MODEL_TYPE": "conv",
+    "DEVICE": "cuda:1",
     "LOAD_CHECKPOINT": false,
     
-    "K_FOLD": -1,
+    "K_FOLD": 10,
     "TRAIN_EPOCHS": 200,
     "FINE_TUNE_EPOCHS": 100,
     "PERSISTENCE": 300,
@@ -16,6 +16,6 @@
     "SERVER_USERNAME": "AaratSatsangi",
     "SERVER_FOLDER": "StrokeClassification",
     "SERVER_URL": "",
-    "PATH_DATASET_TRAIN": "Data/Compiled/Split/MergeTrain",
+    "PATH_DATASET_TRAIN": "Data/Compiled/Split/Train",
     "PATH_DATASET_TEST": "Data/Compiled/Split/Test"
 }
