@@ -36,7 +36,13 @@ def load_model(CONFIG:Config, LOGGER:MyLogger, fold:int=0, load_best=False, fine
     
     model.to(CONFIG.DEVICE)
     optim = torch.optim.SGD(params=model.parameters(), lr=CONFIG.LEARNING_RATE, weight_decay=0.0005, dampening=0, momentum=0.9, nesterov=True)      
-    lr_schedular = CosineAnnealingWarmRestarts(optim, T_0=10, T_mult=2)
+    if "RLRP" in CONFIG.LR_SCHEDULAR:
+        lr_schedular = ReduceLROnPlateau(optim, factor=CONFIG.LRS_FACTOR, patience=CONFIG.LRS_PATIENCE)
+    elif "CAWR":
+        lr_schedular = CosineAnnealingWarmRestarts(optim, T_0=10, T_mult=2)
+    else:
+        LOGGER.log(f"\t Invalid Schedular Key: [{CONFIG.LR_SCHEDULAR}] should be either of [RLRP, CAWR]. Using RLRP as default")
+        lr_schedular = ReduceLROnPlateau(optim, factor=CONFIG.LRS_FACTOR, patience=CONFIG.LRS_PATIENCE)
     if load_best:
         # Load the best model
         checkpoint = torch.load(CONFIG.PATH_MODEL_SAVE)
@@ -315,6 +321,47 @@ def test_model(t_model: torch.nn.Module, test_loader:ImageFolder,test_class_weig
     test_loss /= len(test_loader)
     report = _calcPerformMetrics(y_pred=y_predTensor, y_true=y_trueTensor, class_names=class_names, path_save=path_save)
     logger.log(f"\tFinal Test Loss:{round(test_loss,5)}")
+    return report
+
+def test_ensemble(models: list, test_loader: ImageFolder, test_class_weights, device, path_save, class_names, logger: MyLogger):
+    y_trueTensor = torch.empty(0, len(class_names))
+    y_predTensor = torch.empty(0, len(class_names))
+    CRITERION_TEST = torch.nn.CrossEntropyLoss(weight=test_class_weights.to(device))
+
+    with torch.no_grad():
+        test_loss = 0.0
+        for test_XY in test_loader:
+            x = test_XY[0].to(device)
+            y = test_XY[1].to(device)
+
+            # Aggregate predictions from all models
+            y_pred_ensemble = torch.zeros(x.size(0), len(class_names)).to(device)
+            for model in models:
+                model.eval()  # Ensure the model is in evaluation mode
+                y_pred_ensemble += torch.nn.functional.softmax(model(x), dim=1)
+            
+            # Average predictions
+            y_pred_ensemble /= len(models)
+
+            # Calculate loss using averaged predictions
+            test_loss += CRITERION_TEST(y_pred_ensemble, y).item()
+
+            # Convert true labels to one-hot encoding
+            y_true = torch.zeros(y.shape[0], len(class_names)).to(device)
+            for row in range(y.shape[0]):
+                y_true[row, y[row]] = 1
+
+            # Append true and predicted tensors
+            y_trueTensor = torch.vstack([y_trueTensor, y_true.cpu()])
+            y_predTensor = torch.vstack([y_predTensor, y_pred_ensemble.cpu()])
+
+    # Compute average test loss
+    test_loss /= len(test_loader)
+
+    # Calculate performance metrics
+    report = _calcPerformMetrics(y_pred=y_predTensor, y_true=y_trueTensor, class_names=class_names, path_save=path_save)
+    logger.log(f"\tFinal Test Loss (Ensemble): {round(test_loss, 5)}")
+
     return report
 
 def normalize_img(img):

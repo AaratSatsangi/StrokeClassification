@@ -138,9 +138,10 @@ def train_KCV():
                         param.requires_grad = True
                     fine_tuning = True
                     p_counter = 1
-                    LR_SCHEDULER = ReduceLROnPlateau(optimizer=OPTIMIZER, factor=CONFIG.LRS_FACTOR, patience=CONFIG.LRS_PATIENCE)
-                    for param_group in OPTIMIZER.param_groups:
-                        param_group['lr'] = 1e-4
+                    if CONFIG.LR_SCHEDULAR != "RLRP":
+                        LR_SCHEDULER = ReduceLROnPlateau(optimizer=OPTIMIZER, factor=CONFIG.LRS_FACTOR, patience=CONFIG.LRS_PATIENCE)
+                        for param_group in OPTIMIZER.param_groups:
+                            param_group['lr'] = 1e-4
                 
                 elif epoch == total_epochs-1:
                     del MODEL, OPTIMIZER, LR_SCHEDULER

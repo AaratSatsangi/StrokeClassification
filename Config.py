@@ -36,8 +36,6 @@ class Config:
         self.PERSIST = train_vars["PERSISTENCE"]
         self.IMG_SIZE = tuple(train_vars["IMG_SIZE"])
         self.AUTO_BREAK = train_vars["AUTO_BREAK"]
-        self.LRS_PATIENCE = train_vars["LRS_PATIENCE"]
-        self.LRS_FACTOR = train_vars["LRS_FACTOR"]
 
         self.SERVER_USERNAME = train_vars["SERVER_USERNAME"]
         self.SERVER_FOLDER = train_vars["SERVER_FOLDER"]
@@ -109,8 +107,12 @@ class Config:
         self.BATCH_SIZE = model_vars["BATCH_SIZE"]
         self.BATCH_LOAD = model_vars["BATCH_LOAD"]
         self.LEARNING_RATE = model_vars["LEARNING_RATE"]
+        self.LR_SCHEDULAR = model_vars["LR_SCHEDULAR"] # RLRP or CAWR
+        self.LRS_PATIENCE = model_vars.get("LRS_PATIENCE", None)
+        self.LRS_FACTOR = model_vars.get("LRS_FACTOR", None)
         self.FREEZE_TO_LAYER = model_vars["FREEZE_TO_LAYER"]
         self.START_FOLD = model_vars["COMPLETED_FOLD"] + 1
+
 
     def updateFold(self, fold:int):
         if fold is None or fold < 0:

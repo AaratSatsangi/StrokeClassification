@@ -10,8 +10,6 @@
     "PERSISTENCE": 300,
     "IMG_SIZE": [1, 224, 224],
     "AUTO_BREAK": true,
-    "LRS_PATIENCE": 10,
-    "LRS_FACTOR": 0.5,
 
     "SERVER_USERNAME": "AaratSatsangi",
     "SERVER_FOLDER": "StrokeClassification",

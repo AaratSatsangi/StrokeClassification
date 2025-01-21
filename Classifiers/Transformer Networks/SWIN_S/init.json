@@ -3,5 +3,8 @@
     "BATCH_LOAD": 128,
     "LEARNING_RATE": 0.01,
     "COMPLETED_FOLD": 9,
+    "LR_SCHEDULAR": "CAWR",
+    "LRS_PATIENCE": null,
+    "LRS_FACTOR": null,
     "FREEZE_TO_LAYER": "features.5.0"
 }
