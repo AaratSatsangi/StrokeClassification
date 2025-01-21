@@ -54,13 +54,13 @@ def load_model(model_config:tuple):
     fold = model_config[2]
     path = f"Classifiers/{MODEL_TYPE_DICT[model_type]}/{model_name}/Simple/Checkpoint.pth"
     if "SWIN" in model_name:
-        model = TransNets.SWIN(model_size="s")
+        model = TransNets.SWIN(model_size="s", num_classes=2)
     elif "CvT" in model_name:
-        model = TransNets.CvT(model_size="s")
+        model = TransNets.CvT(model_size="s", num_classes=2)
     elif "MaxViT" in model_name:
-        model = TransNets.MaxViT(model_size="s")
+        model = TransNets.MaxViT(model_size="s", num_classes=2)
     elif "ResNet" in model_name:
-        model = ConvNets.ResNet(model_size="s")
+        model = ConvNets.ResNet(model_size="s", num_classes=2)
     else:
         print(f"Error: {model_name} not recognized!")
         exit(1)
