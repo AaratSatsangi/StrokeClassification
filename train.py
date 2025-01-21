@@ -411,12 +411,15 @@ if __name__ == "__main__":
     LOGGER.log(f"Batch Size: {CONFIG.BATCH_SIZE}")
     LOGGER.log(f"Learning Rate: {CONFIG.LEARNING_RATE}")
     LOGGER.log(f"Early Stopping with Persistence: {CONFIG.PERSIST}")
-    LOGGER.log(f"LR Schedular: CosineAnnealingWarmRestarts + ReduceLROnPlataue")
     # Add if statement
-    if isinstance(LR_SCHEDULER, ReduceLROnPlateau):
+    if CONFIG.LR_SCHEDULAR == "CAWR":
+        LOGGER.log(f"LR Schedular: CosineAnnealingWarmRestarts + ReduceLROnPlataue") 
+    elif CONFIG.LR_SCHEDULAR == "RLRP":
+        LOGGER.log(f"LR Schedular: ReduceLROnPlataue")
         LOGGER.log(f"|---Patience: {CONFIG.LRS_PATIENCE}")
         LOGGER.log(f"|---Factor: {CONFIG.LRS_FACTOR}")
-
+    else:
+        LOGGER.log(f"Invalid LR Schedular => {CONFIG.LR_SCHEDULAR}")
     if CONFIG.K_FOLD > 0:
         KF = KFold(n_splits=CONFIG.K_FOLD, shuffle=True, random_state=CONFIG.RANDOM_STATE)
         train_KCV()
