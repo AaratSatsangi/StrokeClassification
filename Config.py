@@ -101,7 +101,7 @@ class Config:
                 if not self.LOAD_CHECKPOINT:
                     model_vars["COMPLETED_FOLD"] = self.CURRENT_FOLD
         except Exception as e:
-            print(f"Error decoding JSON from the file: {self.PATH_MODEL_FOLDER + 'init.json'} ==> {e}")
+            print(f"Error decoding JSON from the file: {self.PATH_MODEL_MAIN_FOLDER + 'init.json'} ==> {e}")
             exit(1)
 
         # =========== MODEL SPECIFIC VARIABLES =================
