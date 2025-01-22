@@ -1,9 +1,9 @@
 {
     "BATCH_SIZE": 128,
     "BATCH_LOAD": 128,
-    "LEARNING_RATE": 0.01,
-    "COMPLETED_FOLD": 9,
-    "LR_SCHEDULAR": "RLRP",
+    "LEARNING_RATE": 0.001,
+    "COMPLETED_FOLD": 6,
+    "LR_SCHEDULAR": "CAWR",
     "LRS_PATIENCE": 10,
     "LRS_FACTOR": 0.5,
     "FREEZE_TO_LAYER": "blocks.9.mlp.fc2.bias"

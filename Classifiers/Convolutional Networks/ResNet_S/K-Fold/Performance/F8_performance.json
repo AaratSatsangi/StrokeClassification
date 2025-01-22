@@ -1,0 +1,44 @@
+{
+    "Hemorrhagic": {
+        "precision": 0.9652173913043478,
+        "recall": 0.925,
+        "f1-score": 0.9446808510638298,
+        "support": 120.0
+    },
+    "Ischemic": {
+        "precision": 0.96875,
+        "recall": 0.8942307692307693,
+        "f1-score": 0.93,
+        "support": 104.0
+    },
+    "Normal": {
+        "precision": 0.9647577092511013,
+        "recall": 0.9931972789115646,
+        "f1-score": 0.9787709497206704,
+        "support": 441.0
+    },
+    "micro avg": {
+        "precision": 0.9654135338345865,
+        "recall": 0.9654135338345865,
+        "f1-score": 0.9654135338345865,
+        "support": 665.0
+    },
+    "macro avg": {
+        "precision": 0.9662417001851497,
+        "recall": 0.9374760160474448,
+        "f1-score": 0.9511506002615001,
+        "support": 665.0
+    },
+    "weighted avg": {
+        "precision": 0.9654650176485073,
+        "recall": 0.9654135338345865,
+        "f1-score": 0.9649920164728951,
+        "support": 665.0
+    },
+    "samples avg": {
+        "precision": 0.9654135338345865,
+        "recall": 0.9654135338345865,
+        "f1-score": 0.9654135338345865,
+        "support": 665.0
+    }
+}
