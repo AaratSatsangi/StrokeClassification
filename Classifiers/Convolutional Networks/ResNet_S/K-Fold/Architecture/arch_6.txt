@@ -1,0 +1,686 @@
+=========================Layer Names=========================
+0: model.conv1.weight
+1: model.bn1.weight
+2: model.bn1.bias
+3: model.layer1.0.conv1.weight
+4: model.layer1.0.bn1.weight
+5: model.layer1.0.bn1.bias
+6: model.layer1.0.conv2.weight
+7: model.layer1.0.bn2.weight
+8: model.layer1.0.bn2.bias
+9: model.layer1.0.conv3.weight
+10: model.layer1.0.bn3.weight
+11: model.layer1.0.bn3.bias
+12: model.layer1.0.downsample.0.weight
+13: model.layer1.0.downsample.1.weight
+14: model.layer1.0.downsample.1.bias
+15: model.layer1.1.conv1.weight
+16: model.layer1.1.bn1.weight
+17: model.layer1.1.bn1.bias
+18: model.layer1.1.conv2.weight
+19: model.layer1.1.bn2.weight
+20: model.layer1.1.bn2.bias
+21: model.layer1.1.conv3.weight
+22: model.layer1.1.bn3.weight
+23: model.layer1.1.bn3.bias
+24: model.layer1.2.conv1.weight
+25: model.layer1.2.bn1.weight
+26: model.layer1.2.bn1.bias
+27: model.layer1.2.conv2.weight
+28: model.layer1.2.bn2.weight
+29: model.layer1.2.bn2.bias
+30: model.layer1.2.conv3.weight
+31: model.layer1.2.bn3.weight
+32: model.layer1.2.bn3.bias
+33: model.layer2.0.conv1.weight
+34: model.layer2.0.bn1.weight
+35: model.layer2.0.bn1.bias
+36: model.layer2.0.conv2.weight
+37: model.layer2.0.bn2.weight
+38: model.layer2.0.bn2.bias
+39: model.layer2.0.conv3.weight
+40: model.layer2.0.bn3.weight
+41: model.layer2.0.bn3.bias
+42: model.layer2.0.downsample.0.weight
+43: model.layer2.0.downsample.1.weight
+44: model.layer2.0.downsample.1.bias
+45: model.layer2.1.conv1.weight
+46: model.layer2.1.bn1.weight
+47: model.layer2.1.bn1.bias
+48: model.layer2.1.conv2.weight
+49: model.layer2.1.bn2.weight
+50: model.layer2.1.bn2.bias
+51: model.layer2.1.conv3.weight
+52: model.layer2.1.bn3.weight
+53: model.layer2.1.bn3.bias
+54: model.layer2.2.conv1.weight
+55: model.layer2.2.bn1.weight
+56: model.layer2.2.bn1.bias
+57: model.layer2.2.conv2.weight
+58: model.layer2.2.bn2.weight
+59: model.layer2.2.bn2.bias
+60: model.layer2.2.conv3.weight
+61: model.layer2.2.bn3.weight
+62: model.layer2.2.bn3.bias
+63: model.layer2.3.conv1.weight
+64: model.layer2.3.bn1.weight
+65: model.layer2.3.bn1.bias
+66: model.layer2.3.conv2.weight
+67: model.layer2.3.bn2.weight
+68: model.layer2.3.bn2.bias
+69: model.layer2.3.conv3.weight
+70: model.layer2.3.bn3.weight
+71: model.layer2.3.bn3.bias
+72: model.layer3.0.conv1.weight
+73: model.layer3.0.bn1.weight
+74: model.layer3.0.bn1.bias
+75: model.layer3.0.conv2.weight
+76: model.layer3.0.bn2.weight
+77: model.layer3.0.bn2.bias
+78: model.layer3.0.conv3.weight
+79: model.layer3.0.bn3.weight
+80: model.layer3.0.bn3.bias
+81: model.layer3.0.downsample.0.weight
+82: model.layer3.0.downsample.1.weight
+83: model.layer3.0.downsample.1.bias
+84: model.layer3.1.conv1.weight
+85: model.layer3.1.bn1.weight
+86: model.layer3.1.bn1.bias
+87: model.layer3.1.conv2.weight
+88: model.layer3.1.bn2.weight
+89: model.layer3.1.bn2.bias
+90: model.layer3.1.conv3.weight
+91: model.layer3.1.bn3.weight
+92: model.layer3.1.bn3.bias
+93: model.layer3.2.conv1.weight
+94: model.layer3.2.bn1.weight
+95: model.layer3.2.bn1.bias
+96: model.layer3.2.conv2.weight
+97: model.layer3.2.bn2.weight
+98: model.layer3.2.bn2.bias
+99: model.layer3.2.conv3.weight
+100: model.layer3.2.bn3.weight
+101: model.layer3.2.bn3.bias
+102: model.layer3.3.conv1.weight
+103: model.layer3.3.bn1.weight
+104: model.layer3.3.bn1.bias
+105: model.layer3.3.conv2.weight
+106: model.layer3.3.bn2.weight
+107: model.layer3.3.bn2.bias
+108: model.layer3.3.conv3.weight
+109: model.layer3.3.bn3.weight
+110: model.layer3.3.bn3.bias
+111: model.layer3.4.conv1.weight
+112: model.layer3.4.bn1.weight
+113: model.layer3.4.bn1.bias
+114: model.layer3.4.conv2.weight
+115: model.layer3.4.bn2.weight
+116: model.layer3.4.bn2.bias
+117: model.layer3.4.conv3.weight
+118: model.layer3.4.bn3.weight
+119: model.layer3.4.bn3.bias
+120: model.layer3.5.conv1.weight
+121: model.layer3.5.bn1.weight
+122: model.layer3.5.bn1.bias
+123: model.layer3.5.conv2.weight
+124: model.layer3.5.bn2.weight
+125: model.layer3.5.bn2.bias
+126: model.layer3.5.conv3.weight
+127: model.layer3.5.bn3.weight
+128: model.layer3.5.bn3.bias
+129: model.layer3.6.conv1.weight
+130: model.layer3.6.bn1.weight
+131: model.layer3.6.bn1.bias
+132: model.layer3.6.conv2.weight
+133: model.layer3.6.bn2.weight
+134: model.layer3.6.bn2.bias
+135: model.layer3.6.conv3.weight
+136: model.layer3.6.bn3.weight
+137: model.layer3.6.bn3.bias
+138: model.layer3.7.conv1.weight
+139: model.layer3.7.bn1.weight
+140: model.layer3.7.bn1.bias
+141: model.layer3.7.conv2.weight
+142: model.layer3.7.bn2.weight
+143: model.layer3.7.bn2.bias
+144: model.layer3.7.conv3.weight
+145: model.layer3.7.bn3.weight
+146: model.layer3.7.bn3.bias
+147: model.layer3.8.conv1.weight
+148: model.layer3.8.bn1.weight
+149: model.layer3.8.bn1.bias
+150: model.layer3.8.conv2.weight
+151: model.layer3.8.bn2.weight
+152: model.layer3.8.bn2.bias
+153: model.layer3.8.conv3.weight
+154: model.layer3.8.bn3.weight
+155: model.layer3.8.bn3.bias
+156: model.layer3.9.conv1.weight
+157: model.layer3.9.bn1.weight
+158: model.layer3.9.bn1.bias
+159: model.layer3.9.conv2.weight
+160: model.layer3.9.bn2.weight
+161: model.layer3.9.bn2.bias
+162: model.layer3.9.conv3.weight
+163: model.layer3.9.bn3.weight
+164: model.layer3.9.bn3.bias
+165: model.layer3.10.conv1.weight
+166: model.layer3.10.bn1.weight
+167: model.layer3.10.bn1.bias
+168: model.layer3.10.conv2.weight
+169: model.layer3.10.bn2.weight
+170: model.layer3.10.bn2.bias
+171: model.layer3.10.conv3.weight
+172: model.layer3.10.bn3.weight
+173: model.layer3.10.bn3.bias
+174: model.layer3.11.conv1.weight
+175: model.layer3.11.bn1.weight
+176: model.layer3.11.bn1.bias
+177: model.layer3.11.conv2.weight
+178: model.layer3.11.bn2.weight
+179: model.layer3.11.bn2.bias
+180: model.layer3.11.conv3.weight
+181: model.layer3.11.bn3.weight
+182: model.layer3.11.bn3.bias
+183: model.layer3.12.conv1.weight		(freezed till here)
+184: model.layer3.12.bn1.weight		(freezed till here)
+185: model.layer3.12.bn1.bias		(freezed till here)
+186: model.layer3.12.conv2.weight		(freezed till here)
+187: model.layer3.12.bn2.weight		(freezed till here)
+188: model.layer3.12.bn2.bias		(freezed till here)
+189: model.layer3.12.conv3.weight		(freezed till here)
+190: model.layer3.12.bn3.weight		(freezed till here)
+191: model.layer3.12.bn3.bias		(freezed till here)
+192: model.layer3.13.conv1.weight
+193: model.layer3.13.bn1.weight
+194: model.layer3.13.bn1.bias
+195: model.layer3.13.conv2.weight
+196: model.layer3.13.bn2.weight
+197: model.layer3.13.bn2.bias
+198: model.layer3.13.conv3.weight
+199: model.layer3.13.bn3.weight
+200: model.layer3.13.bn3.bias
+201: model.layer3.14.conv1.weight
+202: model.layer3.14.bn1.weight
+203: model.layer3.14.bn1.bias
+204: model.layer3.14.conv2.weight
+205: model.layer3.14.bn2.weight
+206: model.layer3.14.bn2.bias
+207: model.layer3.14.conv3.weight
+208: model.layer3.14.bn3.weight
+209: model.layer3.14.bn3.bias
+210: model.layer3.15.conv1.weight
+211: model.layer3.15.bn1.weight
+212: model.layer3.15.bn1.bias
+213: model.layer3.15.conv2.weight
+214: model.layer3.15.bn2.weight
+215: model.layer3.15.bn2.bias
+216: model.layer3.15.conv3.weight
+217: model.layer3.15.bn3.weight
+218: model.layer3.15.bn3.bias
+219: model.layer3.16.conv1.weight
+220: model.layer3.16.bn1.weight
+221: model.layer3.16.bn1.bias
+222: model.layer3.16.conv2.weight
+223: model.layer3.16.bn2.weight
+224: model.layer3.16.bn2.bias
+225: model.layer3.16.conv3.weight
+226: model.layer3.16.bn3.weight
+227: model.layer3.16.bn3.bias
+228: model.layer3.17.conv1.weight
+229: model.layer3.17.bn1.weight
+230: model.layer3.17.bn1.bias
+231: model.layer3.17.conv2.weight
+232: model.layer3.17.bn2.weight
+233: model.layer3.17.bn2.bias
+234: model.layer3.17.conv3.weight
+235: model.layer3.17.bn3.weight
+236: model.layer3.17.bn3.bias
+237: model.layer3.18.conv1.weight
+238: model.layer3.18.bn1.weight
+239: model.layer3.18.bn1.bias
+240: model.layer3.18.conv2.weight
+241: model.layer3.18.bn2.weight
+242: model.layer3.18.bn2.bias
+243: model.layer3.18.conv3.weight
+244: model.layer3.18.bn3.weight
+245: model.layer3.18.bn3.bias
+246: model.layer3.19.conv1.weight
+247: model.layer3.19.bn1.weight
+248: model.layer3.19.bn1.bias
+249: model.layer3.19.conv2.weight
+250: model.layer3.19.bn2.weight
+251: model.layer3.19.bn2.bias
+252: model.layer3.19.conv3.weight
+253: model.layer3.19.bn3.weight
+254: model.layer3.19.bn3.bias
+255: model.layer3.20.conv1.weight
+256: model.layer3.20.bn1.weight
+257: model.layer3.20.bn1.bias
+258: model.layer3.20.conv2.weight
+259: model.layer3.20.bn2.weight
+260: model.layer3.20.bn2.bias
+261: model.layer3.20.conv3.weight
+262: model.layer3.20.bn3.weight
+263: model.layer3.20.bn3.bias
+264: model.layer3.21.conv1.weight
+265: model.layer3.21.bn1.weight
+266: model.layer3.21.bn1.bias
+267: model.layer3.21.conv2.weight
+268: model.layer3.21.bn2.weight
+269: model.layer3.21.bn2.bias
+270: model.layer3.21.conv3.weight
+271: model.layer3.21.bn3.weight
+272: model.layer3.21.bn3.bias
+273: model.layer3.22.conv1.weight
+274: model.layer3.22.bn1.weight
+275: model.layer3.22.bn1.bias
+276: model.layer3.22.conv2.weight
+277: model.layer3.22.bn2.weight
+278: model.layer3.22.bn2.bias
+279: model.layer3.22.conv3.weight
+280: model.layer3.22.bn3.weight
+281: model.layer3.22.bn3.bias
+282: model.layer4.0.conv1.weight
+283: model.layer4.0.bn1.weight
+284: model.layer4.0.bn1.bias
+285: model.layer4.0.conv2.weight
+286: model.layer4.0.bn2.weight
+287: model.layer4.0.bn2.bias
+288: model.layer4.0.conv3.weight
+289: model.layer4.0.bn3.weight
+290: model.layer4.0.bn3.bias
+291: model.layer4.0.downsample.0.weight
+292: model.layer4.0.downsample.1.weight
+293: model.layer4.0.downsample.1.bias
+294: model.layer4.1.conv1.weight
+295: model.layer4.1.bn1.weight
+296: model.layer4.1.bn1.bias
+297: model.layer4.1.conv2.weight
+298: model.layer4.1.bn2.weight
+299: model.layer4.1.bn2.bias
+300: model.layer4.1.conv3.weight
+301: model.layer4.1.bn3.weight
+302: model.layer4.1.bn3.bias
+303: model.layer4.2.conv1.weight
+304: model.layer4.2.bn1.weight
+305: model.layer4.2.bn1.bias
+306: model.layer4.2.conv2.weight
+307: model.layer4.2.bn2.weight
+308: model.layer4.2.bn2.bias
+309: model.layer4.2.conv3.weight
+310: model.layer4.2.bn3.weight
+311: model.layer4.2.bn3.bias
+312: model.fc.weight
+313: model.fc.bias
+=============================================================
+
+
+========================================================================================================================
+Layer (type:depth-idx)                        Input Shape               Output Shape              Param #
+========================================================================================================================
+ResNet                                        [1, 1, 224, 224]          [1, 3]                    --
+├─ResNet: 1-1                                 [1, 1, 224, 224]          [1, 3]                    --
+│    └─Conv2d: 2-1                            [1, 1, 224, 224]          [1, 64, 112, 112]         3,136
+│    └─BatchNorm2d: 2-2                       [1, 64, 112, 112]         [1, 64, 112, 112]         128
+│    └─ReLU: 2-3                              [1, 64, 112, 112]         [1, 64, 112, 112]         --
+│    └─MaxPool2d: 2-4                         [1, 64, 112, 112]         [1, 64, 56, 56]           --
+│    └─Sequential: 2-5                        [1, 64, 56, 56]           [1, 256, 56, 56]          --
+│    │    └─Bottleneck: 3-1                   [1, 64, 56, 56]           [1, 256, 56, 56]          --
+│    │    │    └─Conv2d: 4-1                  [1, 64, 56, 56]           [1, 64, 56, 56]           (4,096)
+│    │    │    └─BatchNorm2d: 4-2             [1, 64, 56, 56]           [1, 64, 56, 56]           (128)
+│    │    │    └─ReLU: 4-3                    [1, 64, 56, 56]           [1, 64, 56, 56]           --
+│    │    │    └─Conv2d: 4-4                  [1, 64, 56, 56]           [1, 64, 56, 56]           (36,864)
+│    │    │    └─BatchNorm2d: 4-5             [1, 64, 56, 56]           [1, 64, 56, 56]           (128)
+│    │    │    └─ReLU: 4-6                    [1, 64, 56, 56]           [1, 64, 56, 56]           --
+│    │    │    └─Conv2d: 4-7                  [1, 64, 56, 56]           [1, 256, 56, 56]          (16,384)
+│    │    │    └─BatchNorm2d: 4-8             [1, 256, 56, 56]          [1, 256, 56, 56]          (512)
+│    │    │    └─Sequential: 4-9              [1, 64, 56, 56]           [1, 256, 56, 56]          --
+│    │    │    │    └─Conv2d: 5-1             [1, 64, 56, 56]           [1, 256, 56, 56]          (16,384)
+│    │    │    │    └─BatchNorm2d: 5-2        [1, 256, 56, 56]          [1, 256, 56, 56]          (512)
+│    │    │    └─ReLU: 4-10                   [1, 256, 56, 56]          [1, 256, 56, 56]          --
+│    │    └─Bottleneck: 3-2                   [1, 256, 56, 56]          [1, 256, 56, 56]          --
+│    │    │    └─Conv2d: 4-11                 [1, 256, 56, 56]          [1, 64, 56, 56]           (16,384)
+│    │    │    └─BatchNorm2d: 4-12            [1, 64, 56, 56]           [1, 64, 56, 56]           (128)
+│    │    │    └─ReLU: 4-13                   [1, 64, 56, 56]           [1, 64, 56, 56]           --
+│    │    │    └─Conv2d: 4-14                 [1, 64, 56, 56]           [1, 64, 56, 56]           (36,864)
+│    │    │    └─BatchNorm2d: 4-15            [1, 64, 56, 56]           [1, 64, 56, 56]           (128)
+│    │    │    └─ReLU: 4-16                   [1, 64, 56, 56]           [1, 64, 56, 56]           --
+│    │    │    └─Conv2d: 4-17                 [1, 64, 56, 56]           [1, 256, 56, 56]          (16,384)
+│    │    │    └─BatchNorm2d: 4-18            [1, 256, 56, 56]          [1, 256, 56, 56]          (512)
+│    │    │    └─ReLU: 4-19                   [1, 256, 56, 56]          [1, 256, 56, 56]          --
+│    │    └─Bottleneck: 3-3                   [1, 256, 56, 56]          [1, 256, 56, 56]          --
+│    │    │    └─Conv2d: 4-20                 [1, 256, 56, 56]          [1, 64, 56, 56]           (16,384)
+│    │    │    └─BatchNorm2d: 4-21            [1, 64, 56, 56]           [1, 64, 56, 56]           (128)
+│    │    │    └─ReLU: 4-22                   [1, 64, 56, 56]           [1, 64, 56, 56]           --
+│    │    │    └─Conv2d: 4-23                 [1, 64, 56, 56]           [1, 64, 56, 56]           (36,864)
+│    │    │    └─BatchNorm2d: 4-24            [1, 64, 56, 56]           [1, 64, 56, 56]           (128)
+│    │    │    └─ReLU: 4-25                   [1, 64, 56, 56]           [1, 64, 56, 56]           --
+│    │    │    └─Conv2d: 4-26                 [1, 64, 56, 56]           [1, 256, 56, 56]          (16,384)
+│    │    │    └─BatchNorm2d: 4-27            [1, 256, 56, 56]          [1, 256, 56, 56]          (512)
+│    │    │    └─ReLU: 4-28                   [1, 256, 56, 56]          [1, 256, 56, 56]          --
+│    └─Sequential: 2-6                        [1, 256, 56, 56]          [1, 512, 28, 28]          --
+│    │    └─Bottleneck: 3-4                   [1, 256, 56, 56]          [1, 512, 28, 28]          --
+│    │    │    └─Conv2d: 4-29                 [1, 256, 56, 56]          [1, 128, 56, 56]          (32,768)
+│    │    │    └─BatchNorm2d: 4-30            [1, 128, 56, 56]          [1, 128, 56, 56]          (256)
+│    │    │    └─ReLU: 4-31                   [1, 128, 56, 56]          [1, 128, 56, 56]          --
+│    │    │    └─Conv2d: 4-32                 [1, 128, 56, 56]          [1, 128, 28, 28]          (147,456)
+│    │    │    └─BatchNorm2d: 4-33            [1, 128, 28, 28]          [1, 128, 28, 28]          (256)
+│    │    │    └─ReLU: 4-34                   [1, 128, 28, 28]          [1, 128, 28, 28]          --
+│    │    │    └─Conv2d: 4-35                 [1, 128, 28, 28]          [1, 512, 28, 28]          (65,536)
+│    │    │    └─BatchNorm2d: 4-36            [1, 512, 28, 28]          [1, 512, 28, 28]          (1,024)
+│    │    │    └─Sequential: 4-37             [1, 256, 56, 56]          [1, 512, 28, 28]          --
+│    │    │    │    └─Conv2d: 5-3             [1, 256, 56, 56]          [1, 512, 28, 28]          (131,072)
+│    │    │    │    └─BatchNorm2d: 5-4        [1, 512, 28, 28]          [1, 512, 28, 28]          (1,024)
+│    │    │    └─ReLU: 4-38                   [1, 512, 28, 28]          [1, 512, 28, 28]          --
+│    │    └─Bottleneck: 3-5                   [1, 512, 28, 28]          [1, 512, 28, 28]          --
+│    │    │    └─Conv2d: 4-39                 [1, 512, 28, 28]          [1, 128, 28, 28]          (65,536)
+│    │    │    └─BatchNorm2d: 4-40            [1, 128, 28, 28]          [1, 128, 28, 28]          (256)
+│    │    │    └─ReLU: 4-41                   [1, 128, 28, 28]          [1, 128, 28, 28]          --
+│    │    │    └─Conv2d: 4-42                 [1, 128, 28, 28]          [1, 128, 28, 28]          (147,456)
+│    │    │    └─BatchNorm2d: 4-43            [1, 128, 28, 28]          [1, 128, 28, 28]          (256)
+│    │    │    └─ReLU: 4-44                   [1, 128, 28, 28]          [1, 128, 28, 28]          --
+│    │    │    └─Conv2d: 4-45                 [1, 128, 28, 28]          [1, 512, 28, 28]          (65,536)
+│    │    │    └─BatchNorm2d: 4-46            [1, 512, 28, 28]          [1, 512, 28, 28]          (1,024)
+│    │    │    └─ReLU: 4-47                   [1, 512, 28, 28]          [1, 512, 28, 28]          --
+│    │    └─Bottleneck: 3-6                   [1, 512, 28, 28]          [1, 512, 28, 28]          --
+│    │    │    └─Conv2d: 4-48                 [1, 512, 28, 28]          [1, 128, 28, 28]          (65,536)
+│    │    │    └─BatchNorm2d: 4-49            [1, 128, 28, 28]          [1, 128, 28, 28]          (256)
+│    │    │    └─ReLU: 4-50                   [1, 128, 28, 28]          [1, 128, 28, 28]          --
+│    │    │    └─Conv2d: 4-51                 [1, 128, 28, 28]          [1, 128, 28, 28]          (147,456)
+│    │    │    └─BatchNorm2d: 4-52            [1, 128, 28, 28]          [1, 128, 28, 28]          (256)
+│    │    │    └─ReLU: 4-53                   [1, 128, 28, 28]          [1, 128, 28, 28]          --
+│    │    │    └─Conv2d: 4-54                 [1, 128, 28, 28]          [1, 512, 28, 28]          (65,536)
+│    │    │    └─BatchNorm2d: 4-55            [1, 512, 28, 28]          [1, 512, 28, 28]          (1,024)
+│    │    │    └─ReLU: 4-56                   [1, 512, 28, 28]          [1, 512, 28, 28]          --
+│    │    └─Bottleneck: 3-7                   [1, 512, 28, 28]          [1, 512, 28, 28]          --
+│    │    │    └─Conv2d: 4-57                 [1, 512, 28, 28]          [1, 128, 28, 28]          (65,536)
+│    │    │    └─BatchNorm2d: 4-58            [1, 128, 28, 28]          [1, 128, 28, 28]          (256)
+│    │    │    └─ReLU: 4-59                   [1, 128, 28, 28]          [1, 128, 28, 28]          --
+│    │    │    └─Conv2d: 4-60                 [1, 128, 28, 28]          [1, 128, 28, 28]          (147,456)
+│    │    │    └─BatchNorm2d: 4-61            [1, 128, 28, 28]          [1, 128, 28, 28]          (256)
+│    │    │    └─ReLU: 4-62                   [1, 128, 28, 28]          [1, 128, 28, 28]          --
+│    │    │    └─Conv2d: 4-63                 [1, 128, 28, 28]          [1, 512, 28, 28]          (65,536)
+│    │    │    └─BatchNorm2d: 4-64            [1, 512, 28, 28]          [1, 512, 28, 28]          (1,024)
+│    │    │    └─ReLU: 4-65                   [1, 512, 28, 28]          [1, 512, 28, 28]          --
+│    └─Sequential: 2-7                        [1, 512, 28, 28]          [1, 1024, 14, 14]         --
+│    │    └─Bottleneck: 3-8                   [1, 512, 28, 28]          [1, 1024, 14, 14]         --
+│    │    │    └─Conv2d: 4-66                 [1, 512, 28, 28]          [1, 256, 28, 28]          (131,072)
+│    │    │    └─BatchNorm2d: 4-67            [1, 256, 28, 28]          [1, 256, 28, 28]          (512)
+│    │    │    └─ReLU: 4-68                   [1, 256, 28, 28]          [1, 256, 28, 28]          --
+│    │    │    └─Conv2d: 4-69                 [1, 256, 28, 28]          [1, 256, 14, 14]          (589,824)
+│    │    │    └─BatchNorm2d: 4-70            [1, 256, 14, 14]          [1, 256, 14, 14]          (512)
+│    │    │    └─ReLU: 4-71                   [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-72                 [1, 256, 14, 14]          [1, 1024, 14, 14]         (262,144)
+│    │    │    └─BatchNorm2d: 4-73            [1, 1024, 14, 14]         [1, 1024, 14, 14]         (2,048)
+│    │    │    └─Sequential: 4-74             [1, 512, 28, 28]          [1, 1024, 14, 14]         --
+│    │    │    │    └─Conv2d: 5-5             [1, 512, 28, 28]          [1, 1024, 14, 14]         (524,288)
+│    │    │    │    └─BatchNorm2d: 5-6        [1, 1024, 14, 14]         [1, 1024, 14, 14]         (2,048)
+│    │    │    └─ReLU: 4-75                   [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    └─Bottleneck: 3-9                   [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    │    └─Conv2d: 4-76                 [1, 1024, 14, 14]         [1, 256, 14, 14]          (262,144)
+│    │    │    └─BatchNorm2d: 4-77            [1, 256, 14, 14]          [1, 256, 14, 14]          (512)
+│    │    │    └─ReLU: 4-78                   [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-79                 [1, 256, 14, 14]          [1, 256, 14, 14]          (589,824)
+│    │    │    └─BatchNorm2d: 4-80            [1, 256, 14, 14]          [1, 256, 14, 14]          (512)
+│    │    │    └─ReLU: 4-81                   [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-82                 [1, 256, 14, 14]          [1, 1024, 14, 14]         (262,144)
+│    │    │    └─BatchNorm2d: 4-83            [1, 1024, 14, 14]         [1, 1024, 14, 14]         (2,048)
+│    │    │    └─ReLU: 4-84                   [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    └─Bottleneck: 3-10                  [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    │    └─Conv2d: 4-85                 [1, 1024, 14, 14]         [1, 256, 14, 14]          (262,144)
+│    │    │    └─BatchNorm2d: 4-86            [1, 256, 14, 14]          [1, 256, 14, 14]          (512)
+│    │    │    └─ReLU: 4-87                   [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-88                 [1, 256, 14, 14]          [1, 256, 14, 14]          (589,824)
+│    │    │    └─BatchNorm2d: 4-89            [1, 256, 14, 14]          [1, 256, 14, 14]          (512)
+│    │    │    └─ReLU: 4-90                   [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-91                 [1, 256, 14, 14]          [1, 1024, 14, 14]         (262,144)
+│    │    │    └─BatchNorm2d: 4-92            [1, 1024, 14, 14]         [1, 1024, 14, 14]         (2,048)
+│    │    │    └─ReLU: 4-93                   [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    └─Bottleneck: 3-11                  [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    │    └─Conv2d: 4-94                 [1, 1024, 14, 14]         [1, 256, 14, 14]          (262,144)
+│    │    │    └─BatchNorm2d: 4-95            [1, 256, 14, 14]          [1, 256, 14, 14]          (512)
+│    │    │    └─ReLU: 4-96                   [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-97                 [1, 256, 14, 14]          [1, 256, 14, 14]          (589,824)
+│    │    │    └─BatchNorm2d: 4-98            [1, 256, 14, 14]          [1, 256, 14, 14]          (512)
+│    │    │    └─ReLU: 4-99                   [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-100                [1, 256, 14, 14]          [1, 1024, 14, 14]         (262,144)
+│    │    │    └─BatchNorm2d: 4-101           [1, 1024, 14, 14]         [1, 1024, 14, 14]         (2,048)
+│    │    │    └─ReLU: 4-102                  [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    └─Bottleneck: 3-12                  [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    │    └─Conv2d: 4-103                [1, 1024, 14, 14]         [1, 256, 14, 14]          (262,144)
+│    │    │    └─BatchNorm2d: 4-104           [1, 256, 14, 14]          [1, 256, 14, 14]          (512)
+│    │    │    └─ReLU: 4-105                  [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-106                [1, 256, 14, 14]          [1, 256, 14, 14]          (589,824)
+│    │    │    └─BatchNorm2d: 4-107           [1, 256, 14, 14]          [1, 256, 14, 14]          (512)
+│    │    │    └─ReLU: 4-108                  [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-109                [1, 256, 14, 14]          [1, 1024, 14, 14]         (262,144)
+│    │    │    └─BatchNorm2d: 4-110           [1, 1024, 14, 14]         [1, 1024, 14, 14]         (2,048)
+│    │    │    └─ReLU: 4-111                  [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    └─Bottleneck: 3-13                  [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    │    └─Conv2d: 4-112                [1, 1024, 14, 14]         [1, 256, 14, 14]          (262,144)
+│    │    │    └─BatchNorm2d: 4-113           [1, 256, 14, 14]          [1, 256, 14, 14]          (512)
+│    │    │    └─ReLU: 4-114                  [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-115                [1, 256, 14, 14]          [1, 256, 14, 14]          (589,824)
+│    │    │    └─BatchNorm2d: 4-116           [1, 256, 14, 14]          [1, 256, 14, 14]          (512)
+│    │    │    └─ReLU: 4-117                  [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-118                [1, 256, 14, 14]          [1, 1024, 14, 14]         (262,144)
+│    │    │    └─BatchNorm2d: 4-119           [1, 1024, 14, 14]         [1, 1024, 14, 14]         (2,048)
+│    │    │    └─ReLU: 4-120                  [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    └─Bottleneck: 3-14                  [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    │    └─Conv2d: 4-121                [1, 1024, 14, 14]         [1, 256, 14, 14]          (262,144)
+│    │    │    └─BatchNorm2d: 4-122           [1, 256, 14, 14]          [1, 256, 14, 14]          (512)
+│    │    │    └─ReLU: 4-123                  [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-124                [1, 256, 14, 14]          [1, 256, 14, 14]          (589,824)
+│    │    │    └─BatchNorm2d: 4-125           [1, 256, 14, 14]          [1, 256, 14, 14]          (512)
+│    │    │    └─ReLU: 4-126                  [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-127                [1, 256, 14, 14]          [1, 1024, 14, 14]         (262,144)
+│    │    │    └─BatchNorm2d: 4-128           [1, 1024, 14, 14]         [1, 1024, 14, 14]         (2,048)
+│    │    │    └─ReLU: 4-129                  [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    └─Bottleneck: 3-15                  [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    │    └─Conv2d: 4-130                [1, 1024, 14, 14]         [1, 256, 14, 14]          (262,144)
+│    │    │    └─BatchNorm2d: 4-131           [1, 256, 14, 14]          [1, 256, 14, 14]          (512)
+│    │    │    └─ReLU: 4-132                  [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-133                [1, 256, 14, 14]          [1, 256, 14, 14]          (589,824)
+│    │    │    └─BatchNorm2d: 4-134           [1, 256, 14, 14]          [1, 256, 14, 14]          (512)
+│    │    │    └─ReLU: 4-135                  [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-136                [1, 256, 14, 14]          [1, 1024, 14, 14]         (262,144)
+│    │    │    └─BatchNorm2d: 4-137           [1, 1024, 14, 14]         [1, 1024, 14, 14]         (2,048)
+│    │    │    └─ReLU: 4-138                  [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    └─Bottleneck: 3-16                  [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    │    └─Conv2d: 4-139                [1, 1024, 14, 14]         [1, 256, 14, 14]          (262,144)
+│    │    │    └─BatchNorm2d: 4-140           [1, 256, 14, 14]          [1, 256, 14, 14]          (512)
+│    │    │    └─ReLU: 4-141                  [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-142                [1, 256, 14, 14]          [1, 256, 14, 14]          (589,824)
+│    │    │    └─BatchNorm2d: 4-143           [1, 256, 14, 14]          [1, 256, 14, 14]          (512)
+│    │    │    └─ReLU: 4-144                  [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-145                [1, 256, 14, 14]          [1, 1024, 14, 14]         (262,144)
+│    │    │    └─BatchNorm2d: 4-146           [1, 1024, 14, 14]         [1, 1024, 14, 14]         (2,048)
+│    │    │    └─ReLU: 4-147                  [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    └─Bottleneck: 3-17                  [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    │    └─Conv2d: 4-148                [1, 1024, 14, 14]         [1, 256, 14, 14]          (262,144)
+│    │    │    └─BatchNorm2d: 4-149           [1, 256, 14, 14]          [1, 256, 14, 14]          (512)
+│    │    │    └─ReLU: 4-150                  [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-151                [1, 256, 14, 14]          [1, 256, 14, 14]          (589,824)
+│    │    │    └─BatchNorm2d: 4-152           [1, 256, 14, 14]          [1, 256, 14, 14]          (512)
+│    │    │    └─ReLU: 4-153                  [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-154                [1, 256, 14, 14]          [1, 1024, 14, 14]         (262,144)
+│    │    │    └─BatchNorm2d: 4-155           [1, 1024, 14, 14]         [1, 1024, 14, 14]         (2,048)
+│    │    │    └─ReLU: 4-156                  [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    └─Bottleneck: 3-18                  [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    │    └─Conv2d: 4-157                [1, 1024, 14, 14]         [1, 256, 14, 14]          (262,144)
+│    │    │    └─BatchNorm2d: 4-158           [1, 256, 14, 14]          [1, 256, 14, 14]          (512)
+│    │    │    └─ReLU: 4-159                  [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-160                [1, 256, 14, 14]          [1, 256, 14, 14]          (589,824)
+│    │    │    └─BatchNorm2d: 4-161           [1, 256, 14, 14]          [1, 256, 14, 14]          (512)
+│    │    │    └─ReLU: 4-162                  [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-163                [1, 256, 14, 14]          [1, 1024, 14, 14]         (262,144)
+│    │    │    └─BatchNorm2d: 4-164           [1, 1024, 14, 14]         [1, 1024, 14, 14]         (2,048)
+│    │    │    └─ReLU: 4-165                  [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    └─Bottleneck: 3-19                  [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    │    └─Conv2d: 4-166                [1, 1024, 14, 14]         [1, 256, 14, 14]          (262,144)
+│    │    │    └─BatchNorm2d: 4-167           [1, 256, 14, 14]          [1, 256, 14, 14]          (512)
+│    │    │    └─ReLU: 4-168                  [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-169                [1, 256, 14, 14]          [1, 256, 14, 14]          (589,824)
+│    │    │    └─BatchNorm2d: 4-170           [1, 256, 14, 14]          [1, 256, 14, 14]          (512)
+│    │    │    └─ReLU: 4-171                  [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-172                [1, 256, 14, 14]          [1, 1024, 14, 14]         (262,144)
+│    │    │    └─BatchNorm2d: 4-173           [1, 1024, 14, 14]         [1, 1024, 14, 14]         (2,048)
+│    │    │    └─ReLU: 4-174                  [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    └─Bottleneck: 3-20                  [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    │    └─Conv2d: 4-175                [1, 1024, 14, 14]         [1, 256, 14, 14]          262,144
+│    │    │    └─BatchNorm2d: 4-176           [1, 256, 14, 14]          [1, 256, 14, 14]          512
+│    │    │    └─ReLU: 4-177                  [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-178                [1, 256, 14, 14]          [1, 256, 14, 14]          589,824
+│    │    │    └─BatchNorm2d: 4-179           [1, 256, 14, 14]          [1, 256, 14, 14]          512
+│    │    │    └─ReLU: 4-180                  [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-181                [1, 256, 14, 14]          [1, 1024, 14, 14]         262,144
+│    │    │    └─BatchNorm2d: 4-182           [1, 1024, 14, 14]         [1, 1024, 14, 14]         2,048
+│    │    │    └─ReLU: 4-183                  [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    └─Bottleneck: 3-21                  [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    │    └─Conv2d: 4-184                [1, 1024, 14, 14]         [1, 256, 14, 14]          262,144
+│    │    │    └─BatchNorm2d: 4-185           [1, 256, 14, 14]          [1, 256, 14, 14]          512
+│    │    │    └─ReLU: 4-186                  [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-187                [1, 256, 14, 14]          [1, 256, 14, 14]          589,824
+│    │    │    └─BatchNorm2d: 4-188           [1, 256, 14, 14]          [1, 256, 14, 14]          512
+│    │    │    └─ReLU: 4-189                  [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-190                [1, 256, 14, 14]          [1, 1024, 14, 14]         262,144
+│    │    │    └─BatchNorm2d: 4-191           [1, 1024, 14, 14]         [1, 1024, 14, 14]         2,048
+│    │    │    └─ReLU: 4-192                  [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    └─Bottleneck: 3-22                  [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    │    └─Conv2d: 4-193                [1, 1024, 14, 14]         [1, 256, 14, 14]          262,144
+│    │    │    └─BatchNorm2d: 4-194           [1, 256, 14, 14]          [1, 256, 14, 14]          512
+│    │    │    └─ReLU: 4-195                  [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-196                [1, 256, 14, 14]          [1, 256, 14, 14]          589,824
+│    │    │    └─BatchNorm2d: 4-197           [1, 256, 14, 14]          [1, 256, 14, 14]          512
+│    │    │    └─ReLU: 4-198                  [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-199                [1, 256, 14, 14]          [1, 1024, 14, 14]         262,144
+│    │    │    └─BatchNorm2d: 4-200           [1, 1024, 14, 14]         [1, 1024, 14, 14]         2,048
+│    │    │    └─ReLU: 4-201                  [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    └─Bottleneck: 3-23                  [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    │    └─Conv2d: 4-202                [1, 1024, 14, 14]         [1, 256, 14, 14]          262,144
+│    │    │    └─BatchNorm2d: 4-203           [1, 256, 14, 14]          [1, 256, 14, 14]          512
+│    │    │    └─ReLU: 4-204                  [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-205                [1, 256, 14, 14]          [1, 256, 14, 14]          589,824
+│    │    │    └─BatchNorm2d: 4-206           [1, 256, 14, 14]          [1, 256, 14, 14]          512
+│    │    │    └─ReLU: 4-207                  [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-208                [1, 256, 14, 14]          [1, 1024, 14, 14]         262,144
+│    │    │    └─BatchNorm2d: 4-209           [1, 1024, 14, 14]         [1, 1024, 14, 14]         2,048
+│    │    │    └─ReLU: 4-210                  [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    └─Bottleneck: 3-24                  [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    │    └─Conv2d: 4-211                [1, 1024, 14, 14]         [1, 256, 14, 14]          262,144
+│    │    │    └─BatchNorm2d: 4-212           [1, 256, 14, 14]          [1, 256, 14, 14]          512
+│    │    │    └─ReLU: 4-213                  [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-214                [1, 256, 14, 14]          [1, 256, 14, 14]          589,824
+│    │    │    └─BatchNorm2d: 4-215           [1, 256, 14, 14]          [1, 256, 14, 14]          512
+│    │    │    └─ReLU: 4-216                  [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-217                [1, 256, 14, 14]          [1, 1024, 14, 14]         262,144
+│    │    │    └─BatchNorm2d: 4-218           [1, 1024, 14, 14]         [1, 1024, 14, 14]         2,048
+│    │    │    └─ReLU: 4-219                  [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    └─Bottleneck: 3-25                  [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    │    └─Conv2d: 4-220                [1, 1024, 14, 14]         [1, 256, 14, 14]          262,144
+│    │    │    └─BatchNorm2d: 4-221           [1, 256, 14, 14]          [1, 256, 14, 14]          512
+│    │    │    └─ReLU: 4-222                  [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-223                [1, 256, 14, 14]          [1, 256, 14, 14]          589,824
+│    │    │    └─BatchNorm2d: 4-224           [1, 256, 14, 14]          [1, 256, 14, 14]          512
+│    │    │    └─ReLU: 4-225                  [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-226                [1, 256, 14, 14]          [1, 1024, 14, 14]         262,144
+│    │    │    └─BatchNorm2d: 4-227           [1, 1024, 14, 14]         [1, 1024, 14, 14]         2,048
+│    │    │    └─ReLU: 4-228                  [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    └─Bottleneck: 3-26                  [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    │    └─Conv2d: 4-229                [1, 1024, 14, 14]         [1, 256, 14, 14]          262,144
+│    │    │    └─BatchNorm2d: 4-230           [1, 256, 14, 14]          [1, 256, 14, 14]          512
+│    │    │    └─ReLU: 4-231                  [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-232                [1, 256, 14, 14]          [1, 256, 14, 14]          589,824
+│    │    │    └─BatchNorm2d: 4-233           [1, 256, 14, 14]          [1, 256, 14, 14]          512
+│    │    │    └─ReLU: 4-234                  [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-235                [1, 256, 14, 14]          [1, 1024, 14, 14]         262,144
+│    │    │    └─BatchNorm2d: 4-236           [1, 1024, 14, 14]         [1, 1024, 14, 14]         2,048
+│    │    │    └─ReLU: 4-237                  [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    └─Bottleneck: 3-27                  [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    │    └─Conv2d: 4-238                [1, 1024, 14, 14]         [1, 256, 14, 14]          262,144
+│    │    │    └─BatchNorm2d: 4-239           [1, 256, 14, 14]          [1, 256, 14, 14]          512
+│    │    │    └─ReLU: 4-240                  [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-241                [1, 256, 14, 14]          [1, 256, 14, 14]          589,824
+│    │    │    └─BatchNorm2d: 4-242           [1, 256, 14, 14]          [1, 256, 14, 14]          512
+│    │    │    └─ReLU: 4-243                  [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-244                [1, 256, 14, 14]          [1, 1024, 14, 14]         262,144
+│    │    │    └─BatchNorm2d: 4-245           [1, 1024, 14, 14]         [1, 1024, 14, 14]         2,048
+│    │    │    └─ReLU: 4-246                  [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    └─Bottleneck: 3-28                  [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    │    └─Conv2d: 4-247                [1, 1024, 14, 14]         [1, 256, 14, 14]          262,144
+│    │    │    └─BatchNorm2d: 4-248           [1, 256, 14, 14]          [1, 256, 14, 14]          512
+│    │    │    └─ReLU: 4-249                  [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-250                [1, 256, 14, 14]          [1, 256, 14, 14]          589,824
+│    │    │    └─BatchNorm2d: 4-251           [1, 256, 14, 14]          [1, 256, 14, 14]          512
+│    │    │    └─ReLU: 4-252                  [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-253                [1, 256, 14, 14]          [1, 1024, 14, 14]         262,144
+│    │    │    └─BatchNorm2d: 4-254           [1, 1024, 14, 14]         [1, 1024, 14, 14]         2,048
+│    │    │    └─ReLU: 4-255                  [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    └─Bottleneck: 3-29                  [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    │    └─Conv2d: 4-256                [1, 1024, 14, 14]         [1, 256, 14, 14]          262,144
+│    │    │    └─BatchNorm2d: 4-257           [1, 256, 14, 14]          [1, 256, 14, 14]          512
+│    │    │    └─ReLU: 4-258                  [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-259                [1, 256, 14, 14]          [1, 256, 14, 14]          589,824
+│    │    │    └─BatchNorm2d: 4-260           [1, 256, 14, 14]          [1, 256, 14, 14]          512
+│    │    │    └─ReLU: 4-261                  [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-262                [1, 256, 14, 14]          [1, 1024, 14, 14]         262,144
+│    │    │    └─BatchNorm2d: 4-263           [1, 1024, 14, 14]         [1, 1024, 14, 14]         2,048
+│    │    │    └─ReLU: 4-264                  [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    └─Bottleneck: 3-30                  [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    │    │    └─Conv2d: 4-265                [1, 1024, 14, 14]         [1, 256, 14, 14]          262,144
+│    │    │    └─BatchNorm2d: 4-266           [1, 256, 14, 14]          [1, 256, 14, 14]          512
+│    │    │    └─ReLU: 4-267                  [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-268                [1, 256, 14, 14]          [1, 256, 14, 14]          589,824
+│    │    │    └─BatchNorm2d: 4-269           [1, 256, 14, 14]          [1, 256, 14, 14]          512
+│    │    │    └─ReLU: 4-270                  [1, 256, 14, 14]          [1, 256, 14, 14]          --
+│    │    │    └─Conv2d: 4-271                [1, 256, 14, 14]          [1, 1024, 14, 14]         262,144
+│    │    │    └─BatchNorm2d: 4-272           [1, 1024, 14, 14]         [1, 1024, 14, 14]         2,048
+│    │    │    └─ReLU: 4-273                  [1, 1024, 14, 14]         [1, 1024, 14, 14]         --
+│    └─Sequential: 2-8                        [1, 1024, 14, 14]         [1, 2048, 7, 7]           --
+│    │    └─Bottleneck: 3-31                  [1, 1024, 14, 14]         [1, 2048, 7, 7]           --
+│    │    │    └─Conv2d: 4-274                [1, 1024, 14, 14]         [1, 512, 14, 14]          524,288
+│    │    │    └─BatchNorm2d: 4-275           [1, 512, 14, 14]          [1, 512, 14, 14]          1,024
+│    │    │    └─ReLU: 4-276                  [1, 512, 14, 14]          [1, 512, 14, 14]          --
+│    │    │    └─Conv2d: 4-277                [1, 512, 14, 14]          [1, 512, 7, 7]            2,359,296
+│    │    │    └─BatchNorm2d: 4-278           [1, 512, 7, 7]            [1, 512, 7, 7]            1,024
+│    │    │    └─ReLU: 4-279                  [1, 512, 7, 7]            [1, 512, 7, 7]            --
+│    │    │    └─Conv2d: 4-280                [1, 512, 7, 7]            [1, 2048, 7, 7]           1,048,576
+│    │    │    └─BatchNorm2d: 4-281           [1, 2048, 7, 7]           [1, 2048, 7, 7]           4,096
+│    │    │    └─Sequential: 4-282            [1, 1024, 14, 14]         [1, 2048, 7, 7]           --
+│    │    │    │    └─Conv2d: 5-7             [1, 1024, 14, 14]         [1, 2048, 7, 7]           2,097,152
+│    │    │    │    └─BatchNorm2d: 5-8        [1, 2048, 7, 7]           [1, 2048, 7, 7]           4,096
+│    │    │    └─ReLU: 4-283                  [1, 2048, 7, 7]           [1, 2048, 7, 7]           --
+│    │    └─Bottleneck: 3-32                  [1, 2048, 7, 7]           [1, 2048, 7, 7]           --
+│    │    │    └─Conv2d: 4-284                [1, 2048, 7, 7]           [1, 512, 7, 7]            1,048,576
+│    │    │    └─BatchNorm2d: 4-285           [1, 512, 7, 7]            [1, 512, 7, 7]            1,024
+│    │    │    └─ReLU: 4-286                  [1, 512, 7, 7]            [1, 512, 7, 7]            --
+│    │    │    └─Conv2d: 4-287                [1, 512, 7, 7]            [1, 512, 7, 7]            2,359,296
+│    │    │    └─BatchNorm2d: 4-288           [1, 512, 7, 7]            [1, 512, 7, 7]            1,024
+│    │    │    └─ReLU: 4-289                  [1, 512, 7, 7]            [1, 512, 7, 7]            --
+│    │    │    └─Conv2d: 4-290                [1, 512, 7, 7]            [1, 2048, 7, 7]           1,048,576
+│    │    │    └─BatchNorm2d: 4-291           [1, 2048, 7, 7]           [1, 2048, 7, 7]           4,096
+│    │    │    └─ReLU: 4-292                  [1, 2048, 7, 7]           [1, 2048, 7, 7]           --
+│    │    └─Bottleneck: 3-33                  [1, 2048, 7, 7]           [1, 2048, 7, 7]           --
+│    │    │    └─Conv2d: 4-293                [1, 2048, 7, 7]           [1, 512, 7, 7]            1,048,576
+│    │    │    └─BatchNorm2d: 4-294           [1, 512, 7, 7]            [1, 512, 7, 7]            1,024
+│    │    │    └─ReLU: 4-295                  [1, 512, 7, 7]            [1, 512, 7, 7]            --
+│    │    │    └─Conv2d: 4-296                [1, 512, 7, 7]            [1, 512, 7, 7]            2,359,296
+│    │    │    └─BatchNorm2d: 4-297           [1, 512, 7, 7]            [1, 512, 7, 7]            1,024
+│    │    │    └─ReLU: 4-298                  [1, 512, 7, 7]            [1, 512, 7, 7]            --
+│    │    │    └─Conv2d: 4-299                [1, 512, 7, 7]            [1, 2048, 7, 7]           1,048,576
+│    │    │    └─BatchNorm2d: 4-300           [1, 2048, 7, 7]           [1, 2048, 7, 7]           4,096
+│    │    │    └─ReLU: 4-301                  [1, 2048, 7, 7]           [1, 2048, 7, 7]           --
+│    └─AdaptiveAvgPool2d: 2-9                 [1, 2048, 7, 7]           [1, 2048, 1, 1]           --
+│    └─Linear: 2-10                           [1, 2048]                 [1, 3]                    6,147
+========================================================================================================================
+Total params: 42,500,035
+Trainable params: 27,263,171
+Non-trainable params: 15,236,864
+Total mult-adds (G): 7.72
+========================================================================================================================
+Input size (MB): 0.20
+Forward/backward pass size (MB): 259.71
+Params size (MB): 170.00
+Estimated Total Size (MB): 429.91
+========================================================================================================================

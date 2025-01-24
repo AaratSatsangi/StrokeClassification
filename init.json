@@ -1,7 +1,7 @@
 {
     "MODEL_NAME": "ResNet_S",
     "MODEL_TYPE": "conv",
-    "DEVICE": "cuda:1",
+    "DEVICE": "cuda:0",
     "LOAD_CHECKPOINT": true,
     
     "K_FOLD": 10,
