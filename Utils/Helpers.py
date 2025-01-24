@@ -330,7 +330,17 @@ def test_ensemble(models: list, test_loader: ImageFolder, test_class_weights, de
 
     with torch.no_grad():
         test_loss = 0.0
+        step = 0
         for test_XY in test_loader:
+            if step == 0: 
+                print("Testing: |", end="\r") 
+                step +=1
+            elif step == 1: 
+                print("Testing: /", end="\r")
+                step +=1
+            else:
+                print("Testing: \\", end="\r")
+                step = 0
             x = test_XY[0].to(device)
             y = test_XY[1].to(device)
 

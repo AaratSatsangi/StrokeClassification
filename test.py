@@ -12,10 +12,22 @@ from sklearn.model_selection import KFold
 from torchinfo import summary
 import time
 
-def test():
+def test(multiclass: bool):
+    if not os.path.exists("Results/"):
+        os.mkdir("Results/")
+
     LOGGER.log("\t" + "-"*100)
-    LOGGER.log("\t" + f"Testing Ensemble")
-    
+    if multiclass:
+        LOGGER.log("\t" + f"\t\tFOLD[{FOLD}] Testing Ensemble")
+        LOGGER.log("\t" + f"Hemorrhagic Vs Ischemic Vs Normal")
+        path_save_1 = "Results/Multiclass Report.json"
+        path_save_2 = "Results/Multiclass Performance.json"
+    else:
+        LOGGER.log("\t" + f"\t\tTesting Ensemble")
+        LOGGER.log("\t" + f"Normal Vs Stroke")
+        path_save_1 = "Results/BinaryClass Report.json"
+        path_save_2 = "Results/BinaryClass Performance.json"
+    LOGGER.log("\t" + "-"*100)
     # Performance Metrics
     precision_values = {key: [] for key in CONFIG.CLASS_NAMES}
     recall_values = {key: [] for key in CONFIG.CLASS_NAMES}
@@ -23,14 +35,14 @@ def test():
 
     # Create Test loader
     test_class_weights, test_sample_weights = get_sample_weights(CONFIG.TEST_DATA.dataset, CONFIG.TEST_DATA.indices, "Test", logger = LOGGER)
-    test_loader = DataLoader(dataset = CONFIG.TEST_DATA, batch_size = CONFIG.BATCH_LOAD, num_workers=CONFIG.WORKERS//2, pin_memory=True, generator=CONFIG.GENERATOR, persistent_workers=True, prefetch_factor=4)
+    test_loader = DataLoader(dataset = CONFIG.TEST_DATA, batch_size = CONFIG.BATCH_SIZE, num_workers=CONFIG.WORKERS//2, pin_memory=True, generator=CONFIG.GENERATOR, persistent_workers=True)
 
     report = test_ensemble(
         models=MODELS,
         test_loader = test_loader,
         test_class_weights = test_class_weights,
         device = CONFIG.DEVICE,
-        path_save="report.json",
+        path_save=path_save_1,
         class_names=CONFIG.CLASS_NAMES,
         logger = LOGGER
     )
@@ -45,22 +57,33 @@ def test():
         LOGGER.log(f"\t\t|--- Recall: {metrics['recall']: 0.5f}")
         LOGGER.log(f"\t\t|--- F1-Score: {metrics['f1-score']: 0.5f}")
     
-    with open("ensemble_performance.json", "w") as json_file:
+    with open(path_save_2, "w") as json_file:
         json.dump(report, json_file, indent=4)
+    
+    for model in MODELS:
+        del model
+    MODELS = []
+    LOGGER.log("\t" + "-"*100)
 
-def load_model(model_config:tuple):
+def load_model(model_config:tuple, multiclass:bool):
     model_name = model_config[0]
     model_type = model_config[1]
     fold = model_config[2]
-    path = f"Classifiers/{MODEL_TYPE_DICT[model_type]}/{model_name}/Simple/Checkpoint.pth"
+    if not multiclass:
+        path = f"Classifiers/{MODEL_TYPE_DICT[model_type]}/{model_name}/Simple/Checkpoint.pth"
+        num_classes = 2
+    else:
+        path = f"Classifiers/{MODEL_TYPE_DICT[model_type]}/{model_name}/K-Fold/F{fold}_Checkpoint.pth"
+        num_classes = 3
+
     if "SWIN" in model_name:
-        model = TransNets.SWIN(model_size="s", num_classes=2)
+        model = TransNets.SWIN(model_size="s", num_classes=num_classes)
     elif "CvT" in model_name:
-        model = TransNets.CvT(model_size="s", num_classes=2)
+        model = TransNets.CvT(model_size="s", num_classes=num_classes)
     elif "MaxViT" in model_name:
-        model = TransNets.MaxViT(model_size="s", num_classes=2)
+        model = TransNets.MaxViT(model_size="s", num_classes=num_classes)
     elif "ResNet" in model_name:
-        model = ConvNets.ResNet(model_size="s", num_classes=2)
+        model = ConvNets.ResNet(model_size="s", num_classes=num_classes)
     else:
         print(f"Error: {model_name} not recognized!")
         exit(1)
@@ -81,19 +104,43 @@ if __name__ == "__main__":
         model_name = CONFIG.MODEL_NAME,
         path_localFile = CONFIG.PATH_MODEL_LOG_FILE
     )
+    FOLD = 1
+    MODEL_CONFIGS = [
+        ("ResNet_S", "conv", FOLD),
+        ("SWIN_S", "trans", FOLD),
+        ("CvT_S", "trans", FOLD)
+    ]
+    CONFIG.BATCH_SIZE = 128
+    # ---------------- Test Binary Classification -----------------
     # Train test split
+    CONFIG.DATA = ImageFolder(CONFIG.PATH_DATASET_MERGE_TRAIN, CONFIG.TRANSFORMS_TRAIN)
+    CONFIG.CLASS_NAMES = CONFIG.DATA.classes
     CONFIG.TRAIN_DATA, CONFIG.VAL_DATA, CONFIG.TEST_DATA = random_split(dataset=CONFIG.DATA, lengths=[0.7, 0.1, 0.2], generator=CONFIG.GENERATOR)
     CONFIG.VAL_DATA.transform = CONFIG.TRANSFORMS_TEST
     CONFIG.TEST_DATA.transform = CONFIG.TRANSFORMS_TEST
-    
-    MODEL_CONFIGS = [
-        ("ResNet_S", "conv", 9),
-        ("SWIN_S", "trans", 10),
-        ("CvT_S", "trans", 6)
-    ]
     MODELS = []
     for model_config in MODEL_CONFIGS:
-        MODELS.append(load_model(model_config=model_config))
-    test()
+        MODELS.append(load_model(model_config=model_config, multiclass=False))
+    test(multiclass=False)
+
+    # ------------------------------------------------------------
+    # ---------------- Test MultiClass Classification -----------------
+    MODELS = []
+    for model_config in MODEL_CONFIGS:
+        MODELS.append(load_model(model_config=model_config, multiclass=True))
+    
+    CONFIG.DATA = ImageFolder(CONFIG.PATH_DATASET_TRAIN, CONFIG.TRANSFORMS_TRAIN)
+    CONFIG.CLASS_NAMES = CONFIG.DATA.classes
+    KF = KFold(n_splits=CONFIG.K_FOLD, shuffle=True, random_state=CONFIG.RANDOM_STATE)
+    for fold, (train_idx, test_idx) in enumerate(KF.split(CONFIG.TRAIN_DATA)):
+        if fold != FOLD-1:
+            continue
+        else:
+            CONFIG.TEST_DATA = Subset(CONFIG.DATA, test_idx)
+            CONFIG.TEST_DATA.transform = CONFIG.TRANSFORMS_TEST
+            break
+    test(multiclass=True)
+        
+
     LOGGER.log("\n\n" + "="*55 + " END " + "="*55 + "\n\n")
     

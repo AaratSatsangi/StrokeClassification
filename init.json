@@ -14,6 +14,7 @@
     "SERVER_USERNAME": "AaratSatsangi",
     "SERVER_FOLDER": "StrokeClassification",
     "SERVER_URL": "",
+    "PATH_DATASET_MERGE_TRAIN": "Data/Compiled/Split/Train", 
     "PATH_DATASET_TRAIN": "Data/Compiled/Split/Train",
     "PATH_DATASET_TEST": "Data/Compiled/Split/Test"
 }

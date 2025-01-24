@@ -42,6 +42,7 @@ class Config:
         self.SERVER_URL = train_vars["SERVER_URL"] if  train_vars["SERVER_URL"] != "" else None
         self.PATH_DATASET_TRAIN = train_vars["PATH_DATASET_TRAIN"]
         self.PATH_DATASET_TEST = train_vars["PATH_DATASET_TEST"]
+        self.PATH_DATASET_MERGE_TRAIN = train_vars["PATH_DATASET_MERGE_TRAIN"]
         
         self.RANDOM_STATE = 26
         self.WORKERS = os.cpu_count()

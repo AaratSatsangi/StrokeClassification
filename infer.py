@@ -219,7 +219,8 @@ def load_model(model_config:tuple):
     model_name = model_config[0]
     model_type = model_config[1]
     fold = model_config[2]
-    path = f"Classifiers/{MODEL_TYPE_DICT[model_type]}/{model_name}/F{fold}_Checkpoint.pth"
+    path = f"Classifiers/{MODEL_TYPE_DICT[model_type]}/{model_name}/K-Fold/F{fold}_Checkpoint.pth"
+    # path = f"Classifiers/{MODEL_TYPE_DICT[model_type]}/{model_name}/Simple/Checkpoint.pth"
     if "SWIN" in model_name:
         model = TransNets.SWIN(model_size="s")
     elif "CvT" in model_name:
@@ -307,9 +308,9 @@ def get_JSC(masks:list):
 
 if __name__ == "__main__":
     MODEL_CONFIGS = [
-        ("ResNet_S", "conv", 9),
-        ("SWIN_S", "trans", 10),
-        ("CvT_S", "trans", 6)
+        ("ResNet_S", "conv", 1),
+        ("SWIN_S", "trans", 1),
+        ("CvT_S", "trans", 1)
     ]
     MODEL_NAME = ""
     images = load_images()
