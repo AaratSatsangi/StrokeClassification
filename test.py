@@ -13,6 +13,7 @@ from torchinfo import summary
 import time
 
 def test(multiclass: bool):
+    global MODELS
     if not os.path.exists("Results/"):
         os.mkdir("Results/")
 
@@ -113,15 +114,15 @@ if __name__ == "__main__":
     CONFIG.BATCH_SIZE = 128
     # ---------------- Test Binary Classification -----------------
     # Train test split
-    CONFIG.DATA = ImageFolder(CONFIG.PATH_DATASET_MERGE_TRAIN, CONFIG.TRANSFORMS_TRAIN)
-    CONFIG.CLASS_NAMES = CONFIG.DATA.classes
-    CONFIG.TRAIN_DATA, CONFIG.VAL_DATA, CONFIG.TEST_DATA = random_split(dataset=CONFIG.DATA, lengths=[0.7, 0.1, 0.2], generator=CONFIG.GENERATOR)
-    CONFIG.VAL_DATA.transform = CONFIG.TRANSFORMS_TEST
-    CONFIG.TEST_DATA.transform = CONFIG.TRANSFORMS_TEST
-    MODELS = []
-    for model_config in MODEL_CONFIGS:
-        MODELS.append(load_model(model_config=model_config, multiclass=False))
-    test(multiclass=False)
+#    CONFIG.DATA = ImageFolder(CONFIG.PATH_DATASET_MERGE_TRAIN, CONFIG.TRANSFORMS_TRAIN)
+#    CONFIG.CLASS_NAMES = CONFIG.DATA.classes
+#    CONFIG.TRAIN_DATA, CONFIG.VAL_DATA, CONFIG.TEST_DATA = random_split(dataset=CONFIG.DATA, lengths=[0.7, 0.1, 0.2], generator=CONFIG.GENERATOR)
+#    CONFIG.VAL_DATA.transform = CONFIG.TRANSFORMS_TEST
+#    CONFIG.TEST_DATA.transform = CONFIG.TRANSFORMS_TEST
+#    MODELS = []
+#    for model_config in MODEL_CONFIGS:
+#        MODELS.append(load_model(model_config=model_config, multiclass=False))
+#    test(multiclass=False)
 
     # ------------------------------------------------------------
     # ---------------- Test MultiClass Classification -----------------
